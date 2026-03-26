@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1A1C19",
+              "on-primary": "#E2E3DE",
+              "accent-green": "#2D3B2D",
+              "accent-terracotta": "#8C4B3E",
+              "surface": "#121411",
+              "surface-container": "#1E201D",
+              "outline-variant": "#3F423E",
+              "on-surface-variant": "#C3C8BC"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .sage-gradient {
+            background: linear-gradient(135deg, #2D3B2D 0%, #1A1C19 100%);
+        }
+        .terracotta-hover:hover {
+            color: #8C4B3E;
+        }
+    </style>
+</head>
+<body class="bg-primary text-on-primary font-body antialiased selection:bg-accent-green selection:text-white" style="font-family: 'Manrope', sans-serif;">
+<!-- Hero Background Section -->
+<div class="fixed inset-0 z-0">
+<img class="w-full h-full object-cover opacity-40 grayscale sepia-[0.2]" data-alt="ultra-minimalist dark kitchen with matte black cabinetry, marble island, and dramatic sharp shadows in high fashion editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQi3Q11TECtJMSxr8n2d6lEmogQt0g_7Id_g5FntaFXDi4ef1MptKfAViw6Y08TV1gxWqNZdOv1Ihtc7mj2Khww1shaAGisqn3m0E-Eeu9OEGMYfPjRSzqAtoaREPcLajieDkNEOu3D9_Ig1HtgJOOfx4OLY3GS3KVDKGinoSun-hNaBPNQVffdkJPge7154CYfnZ-mct4tGS1OHrUIuoJM1EEuJas2fLuQJLay7A1LJWYuVqpS85McYUy_PCBW558UIELx0M6i78"/>
+<div class="absolute inset-0 bg-primary/80 backdrop-blur-[1px]"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+<!-- Branding Anchor -->
+<header class="mb-16 text-center">
+<h1 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-white uppercase mb-2">
+            Kitchen Editorial
+        </h1>
+<p class="font-label text-[10px] tracking-[0.3em] text-on-surface-variant uppercase">
+            The Silent Curator — <span class="text-accent-terracotta">Private Access</span>
+</p>
+</header>
+<!-- Login Container -->
+<div class="w-full max-w-[420px] bg-surface/60 backdrop-blur-2xl p-10 md:p-14 border border-white/5 shadow-2xl">
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-white mb-4">Sign In</h2>
+<div class="h-[1px] w-12 bg-accent-green"></div>
+</div>
+<form class="space-y-10">
+<!-- Email Input -->
+<div class="group relative">
+<label class="block font-label text-[10px] text-on-surface-variant uppercase mb-2 font-bold tracking-widest">
+                    Account Identifier
+                </label>
+<input class="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant/30 text-white font-body py-3 px-0 placeholder:text-on-surface-variant/30 focus:border-accent-green transition-colors duration-500 rounded-none" placeholder="EMAIL ADDRESS" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="group relative">
+<div class="flex justify-between items-end mb-2">
+<label class="block font-label text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">
+                        Security Key
+                    </label>
+<a class="font-label text-[9px] tracking-[0.1em] text-on-surface-variant hover:text-accent-terracotta transition-colors uppercase" href="#">
+                        Recover?
+                    </a>
+</div>
+<input class="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant/30 text-white font-body py-3 px-0 placeholder:text-on-surface-variant/30 focus:border-accent-green transition-colors duration-500 rounded-none" placeholder="PASSWORD" type="password"/>
+</div>
+<!-- Actions -->
+<div class="pt-6 space-y-6">
+<button class="w-full sage-gradient text-white py-5 px-8 font-label text-[11px] tracking-[0.2em] uppercase transition-all duration-500 hover:brightness-125 border border-white/5 active:opacity-70 font-bold" type="submit">
+                    Continue to Atelier
+                </button>
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-white/5"></div>
+<span class="flex-shrink mx-4 font-label text-[9px] tracking-[0.2em] text-on-surface-variant uppercase">Or connect via</span>
+<div class="flex-grow border-t border-white/5"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 border border-outline-variant/20 py-4 px-4 font-label text-[10px] tracking-[0.1em] text-on-surface-variant uppercase hover:bg-accent-green hover:text-white transition-all duration-300 group" type="button">
+<span class="material-symbols-outlined text-sm">database</span>
+                        Google
+                    </button>
+<button class="flex items-center justify-center gap-3 border border-outline-variant/20 py-4 px-4 font-label text-[10px] tracking-[0.1em] text-on-surface-variant uppercase hover:bg-accent-green hover:text-white transition-all duration-300 group" type="button">
+<span class="material-symbols-outlined text-sm">brand_awareness</span>
+                        Apple
+                    </button>
+</div>
+</div>
+</form>
+<div class="mt-12 text-center">
+<p class="font-label text-[10px] tracking-[0.1em] text-on-surface-variant uppercase">
+                New to the editorial? 
+                <a class="text-white border-b border-accent-terracotta/50 ml-2 hover:border-accent-terracotta transition-colors" href="#">Apply for access</a>
+</p>
+</div>
+</div>
+<!-- System Footer -->
+<footer class="mt-16 w-full max-w-[420px] flex justify-between items-center px-2">
+<span class="font-label text-[9px] tracking-[0.2em] text-on-surface-variant uppercase">
+            © 2024 Kitchen Editorial
+        </span>
+<div class="flex gap-6">
+<a class="font-label text-[9px] tracking-[0.2em] text-on-surface-variant hover:text-accent-terracotta transition-colors uppercase" href="#">Legal</a>
+<a class="font-label text-[9px] tracking-[0.2em] text-on-surface-variant hover:text-accent-terracotta transition-colors uppercase" href="#">Inquiry</a>
+</div>
+</footer>
+</main>
+<!-- Aesthetic Floating Elements -->
+<div class="fixed top-20 right-20 z-0 hidden lg:block opacity-10 pointer-events-none">
+<div class="w-[1px] h-64 bg-accent-green"></div>
+</div>
+<div class="fixed bottom-20 left-20 z-0 hidden lg:block opacity-20 pointer-events-none">
+<p class="font-headline text-6xl text-on-surface-variant [writing-mode:vertical-rl] rotate-180 font-bold uppercase tracking-tighter">
+        L'Art de <span class="text-accent-terracotta">Vivre</span>
+</p>
+</div>
+</body></html>
