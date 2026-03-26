@@ -12,7 +12,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     
     List<Recipe> findByUserId(String userId);   
 
+    List<Recipe> findByUserIdAndNameContaining(String userId, String name);
     Optional<Recipe> findByIdAndUserId(UUID id, String userId);
-
-    void deleteByIdAndUserId(UUID id, String userId);
 }

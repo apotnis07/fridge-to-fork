@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Signing you in...</title>
+    </head>
+    <body>
+        <p>Signing you in, please wait...</p>
+    
+        <script>
+            const COGNITO_DOMAIN = "https://us-east-1e8orxn70t.auth.us-east-1.amazoncognito.com";
+            const CLIENT_ID = "2bcr0f7nd14rv75lh7colsakif";
+            const REDIRECT_URI = "http://localhost:8080/callback.html";
+    
+            async function handleCallback() {
+                const params = new URLSearchParams(window.location.search);
+                const code = params.get("code");
+    
+                if (!code) {
+                    window.location.href = "/index.html";
+                    return;
+                }
+    
+                try {
+                    const response = await fetch(`${COGNITO_DOMAIN}/oauth2/token`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams({
+                            grant_type: "authorization_code",
+                            client_id: CLIENT_ID,
+                            redirect_uri: REDIRECT_URI,
+                            code: code
+                        })
+                    });
+    
+                    const tokens = await response.json();
+    
+                    if (tokens.access_token) {
+                        sessionStorage.setItem("access_token", tokens.access_token);
+                        sessionStorage.setItem("id_token", tokens.id_token);
+                        window.location.href = "/index.html?login_success=true";
+                    } else {
+                        console.error("Token exchange failed", tokens);
+                        alert("Login failed. Please try again.");
+                        window.location.href = "/index.html";
+                    }
+                } catch (err) {
+                    console.error("Error during token exchange", err);
+                    window.location.href = "/index.html";
+                }
+            }
+    
+            handleCallback();
+        </script>
+    </body>    
+</html>

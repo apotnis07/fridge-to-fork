@@ -116,14 +116,13 @@
         <div class="flex justify-between items-center px-8 py-6 max-w-[1440px] mx-auto">
             <div class="text-2xl font-bold tracking-tighter text-[#e1e7df]">REMI</div>
             <div class="hidden md:flex items-center gap-12">
-                    <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/index.html">Home</a>
-                    <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
-                    <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
+                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/index.html">Home</a>
+                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
+                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
             </div>
-            <div class="flex items-center gap-6">
-                <a href="#">
-                <button
-                    class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Login</button></a>
+            <div class="flex items-center gap-6" id="auth-button-container">
+                    <button onclick="login()" id="auth-btn"
+                        class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Login</button>
             </div>
         </div>
     </nav>
@@ -151,10 +150,10 @@
                 </p>
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6">
                     <a href="#">
-                    <button
-                        class="bg-primary text-on-primary px-10 py-5 rounded-md font-bold tracking-tight text-lg shadow-[0_0_30px_rgba(188,202,190,0.2)] hover:scale-105 active:scale-95 transition-all">
-                        Start Cooking
-                    </button></a>
+                        <button
+                            class="bg-primary text-on-primary px-10 py-5 rounded-md font-bold tracking-tight text-lg shadow-[0_0_30px_rgba(188,202,190,0.2)] hover:scale-105 active:scale-95 transition-all">
+                            Start Cooking
+                        </button></a>
                 </div>
             </div>
         </section>
@@ -207,6 +206,34 @@
             </div>
         </section>
     </main>
+    <!-- on your index.html / landing page -->
+    <script src="/auth.js"></script>
+    <script>
+        function updateAuthUI() {
+            const token = sessionStorage.getItem("access_token");
+            const btn = document.getElementById("auth-btn");
+
+            if(token){
+                btn.innerText = "Logout";
+                btn.onclick = logout;
+
+                // btn.classList.remove("bg-[#bccabe]");
+                // btn.classList.add("bg-stone-800", "text-stone-200", "border", "border-stone-700");
+            }
+            else{
+                btn.innerText = "Login";
+                btn.onclick = login;
+            }
+        }
+
+        updateAuthUI();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('login_success')){
+            updateAuthUI();
+            window.history.replaceState({}, document.title, "/index.html");
+        }
+    </script>
 </body>
 
 </html>

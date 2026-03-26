@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Meal Finder</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Meal Finder</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -27,234 +32,315 @@
                         "body": ["Manrope"],
                         "label": ["Manrope"]
                     },
-                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px" },
                 },
             },
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        body { font-family: 'Manrope', sans-serif; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
     </style>
 </head>
+
 <body class="bg-background text-on-surface antialiased">
-<!-- Top Navigation Bar -->
-<nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50">
-<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
-<div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
-<!-- Desktop Nav -->
-<div class="hidden md:flex items-center space-x-8">
-<a class="text-stone-400 hover:text-stone-200 transition-colors" href="/index.html">Home</a>
-<a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
-<a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/find.html">Meal Finder</a>
-<button class="material-symbols-outlined text-stone-100 hover:text-primary transition-all duration-300">account_circle</button>
-</div>
-<!-- Mobile Search Icon -->
-<div class="md:hidden">
-<span class="material-symbols-outlined text-primary">search</span>
-</div>
-</div>
-</nav>
-<main class="pt-32 pb-40 px-6 max-w-7xl mx-auto">
-<!-- Hero Section & Ingredient Input -->
-<section class="mb-20">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
-<div class="lg:col-span-7">
-<h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-6 leading-[0.9]">
-                    What's in your <span class="text-primary italic">pantry?</span>
-</h1>
-<p class="text-on-surface-variant text-lg max-w-xl mb-10 leading-relaxed">
-                    Turn your available ingredients into an extraordinary dining experience. Tell us what you have, and we'll craft the perfect menu.
-                </p>
-</div>
-<div class="lg:col-span-5 w-full">
-<div class="bg-surface p-8 rounded-xl border border-outline/30">
-<label class="block text-primary font-bold text-sm uppercase tracking-widest mb-4">Add Ingredients</label>
-<div class="relative group">
-<input class="w-full bg-stone-800/50 border-none ring-1 ring-outline/50 focus:ring-primary/50 rounded-xl px-6 py-4 text-on-surface placeholder-on-surface-variant/40 transition-all outline-none" placeholder="Basil, Garlic, Pasta..." type="text"/>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm transition-transform active:scale-95 shadow-lg">
-                            Search
-                        </button>
-</div>
-<div class="flex flex-wrap gap-2 mt-4">
-<span class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Tomato <span class="material-symbols-outlined text-[14px]">close</span></span>
-<span class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Mozzarella <span class="material-symbols-outlined text-[14px]">close</span></span>
-<span class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Basil <span class="material-symbols-outlined text-[14px]">close</span></span>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Bento Grid: Your Saved Recipes -->
-<section class="mb-24">
-<div class="flex justify-between items-end mb-10">
-<div>
-<span class="text-primary font-bold text-xs uppercase tracking-[0.2em]">Curated for You</span>
-<h2 class="text-3xl font-extrabold tracking-tight mt-1">Your Saved Recipes</h2>
-</div>
-<button class="text-primary font-bold text-sm underline-offset-4 hover:underline transition-all">View All Collection</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-<!-- Large Feature Card -->
-<div class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-surface transition-all hover:shadow-2xl hover:shadow-black/60">
-<div class="aspect-[4/5] w-full overflow-hidden">
-<img alt="Pesto Pasta" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFItxKkHApb5R0L77vrsom74IZOTtMidc2fWuVnAIisbz222RfJ1SC4DohXHNbBZgaO-m1EtMSooaH-0syjQ7dz84qRA7k_tqzkWxyAWitu7g6RFGSNJxowtscEKXTCh9FsRuUDTEkhEPl_Iivb31ghQ8HddC1UasWk2vlWWHrCdWIgnijlB-WE2VVxlBQu8TD11xAkS3RdE-FNI8YFiy1T8Bbqn8KihNmbaVlXPHartpThM2uWoTHQWa_x7sRG7we5nwnaZwXQV4"/>
-</div>
-<div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent text-white">
-<span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20 Mins • Easy</span>
-<h3 class="text-3xl font-bold leading-tight">Hand-Crafted Pesto <br/>with Linguine</h3>
-</div>
-</div>
-<!-- Secondary Cards -->
-<div class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-<div class="aspect-square overflow-hidden bg-black">
-<img alt="Bowl" class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuu0Wih9e7i4ZY4Fjew3xiHTPpDIWZ1bB66PkD7KuFmiqcIw9bzr4DRf4RKfXKuQ0kIJiKYhPYOW9DS95NDrlj2EHfL0eOpB755NFN8Qka0XVeAHFL7OeRympN6-iXCeGmv8pHJNtSOUmGB0QIkl9Ae0jYzNDwEM6zA5ZefIkKEhIDodsJcTDO5adu6HfBFdcnyoHYXc3JndRGgppygtpcOt0gaG8EE8T5lg2ECpEqgQjFyDZ434N_2bP4ASSI7pjdKA3LTIriyW4"/>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-bold text-on-surface mb-2">Summer Harvest Bowl</h3>
-<div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
-<span class="flex items-center gap-1 text-primary/80"><span class="material-symbols-outlined text-sm">schedule</span> 15 MIN</span>
-<span class="flex items-center gap-1 text-primary/80"><span class="material-symbols-outlined text-sm">eco</span> VEGAN</span>
-</div>
-</div>
-</div>
-<div class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-<div class="aspect-square overflow-hidden bg-black">
-<img alt="Pizza" class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNbk8QHzlela1TLC38NWLB4pUaQw4xDCTGeag2cU-cl2NjrEErfL05Hu6ihn_xf_GFZzuIEx2W0vvAxz-jTjbiv7g2_w2RwzWGJDWRdC5pvG98pvawYLoFROmhktgaMDMaDuPXem0QMpwRqVE_LMUDWzyqSPTTLpkPLfBoyRHehsPf5IQvfuIeKxTvDKzS1WEHcH549Q-IVVgFr479EoJm1Ye49-y1slM2BCSXCnpaO6s4V6NIxLErjjRzTH2j0jszty4niKbZqog"/>
-</div>
-<div class="p-6">
-<h3 class="text-xl font-bold text-on-surface mb-2">Artisan Margherita</h3>
-<div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
-<span class="flex items-center gap-1 text-primary/80"><span class="material-symbols-outlined text-sm">schedule</span> 30 MIN</span>
-<span class="flex items-center gap-1 text-primary/80"><span class="material-symbols-outlined text-sm">local_fire_department</span> HIGH</span>
-</div>
-</div>
-</div>
-<!-- Wide Card -->
-<div class="md:col-span-2 group flex bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-<div class="w-1/2 overflow-hidden bg-black">
-<img alt="Salmon" class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYdCpCVZ6OBGEnp_HdmIc-uTXeOLdQRXi7SgDKvvM9tyaWJuVsGELAEu9hosfDcwkKjOYKn0dacJLJ9iPVzOpQm0CtdEGztygf3ma_GWoAHtcMLXKKxmuI4HdMB9kPTOxBNDYam84NLkFW_xUgp12X6XU6FI9fz8iBC67-L_b-cf3tcUw7K8QKDeZhS8rB-H8BMpVOZ7Dmvyl9httH8UCS_Y6X0MkYRCDtyYq_nAlfXb5cncQfry-AuFREnl7643_VxLRgE9aJRc"/>
-</div>
-<div class="w-1/2 p-8 flex flex-col justify-center">
-<span class="text-primary font-bold text-[10px] uppercase tracking-widest mb-2">Chef's Choice</span>
-<h3 class="text-2xl font-bold text-on-surface mb-4">Lemon Zest Wild Salmon</h3>
-<p class="text-on-surface-variant text-sm line-clamp-2 mb-6 font-medium">A light, refreshing protein-packed meal perfect for weeknight dinners.</p>
-<button class="w-max px-6 py-2 border border-primary/30 rounded-full text-xs font-extrabold text-primary hover:bg-primary/10 transition-colors">GET RECIPE</button>
-</div>
-</div>
-</div>
-</section>
-<!-- Discover New Ideas -->
-<section class="mb-20">
-<div class="flex items-center justify-between mb-10">
-<h2 class="text-3xl font-extrabold tracking-tight">Discover New Ideas</h2>
-<div class="flex gap-2">
-<button class="w-10 h-10 rounded-full flex items-center justify-center bg-stone-800 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="w-10 h-10 rounded-full flex items-center justify-center bg-stone-800 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</div>
-</div>
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-<div class="space-y-3 group cursor-pointer">
-<div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
-<img alt="Bowl" class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQF2lqXRxfLHNEfebSKI6B_YDuIpPZKDFYyeyIpqDslXkNJ8NW95LEJGlinzSBlttjMleLS9tWz1hD8RNm7Hs8gPW3l-bBl0CKihgGZ1yx_aZLj53l47mq9WXyByd8-l61FGsSZZeopSQxEADPndbn3v1XKgobeL-U5BIAcgvN1-N5ii3DKvaqleLboPL0TiK38nWqHxYi66CwTt1--3U763w5W9ZQQk5dOgOf3_EDPKKq05dI2O3g8nJcKx0Z-Rbg08PONyCgPe8"/>
-</div>
-<h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Avocado Buddha Bowl</h4>
-</div>
-<div class="space-y-3 group cursor-pointer">
-<div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
-<img alt="Salad" class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPvTXkA8SDmVRycPzcGbDGloaELnwJIZspzqC_hQUrNtu_WLiXVrr97sk54BwVFHvDFQXpmF7m5DrjsRf8sIGJXTiP4vPKBZutYGvcmFPawWcEfPoojVr4UZSY73ddKUhhOB6Q1pzwdtEGcr_aC3AHuqc9LEiqVrCi4iokiXuYD84i2hjMm1ssn_Imf_iNdp69QwWXAwVWk_5NnVfFI-8cziVjTILGSrwngBVnYU6uksCtwmtWpVkhxj7oWTWHj-2_gqxxqvBLKM4"/>
-</div>
-<h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Spring Garden Salad</h4>
-</div>
-<div class="space-y-3 group cursor-pointer">
-<div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
-<img alt="Pizza" class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYNJyTOggb9p9sXY1lnYiRKcMiNYtTUpapAvzXuuogxVFf5LcO2qrXAVr5KuVilQfWlnoCcVsq4RU2OSd3QrRhsS_9AnDfNUb7GvuDN4DLuDJm2EbGQEAaERaYguNAnEDDzyXJpfbLvbbhGupfOtgeOeSYt-uNW9Wa0Y5RH16RV_aAenD-uKbLex8Vkmue3BTXLzETHB-hYCZxnqpZ-1XVcEZ37qRz0pTshb-0iMddZnNZHHyNoyXF3b0aaYG0mzUl8QnrsCPioq0"/>
-</div>
-<h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Truffle Pepperoni</h4>
-</div>
-<div class="space-y-3 group cursor-pointer">
-<div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
-<img alt="Cake" class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF6MUvHHiepxrvn3ZC26pjQ3cyu41P8HLH8eq9VPjSorS9dln92j8nNeUmNw5jZ-8pFmgLszDjFn_ZF730r8gc3KWmit4JcewwZnBqlRmif_JzrsToVSxkQEsoyHBUZ467gB9bHwF7ZRUoOYWKLX4yMKk9Gu_GVk9aB9MqGjOhjaCdc9jipV9LxKW4bvHcBXV2SVsYfaKttS5jv_RabIwLd5ZZu0Ogt_p6OkRSKSv5HtVw2NepmV1XWv6-_xLHNAWfErS8OV4L4So"/>
-</div>
-<h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Berry Cheesecake</h4>
-</div>
-<div class="space-y-3 group cursor-pointer">
-<div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
-<img alt="Grill" class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIsgmksJiaWnvUtsV13N3uFHATtSqOdzjOn_lcYe0ZtQqgv_na4rfk_kw1kfVRm5bcxzNEy4yOAzn3jQSxNqrck0juSKMtUpVSlT_AXUCv_En6S7MgsZgacNYAHdPWCbbiU5mDTWSsw9Y7fpuhbvWbkCkhVfLWxgLRuq50v03XGIkg94RQNQmEcfRYnCzGn-spxjye5OjvLiyUVgVtxLuw8bTEUuoIJd4PUKC0mbodhktrOWLtIAcCpNR6FVPRBhQe_lBYwxMBAeE"/>
-</div>
-<h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Charcoal Skewers</h4>
-</div>
-</div>
-</section>
-</main>
-<!-- Bottom Navigation Bar (Mobile) -->
-<div class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-stone-950/80 backdrop-blur-2xl border-t border-stone-800/30 rounded-t-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.6)]">
-<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
-<span class="material-symbols-outlined">home</span>
-<span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Home</span>
-</a>
-<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
-<span class="material-symbols-outlined">menu_book</span>
-<span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Learn</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-stone-800/50 text-emerald-200 rounded-xl px-4 py-2 transition-all" href="#">
-<span class="material-symbols-outlined">restaurant_menu</span>
-<span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Finder</span>
-</a>
-<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
-<span class="material-symbols-outlined">person</span>
-<span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Profile</span>
-</a>
-</div>
-<!-- Detailed Recipe View -->
-<div class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
-<div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
-<div class="relative bg-surface rounded-xl max-w-4xl w-full max-h-[921px] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-outline/20">
-<button class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-stone-800 text-on-surface flex items-center justify-center">
-<span class="material-symbols-outlined">close</span>
-</button>
-<div class="w-full md:w-1/2 h-64 md:h-auto overflow-hidden bg-black">
-<img alt="Recipe Detail" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9cuxxnS4tckcMCvL_eGA8-L4L6SQuyU9TBdY8_uKEuBzlFOT4IR1IN_6yQRFzi5tlMF_3HwmhhdWcHT343kpg3RPTve8pAODsrisGwHC7MnTb3mOA5MwrC-KMN_OjLTA_CxXkKjUCvNxDWOqkZMSnBPzob5jQfeR2_XsMt41lHI559Su32pxsQJlIb-i1aBZMWupUN4RxVic_bQBeRS0BZH4R29LWlHA1nPJrfPciKO2ENNwfkjQ1sy8If4iw9RYy79TM5cBPkog"/>
-</div>
-<div class="w-full md:w-1/2 p-10 overflow-y-auto">
-<span class="text-primary font-bold text-xs uppercase tracking-widest">Main Course</span>
-<h2 class="text-4xl font-extrabold tracking-tight mt-2 mb-6 text-stone-50">Hand-Crafted Pesto Linguine</h2>
-<div class="flex gap-6 mb-8 py-4 border-y border-outline/20">
-<div class="text-center">
-<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Time</span>
-<span class="text-sm font-extrabold">20 MINS</span>
-</div>
-<div class="text-center">
-<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Difficulty</span>
-<span class="text-sm font-extrabold">EASY</span>
-</div>
-<div class="text-center">
-<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Serves</span>
-<span class="text-sm font-extrabold">2 PEOPLE</span>
-</div>
-</div>
-<div class="space-y-8">
-<div>
-<h3 class="text-lg font-extrabold mb-4">Ingredients</h3>
-<ul class="space-y-3">
-<li class="flex items-center gap-3 text-sm font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 200g Fresh Linguine</li>
-<li class="flex items-center gap-3 text-sm font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 2 cups Fresh Basil Leaves</li>
-<li class="flex items-center gap-3 text-sm font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 1/2 cup Pine Nuts, toasted</li>
-<li class="flex items-center gap-3 text-sm font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 2 cloves Garlic</li>
-<li class="flex items-center gap-3 text-sm font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Extra Virgin Olive Oil</li>
-</ul>
-</div>
-<button class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold shadow-lg shadow-primary/10 hover:opacity-90 transition-all">
-                    Start Cooking Step-by-Step
-                </button>
-</div>
-</div>
-</div>
-</div>
-</body></html>
+    <!-- Top Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50">
+        <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+            <div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/index.html">Home</a>
+                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
+                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/find.html">Meal
+                    Finder</a>
+                <div class="flex items-center gap-6">
+                    <button onclick="logout()"
+                        class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Logout</button>
+                </div>
+            </div>
+            <!-- Mobile Search Icon -->
+            <div class="md:hidden">
+                <span class="material-symbols-outlined text-primary">search</span>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-32 pb-40 px-6 max-w-7xl mx-auto">
+        <!-- Hero Section & Ingredient Input -->
+        <section class="mb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+                <div class="lg:col-span-7">
+                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-6 leading-[0.9]">
+                        What's in your <span class="text-primary italic">pantry?</span>
+                    </h1>
+                    <p class="text-on-surface-variant text-lg max-w-xl mb-10 leading-relaxed">
+                        Turn your available ingredients into an extraordinary dining experience. Tell us what you have,
+                        and we'll craft the perfect menu.
+                    </p>
+                </div>
+                <div class="lg:col-span-5 w-full">
+                    <div class="bg-surface p-8 rounded-xl border border-outline/30">
+                        <label class="block text-primary font-bold text-sm uppercase tracking-widest mb-4">Add
+                            Ingredients</label>
+                        <div class="relative group">
+                            <input
+                                class="w-full bg-stone-800/50 border-none ring-1 ring-outline/50 focus:ring-primary/50 rounded-xl px-6 py-4 text-on-surface placeholder-on-surface-variant/40 transition-all outline-none"
+                                placeholder="Basil, Garlic, Pasta..." type="text" />
+                            <button
+                                class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm transition-transform active:scale-95 shadow-lg">
+                                Search
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span
+                                class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Tomato
+                                <span class="material-symbols-outlined text-[14px]">close</span></span>
+                            <span
+                                class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Mozzarella
+                                <span class="material-symbols-outlined text-[14px]">close</span></span>
+                            <span
+                                class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Basil
+                                <span class="material-symbols-outlined text-[14px]">close</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Bento Grid: Your Saved Recipes -->
+        <section class="mb-24">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <span class="text-primary font-bold text-xs uppercase tracking-[0.2em]">Curated for You</span>
+                    <h2 class="text-3xl font-extrabold tracking-tight mt-1">Your Saved Recipes</h2>
+                </div>
+                <button class="text-primary font-bold text-sm underline-offset-4 hover:underline transition-all">View
+                    All Collection</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Large Feature Card -->
+                <div
+                    class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-surface transition-all hover:shadow-2xl hover:shadow-black/60">
+                    <div class="aspect-[4/5] w-full overflow-hidden">
+                        <img alt="Pesto Pasta"
+                            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFItxKkHApb5R0L77vrsom74IZOTtMidc2fWuVnAIisbz222RfJ1SC4DohXHNbBZgaO-m1EtMSooaH-0syjQ7dz84qRA7k_tqzkWxyAWitu7g6RFGSNJxowtscEKXTCh9FsRuUDTEkhEPl_Iivb31ghQ8HddC1UasWk2vlWWHrCdWIgnijlB-WE2VVxlBQu8TD11xAkS3RdE-FNI8YFiy1T8Bbqn8KihNmbaVlXPHartpThM2uWoTHQWa_x7sRG7we5nwnaZwXQV4" />
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent text-white">
+                        <span
+                            class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20
+                            Mins • Easy</span>
+                        <h3 class="text-3xl font-bold leading-tight">Hand-Crafted Pesto <br />with Linguine</h3>
+                    </div>
+                </div>
+                <!-- Secondary Cards -->
+                <div
+                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
+                    <div class="aspect-square overflow-hidden bg-black">
+                        <img alt="Bowl"
+                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuu0Wih9e7i4ZY4Fjew3xiHTPpDIWZ1bB66PkD7KuFmiqcIw9bzr4DRf4RKfXKuQ0kIJiKYhPYOW9DS95NDrlj2EHfL0eOpB755NFN8Qka0XVeAHFL7OeRympN6-iXCeGmv8pHJNtSOUmGB0QIkl9Ae0jYzNDwEM6zA5ZefIkKEhIDodsJcTDO5adu6HfBFdcnyoHYXc3JndRGgppygtpcOt0gaG8EE8T5lg2ECpEqgQjFyDZ434N_2bP4ASSI7pjdKA3LTIriyW4" />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-on-surface mb-2">Summer Harvest Bowl</h3>
+                        <div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
+                            <span class="flex items-center gap-1 text-primary/80"><span
+                                    class="material-symbols-outlined text-sm">schedule</span> 15 MIN</span>
+                            <span class="flex items-center gap-1 text-primary/80"><span
+                                    class="material-symbols-outlined text-sm">eco</span> VEGAN</span>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
+                    <div class="aspect-square overflow-hidden bg-black">
+                        <img alt="Pizza"
+                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNbk8QHzlela1TLC38NWLB4pUaQw4xDCTGeag2cU-cl2NjrEErfL05Hu6ihn_xf_GFZzuIEx2W0vvAxz-jTjbiv7g2_w2RwzWGJDWRdC5pvG98pvawYLoFROmhktgaMDMaDuPXem0QMpwRqVE_LMUDWzyqSPTTLpkPLfBoyRHehsPf5IQvfuIeKxTvDKzS1WEHcH549Q-IVVgFr479EoJm1Ye49-y1slM2BCSXCnpaO6s4V6NIxLErjjRzTH2j0jszty4niKbZqog" />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-on-surface mb-2">Artisan Margherita</h3>
+                        <div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
+                            <span class="flex items-center gap-1 text-primary/80"><span
+                                    class="material-symbols-outlined text-sm">schedule</span> 30 MIN</span>
+                            <span class="flex items-center gap-1 text-primary/80"><span
+                                    class="material-symbols-outlined text-sm">local_fire_department</span> HIGH</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Wide Card -->
+                <div
+                    class="md:col-span-2 group flex bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
+                    <div class="w-1/2 overflow-hidden bg-black">
+                        <img alt="Salmon"
+                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYdCpCVZ6OBGEnp_HdmIc-uTXeOLdQRXi7SgDKvvM9tyaWJuVsGELAEu9hosfDcwkKjOYKn0dacJLJ9iPVzOpQm0CtdEGztygf3ma_GWoAHtcMLXKKxmuI4HdMB9kPTOxBNDYam84NLkFW_xUgp12X6XU6FI9fz8iBC67-L_b-cf3tcUw7K8QKDeZhS8rB-H8BMpVOZ7Dmvyl9httH8UCS_Y6X0MkYRCDtyYq_nAlfXb5cncQfry-AuFREnl7643_VxLRgE9aJRc" />
+                    </div>
+                    <div class="w-1/2 p-8 flex flex-col justify-center">
+                        <span class="text-primary font-bold text-[10px] uppercase tracking-widest mb-2">Chef's
+                            Choice</span>
+                        <h3 class="text-2xl font-bold text-on-surface mb-4">Lemon Zest Wild Salmon</h3>
+                        <p class="text-on-surface-variant text-sm line-clamp-2 mb-6 font-medium">A light, refreshing
+                            protein-packed meal perfect for weeknight dinners.</p>
+                        <button
+                            class="w-max px-6 py-2 border border-primary/30 rounded-full text-xs font-extrabold text-primary hover:bg-primary/10 transition-colors">GET
+                            RECIPE</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Discover New Ideas -->
+        <section class="mb-20">
+            <div class="flex items-center justify-between mb-10">
+                <h2 class="text-3xl font-extrabold tracking-tight">Discover New Ideas</h2>
+                <div class="flex gap-2">
+                    <button
+                        class="w-10 h-10 rounded-full flex items-center justify-center bg-stone-800 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button
+                        class="w-10 h-10 rounded-full flex items-center justify-center bg-stone-800 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="space-y-3 group cursor-pointer">
+                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
+                        <img alt="Bowl"
+                            class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQF2lqXRxfLHNEfebSKI6B_YDuIpPZKDFYyeyIpqDslXkNJ8NW95LEJGlinzSBlttjMleLS9tWz1hD8RNm7Hs8gPW3l-bBl0CKihgGZ1yx_aZLj53l47mq9WXyByd8-l61FGsSZZeopSQxEADPndbn3v1XKgobeL-U5BIAcgvN1-N5ii3DKvaqleLboPL0TiK38nWqHxYi66CwTt1--3U763w5W9ZQQk5dOgOf3_EDPKKq05dI2O3g8nJcKx0Z-Rbg08PONyCgPe8" />
+                    </div>
+                    <h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Avocado
+                        Buddha Bowl</h4>
+                </div>
+                <div class="space-y-3 group cursor-pointer">
+                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
+                        <img alt="Salad"
+                            class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPvTXkA8SDmVRycPzcGbDGloaELnwJIZspzqC_hQUrNtu_WLiXVrr97sk54BwVFHvDFQXpmF7m5DrjsRf8sIGJXTiP4vPKBZutYGvcmFPawWcEfPoojVr4UZSY73ddKUhhOB6Q1pzwdtEGcr_aC3AHuqc9LEiqVrCi4iokiXuYD84i2hjMm1ssn_Imf_iNdp69QwWXAwVWk_5NnVfFI-8cziVjTILGSrwngBVnYU6uksCtwmtWpVkhxj7oWTWHj-2_gqxxqvBLKM4" />
+                    </div>
+                    <h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Spring
+                        Garden Salad</h4>
+                </div>
+                <div class="space-y-3 group cursor-pointer">
+                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
+                        <img alt="Pizza"
+                            class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYNJyTOggb9p9sXY1lnYiRKcMiNYtTUpapAvzXuuogxVFf5LcO2qrXAVr5KuVilQfWlnoCcVsq4RU2OSd3QrRhsS_9AnDfNUb7GvuDN4DLuDJm2EbGQEAaERaYguNAnEDDzyXJpfbLvbbhGupfOtgeOeSYt-uNW9Wa0Y5RH16RV_aAenD-uKbLex8Vkmue3BTXLzETHB-hYCZxnqpZ-1XVcEZ37qRz0pTshb-0iMddZnNZHHyNoyXF3b0aaYG0mzUl8QnrsCPioq0" />
+                    </div>
+                    <h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Truffle
+                        Pepperoni</h4>
+                </div>
+                <div class="space-y-3 group cursor-pointer">
+                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
+                        <img alt="Cake"
+                            class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF6MUvHHiepxrvn3ZC26pjQ3cyu41P8HLH8eq9VPjSorS9dln92j8nNeUmNw5jZ-8pFmgLszDjFn_ZF730r8gc3KWmit4JcewwZnBqlRmif_JzrsToVSxkQEsoyHBUZ467gB9bHwF7ZRUoOYWKLX4yMKk9Gu_GVk9aB9MqGjOhjaCdc9jipV9LxKW4bvHcBXV2SVsYfaKttS5jv_RabIwLd5ZZu0Ogt_p6OkRSKSv5HtVw2NepmV1XWv6-_xLHNAWfErS8OV4L4So" />
+                    </div>
+                    <h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">Berry
+                        Cheesecake</h4>
+                </div>
+                <div class="space-y-3 group cursor-pointer">
+                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-black">
+                        <img alt="Grill"
+                            class="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIsgmksJiaWnvUtsV13N3uFHATtSqOdzjOn_lcYe0ZtQqgv_na4rfk_kw1kfVRm5bcxzNEy4yOAzn3jQSxNqrck0juSKMtUpVSlT_AXUCv_En6S7MgsZgacNYAHdPWCbbiU5mDTWSsw9Y7fpuhbvWbkCkhVfLWxgLRuq50v03XGIkg94RQNQmEcfRYnCzGn-spxjye5OjvLiyUVgVtxLuw8bTEUuoIJd4PUKC0mbodhktrOWLtIAcCpNR6FVPRBhQe_lBYwxMBAeE" />
+                    </div>
+                    <h4 class="font-bold text-sm tracking-tight px-1 group-hover:text-primary transition-colors">
+                        Charcoal Skewers</h4>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Bottom Navigation Bar (Mobile) -->
+    <div
+        class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-stone-950/80 backdrop-blur-2xl border-t border-stone-800/30 rounded-t-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.6)]">
+        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
+            <span class="material-symbols-outlined">home</span>
+            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Home</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
+            <span class="material-symbols-outlined">menu_book</span>
+            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Learn</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-stone-800/50 text-emerald-200 rounded-xl px-4 py-2 transition-all"
+            href="#">
+            <span class="material-symbols-outlined">restaurant_menu</span>
+            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Finder</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Profile</span>
+        </a>
+    </div>
+    <!-- Detailed Recipe View -->
+    <div class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+        <div
+            class="relative bg-surface rounded-xl max-w-4xl w-full max-h-[921px] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-outline/20">
+            <button
+                class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-stone-800 text-on-surface flex items-center justify-center">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="w-full md:w-1/2 h-64 md:h-auto overflow-hidden bg-black">
+                <img alt="Recipe Detail" class="w-full h-full object-cover opacity-90"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9cuxxnS4tckcMCvL_eGA8-L4L6SQuyU9TBdY8_uKEuBzlFOT4IR1IN_6yQRFzi5tlMF_3HwmhhdWcHT343kpg3RPTve8pAODsrisGwHC7MnTb3mOA5MwrC-KMN_OjLTA_CxXkKjUCvNxDWOqkZMSnBPzob5jQfeR2_XsMt41lHI559Su32pxsQJlIb-i1aBZMWupUN4RxVic_bQBeRS0BZH4R29LWlHA1nPJrfPciKO2ENNwfkjQ1sy8If4iw9RYy79TM5cBPkog" />
+            </div>
+            <div class="w-full md:w-1/2 p-10 overflow-y-auto">
+                <span class="text-primary font-bold text-xs uppercase tracking-widest">Main Course</span>
+                <h2 class="text-4xl font-extrabold tracking-tight mt-2 mb-6 text-stone-50">Hand-Crafted Pesto Linguine
+                </h2>
+                <div class="flex gap-6 mb-8 py-4 border-y border-outline/20">
+                    <div class="text-center">
+                        <span
+                            class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Time</span>
+                        <span class="text-sm font-extrabold">20 MINS</span>
+                    </div>
+                    <div class="text-center">
+                        <span
+                            class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Difficulty</span>
+                        <span class="text-sm font-extrabold">EASY</span>
+                    </div>
+                    <div class="text-center">
+                        <span
+                            class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Serves</span>
+                        <span class="text-sm font-extrabold">2 PEOPLE</span>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-lg font-extrabold mb-4">Ingredients</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3 text-sm font-medium"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-primary"></span> 200g Fresh Linguine</li>
+                            <li class="flex items-center gap-3 text-sm font-medium"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-primary"></span> 2 cups Fresh Basil Leaves</li>
+                            <li class="flex items-center gap-3 text-sm font-medium"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-primary"></span> 1/2 cup Pine Nuts, toasted</li>
+                            <li class="flex items-center gap-3 text-sm font-medium"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-primary"></span> 2 cloves Garlic</li>
+                            <li class="flex items-center gap-3 text-sm font-medium"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-primary"></span> Extra Virgin Olive Oil</li>
+                        </ul>
+                    </div>
+                    <button
+                        class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold shadow-lg shadow-primary/10 hover:opacity-90 transition-all">
+                        Start Cooking Step-by-Step
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/auth.js"></script>
+    <script>
+        requireAuth();
+    </script>
+</body>
+
+</html>
