@@ -2,6 +2,7 @@ package com.example.fridge_to_fork;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -46,8 +47,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 //     }
 // }
 
-
-
 // Temp code change for transition to amplify auth 
 
 @RestController
@@ -55,12 +54,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RecipeController {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeParsingService recipeParsingService;
 
     // Hardcoded placeholder ID to simulate a logged-in user
     private static final String MOCK_USER_ID = "temp-user-123";
 
-    public RecipeController(RecipeRepository recipeRepository) {
+    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService) {
         this.recipeRepository = recipeRepository;
+        this.recipeParsingService = recipeParsingService;
     }
 
     @PostMapping
@@ -68,6 +69,16 @@ public class RecipeController {
         // Use the placeholder instead of jwt.getSubject()
         recipe.setUserId(MOCK_USER_ID);
         return ResponseEntity.ok(recipeRepository.save(recipe));
+    }
+
+    @PostMapping(value = "/draft", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> draftRecipe(@RequestBody String rawInput) {
+    
+        String jsonDraft = recipeParsingService.parseRecipeWithLLM(rawInput);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonDraft);
     }
 
     @GetMapping
