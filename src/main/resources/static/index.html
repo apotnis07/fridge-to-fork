@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Remi | Sous Chef</title>
+    <title>Remi | Little Chef</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
@@ -112,17 +112,18 @@
 
 <body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
     <!-- Top Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 bg-[#0d0f0d]/70 backdrop-blur-xl">
-        <div class="flex justify-between items-center px-8 py-6 max-w-[1440px] mx-auto">
-            <div class="text-2xl font-bold tracking-tighter text-[#e1e7df]">REMI</div>
-            <div class="hidden md:flex items-center gap-12">
+    <nav
+        class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
+        <div class="flex justify-between items-center px-8 py-4 w-full max-w-[1440px] mx-auto">
+            <div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
+            <div class="hidden md:flex items-center space-x-8">
                 <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/index.html">Home</a>
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
-                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
+                <a class="text-stone-400 hover:text-stone-200 trançsition-colors" href="/find.html">Meal Finder</a>
             </div>
             <div class="flex items-center gap-6" id="auth-button-container">
-                    <button onclick="login()" id="auth-btn"
-                        class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Login</button>
+                <button onclick="login()" id="auth-btn"
+                    class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Login</button>
             </div>
         </div>
     </nav>
@@ -131,9 +132,10 @@
         <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
             <div class="absolute inset-0 z-0">
                 <img alt="Architectural culinary plating"
-                    class="w-full h-full object-cover opacity-50 grayscale contrast-125"
+                    class="w-full h-full object-cover object-[center_40%] opacity-50 grayscale contrast-125"
                     data-alt="monochromatic minimalist pasta dish on dark stone plate with dramatic overhead lighting and deep shadows in an obsidian kitchen setting"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhvCE6kZEUbS5vlAQB_ni4_2Z5dQdR0MhJ40p_FhVjB7fokGcmttsKbJT0Ms1XPbgm21FRb17lJ3CSSnu9vOI3qkWgm-TAP_p6Zcg6V8mxD75bZVIOCeHY3iAMhYDXFc6rjNHCKYtxrZo-w05rsEaLBLrkZohWjVuvTUwQpd3y-Hxk1BnqQ4Yi3euO7yNnEI0FcWamoPCNlZilOPjlhMEQNXAAB0c3AF-AmFzzW-gC6RFUSHQVVS_0iefXOtLdYptK0QhLhjWhzZU" />
+
                 <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
                 <div class="absolute inset-0 bg-radial-gradient from-primary-container/20 to-surface/90 opacity-40">
                 </div>
@@ -213,14 +215,14 @@
             const token = sessionStorage.getItem("access_token");
             const btn = document.getElementById("auth-btn");
 
-            if(token){
+            if (token) {
                 btn.innerText = "Logout";
                 btn.onclick = logout;
 
                 // btn.classList.remove("bg-[#bccabe]");
                 // btn.classList.add("bg-stone-800", "text-stone-200", "border", "border-stone-700");
             }
-            else{
+            else {
                 btn.innerText = "Login";
                 btn.onclick = login;
             }
@@ -229,7 +231,7 @@
         updateAuthUI();
 
         const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.has('login_success')){
+        if (urlParams.has('login_success')) {
             updateAuthUI();
             window.history.replaceState({}, document.title, "/index.html");
         }

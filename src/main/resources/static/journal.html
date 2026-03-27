@@ -65,33 +65,37 @@
         .textarea-glow:focus-within {
             box-shadow: 0 0 40px -10px rgba(134, 148, 137, 0.15);
         }
+
+        @keyframes sync-glow {
+            0%, 100% {
+                opacity: 1;
+                filter: drop-shadow(0 0 2px rgba(52, 211, 153, 0.4));
+            }
+            50% {
+                opacity: 0.6;
+                filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.8));
+            }
+        }
+        .animate-sync-glow {
+            animation: sync-glow 2s ease-in-out infinite;
+        }
     </style>
 </head>
 
 <body class="bg-background text-on-surface min-h-screen selection:bg-primary/30">
     <!-- TopNavBar (Shared Component 8) -->
-    <nav
-        class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
+    <nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
         <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
             <div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
             <!-- Desktop Nav Links -->
             <div class="hidden md:flex items-center space-x-8">
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/index.html">Home</a>
-                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/journal.html">Recipe
-                    Book</a>
+                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/journal.html">Recipe Book</a>
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
-                <!-- <div
-                    class="ml-4 hover:text-emerald-200 transition-all duration-300 cursor-pointer active:opacity-80 active:scale-95 transition-transform">
-                    <span class="material-symbols-outlined text-stone-100">account_circle</span>
-                </div> -->
                 <div class="flex items-center gap-6">
                     <button onclick="logout()"
                         class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Logout</button>
                 </div>
-            </div>
-            <!-- Mobile Search Icon -->
-            <div class="md:hidden">
-                <span class="material-symbols-outlined text-stone-100">search</span>
             </div>
         </div>
     </nav>
@@ -115,23 +119,39 @@
                 <label class="block text-primary/70 font-bold text-xs mb-4 tracking-widest uppercase"
                     for="recipe-input">JOURNAL ENTRY</label>
                 <textarea
-                    class="w-full bg-transparent border-none focus:ring-0 text-2xl md:text-3xl font-medium text-on-surface placeholder:text-on-surface-variant/20 leading-snug min-h-[200px] resize-none"
-                    id="recipe-input"
-                    placeholder="Today I made a slow-roasted herb chicken with a side of charred lemon asparagus and some rosemary-infused fingerling potatoes..."></textarea>
+                    class="w-full bg-transparent border-none focus:ring-0 text-lg font-mono text-on-surface placeholder:text-on-surface-variant/20 leading-snug min-h-[300px] resize-none"
+                    id="recipe-input" placeholder='
+                {
+                  "name": "Chicken Stir Fry",
+                  "rawInput": "Quick weeknight meal with ginger and soy.",
+                  "ingredients": [
+                    { "name": "Chicken", "quantity": 200.0, "unit": "g" },
+                    { "name": "Garlic", "quantity": 3.0, "unit": "cloves" }
+                  ]
+                }'></textarea>
                 <div class="mt-8 flex items-center justify-between">
-                    <div class="flex items-center space-x-4 text-on-surface-variant/40">
+                    <div id="ai_mapping" class="flex items-center space-x-4 text-on-surface-variant/40">
                         <span class="material-symbols-outlined text-sm">auto_fix_high</span>
                         <span class="text-xs font-medium tracking-widest uppercase">AI Mapping Active</span>
                     </div>
-                    <button
+                    <button id="record-dish-btn" onclick="saveRecipe()"
                         class="editorial-gradient text-on-primary px-8 py-3 rounded-full font-bold text-sm shadow-xl hover:brightness-110 active:scale-95 transition-all">
                         Record Dish
                     </button>
                 </div>
             </div>
         </section>
+        <section id="recent-saved-section" class="mt-16 pt-10 border-t border-outline/20">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-extrabold tracking-tight">Recently Recorded</h2>
+                <a href="/find.html"
+                    class="text-primary font-bold text-xs uppercase tracking-widest hover:underline">See Finder</a>
+            </div>
+            <div id="recent-grid" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            </div>
+        </section>
         <!-- Live Perception / Mapping Section -->
-        <section class="space-y-12">
+        <!-- <section class="space-y-12">
             <div class="flex items-end justify-between border-b border-outline-variant/20 pb-4">
                 <h2 class="text-2xl font-bold text-on-surface">Live Perception</h2>
                 <div class="flex space-x-2">
@@ -142,11 +162,11 @@
                         class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-outline-variant/10">1
                         Technique</span>
                 </div>
-            </div>
-            <!-- Bento Grid for Mapping -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Large Image Card -->
-                <div
+            </div> -->
+        <!-- Bento Grid for Mapping -->
+        <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> -->
+        <!-- Large Image Card -->
+        <!-- <div
                     class="md:col-span-2 relative h-[400px] rounded-xl overflow-hidden group border border-outline-variant/10">
                     <img alt="Visual Dish Representation"
                         class="w-full h-full object-cover grayscale-[0.2] transition-transform duration-1000 group-hover:scale-105"
@@ -157,9 +177,9 @@
                         </h3>
                         <p class="text-primary font-medium italic">Detected primary profile: Savory &amp; Bright</p>
                     </div>
-                </div>
-                <!-- Vertical Ingredient Column -->
-                <div class="space-y-4">
+                </div> -->
+        <!-- Vertical Ingredient Column -->
+        <!-- <div class="space-y-4">
                     <div
                         class="bg-surface-container-high p-6 rounded-xl border border-outline-variant/10 group hover:border-primary/30 transition-colors">
                         <div class="flex items-center justify-between mb-4">
@@ -185,9 +205,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Technique Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div> -->
+        <!-- Technique Cards -->
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div
                     class="flex items-center p-6 bg-surface-container rounded-xl border border-outline-variant/10 hover:bg-surface-container-high transition-colors">
                     <div
@@ -215,10 +235,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
     </main>
     <!-- BottomNavBar (Shared Component 8) -->
-    <nav
+    <!-- <nav
         class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-stone-950/80 backdrop-blur-2xl border-t border-stone-800/30 shadow-[0_-12px_40px_rgba(0,0,0,0.6)] rounded-t-3xl md:hidden">
         <div
             class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50 rounded-xl transition-all">
@@ -240,10 +260,132 @@
             <span class="material-symbols-outlined">person</span>
             <span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-medium mt-1">Profile</span>
         </div>
-    </nav>
+    </nav> -->
     <script src="/auth.js"></script>
     <script>
+        // 1. Protection: Ensure user is logged in
         requireAuth();
+
+        // 2. Initial Load: Populate the "Recently Recorded" section on page start
+        document.addEventListener('DOMContentLoaded', loadRecent);
+
+        /**
+         * Fetches recipes from the backend and populates the small preview cards
+         */
+        async function loadRecent() {
+            const grid = document.getElementById('recent-grid');
+            const section = document.getElementById('recent-saved-section');
+
+            try {
+                const response = await apiFetch("/api/recipes");
+                const recipes = await response.json();
+
+                if (recipes && recipes.length > 0) {
+                    section.classList.remove('hidden');
+
+                    // Get 5 newest, with the absolute newest at index 0
+                    const recent = [...recipes].reverse().slice(0, 5);
+
+                    const heroImageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
+
+                    grid.innerHTML = recent.map((recipe, i) => {
+                        // Only the first card (index 0) gets the image
+                        const isLatest = i === 0;
+
+                        return `
+                    <div class="space-y-3 group cursor-pointer animate-in fade-in slide-in-from-bottom-2 duration-700">
+                        <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
+                            ${isLatest ? `
+                                <img src="${heroImageUrl}" 
+                                     class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                            ` : `
+                                <div class="w-full h-full flex items-center justify-center bg-stone-900/50">
+                                    <span class="material-symbols-outlined text-primary/10 text-4xl group-hover:text-primary/30 transition-colors">restaurant_menu</span>
+                                </div>
+                            `}
+                            
+                            <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+                        <div class="px-1">
+                            <h4 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">
+                                ${recipe.name}
+                            </h4>
+                            <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-bold mt-0.5">
+                                ${new Date(recipe.createdAt).toLocaleDateString()}
+                            </p>
+                        </div>
+                    </div>
+                `;
+                    }).join('');
+                } else {
+                    section.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Failed to load recent recipes:", err);
+            }
+        }
+
+        /**
+         * Handles the JSON input and POST request to the Java backend
+         */
+        async function saveRecipe() {
+            const inputArea = document.getElementById('recipe-input');
+            const saveBtn = document.getElementById('record-dish-btn');
+            const rawValue = inputArea.value.trim();
+            const loading = document.getElementById('ai_mapping');
+
+            // Validation
+            if (!rawValue) {
+                alert("Please paste your Recipe JSON into the journal first.");
+                return;
+            }
+
+            let recipeData;
+            try {
+                recipeData = JSON.parse(rawValue);
+            } catch (e) {
+                alert("Invalid JSON format. Please check for missing commas or brackets.");
+                console.error("JSON Parse Error:", e);
+                return;
+            }
+
+            // UI Feedback
+            saveBtn.disabled = true;
+            loading.classList.add('text-white');
+            loading.classList.add('animate-sync-glow')
+            const originalText = saveBtn.innerText;
+            saveBtn.innerText = "Syncing with Repository...";
+
+            try {
+                const response = await apiFetch("/api/recipes", {
+                    method: "POST",
+                    body: JSON.stringify(recipeData)
+                });
+
+                if (response.ok) {
+                    const saved = await response.json();
+
+                    // Success: Clear input and refresh the "Recently Recorded" grid
+                    inputArea.value = "";
+                    await loadRecent();
+
+                    // Optional: Gentle success log
+                    // console.log(`Successfully saved: ${saved.name}`);
+                } else {
+                    const errorMsg = await response.text();
+                    alert("Server Error: " + errorMsg);
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                alert("Could not reach the server. Ensure your Spring Boot backend is running.");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = originalText;
+                loading.classList.remove('animate-sync-glow')
+                loading.classList.remove('text-white');
+
+            }
+        }
     </script>
 </body>
 

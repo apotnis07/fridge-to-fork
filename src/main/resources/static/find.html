@@ -50,7 +50,7 @@
 
 <body class="bg-background text-on-surface antialiased">
     <!-- Top Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50">
+    <nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
         <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
             <div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
             <!-- Desktop Nav -->
@@ -63,10 +63,6 @@
                     <button onclick="logout()"
                         class="bg-[#bccabe] text-[#36433a] px-6 py-2.5 rounded-md text-sm font-semibold tracking-tight scale-98 active:opacity-80 transition-all">Logout</button>
                 </div>
-            </div>
-            <!-- Mobile Search Icon -->
-            <div class="md:hidden">
-                <span class="material-symbols-outlined text-primary">search</span>
             </div>
         </div>
     </nav>
@@ -123,7 +119,7 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Large Feature Card -->
-                <div
+                <div id="recipe-grid"
                     class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-surface transition-all hover:shadow-2xl hover:shadow-black/60">
                     <div class="aspect-[4/5] w-full overflow-hidden">
                         <img alt="Pesto Pasta"
@@ -340,6 +336,54 @@
     <script src="/auth.js"></script>
     <script>
         requireAuth();
+    
+        // Call the function when the page loads
+        document.addEventListener('DOMContentLoaded', loadFeaturedRecipe);
+    
+        async function loadFeaturedRecipe() {
+            const gridSlot = document.getElementById('recipe-grid');
+    
+            try {
+                const response = await apiFetch("/api/recipes");
+                const recipes = await response.json();
+    
+                if (recipes && recipes.length > 0) {
+                    // Get the LAST recipe in the array (the newest one)
+                    const recipe = recipes[recipes.length - 1];
+                    
+                    // Using your provided image URL
+                    const imageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
+    
+                    const featuredCardHtml = `
+                        <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
+                            <img src="${imageUrl}" 
+                                 alt="${recipe.name}" 
+                                 class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent"></div>
+                            
+                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                <span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
+                                    ${recipe.ingredients ? recipe.ingredients.length : 0} Ingredients Mapped
+                                </span>
+                                <h3 class="text-3xl font-bold leading-tight">${recipe.name}</h3>
+                                <p class="text-sm opacity-70 mt-4 line-clamp-3 leading-relaxed">
+                                    ${recipe.rawInput || "No description available."}
+                                </p>
+                                <div class="mt-6 flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest">
+                                    <span class="material-symbols-outlined text-sm">calendar_month</span>
+                                    Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+    
+                    gridSlot.innerHTML = featuredCardHtml;
+                }
+            } catch (err) {
+                console.error("Failed to load featured recipe:", err);
+            }
+        }
     </script>
 </body>
 
