@@ -24,39 +24,65 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers(
-                    "/",
-                    "/index.html",
-                    "/journal.html",
-                    "/find.html",
-                    "/callback.html",
-                    "/auth.js",
-                    "/*.css",
-                    "/*.js"
-                ).permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(Customizer.withDefaults())
-            );
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Allow everything for now so you can build your UI
+                        .anyRequest().permitAll());
+
+        // REMOVE OR COMMENT OUT THIS ENTIRE SECTION:
+        /*
+         * .oauth2ResourceServer(oauth2 -> oauth2
+         * .jwt(Customizer.withDefaults())
+         * );
+         */
 
         return http.build();
     }
 
+    // @Bean
+    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // http
+    // .csrf(csrf -> csrf.disable()) // Keep disabled for stateless APIs
+    // .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    // .sessionManagement(session -> session
+    // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    // )
+    // .authorizeHttpRequests(auth -> auth
+    // .requestMatchers("/actuator/health").permitAll()
+    // .requestMatchers(
+    // "/",
+    // "/index.html",
+    // "/journal.html",
+    // "/find.html",
+    // "/login.html",
+    // "/*.css",
+    // "/*.js"
+    // ).permitAll()
+    // .requestMatchers("/api/**").permitAll() // temp
+    // // .requestMatchers("/api/**").authenticated()
+    // .anyRequest().authenticated()
+    // )
+    // // Commented out temporarily for removing manual auth logic
+    // // .oauth2ResourceServer(oauth2 -> oauth2
+    // // .jwt(Customizer.withDefaults()) // Spring will still validate the Amplify
+    // JWT against Cognito
+    // // )
+    // ;
+
+    // return http.build();
+    // }
+
+    // CORS stays the same - ensure your Frontend URL (localhost:3000) is in
+    // allowedOrigins
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(allowedOrigins));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Explicit is better
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

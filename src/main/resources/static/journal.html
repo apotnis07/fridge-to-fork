@@ -67,15 +67,19 @@
         }
 
         @keyframes sync-glow {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 filter: drop-shadow(0 0 2px rgba(52, 211, 153, 0.4));
             }
+
             50% {
                 opacity: 0.6;
                 filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.8));
             }
         }
+
         .animate-sync-glow {
             animation: sync-glow 2s ease-in-out infinite;
         }
@@ -84,13 +88,15 @@
 
 <body class="bg-background text-on-surface min-h-screen selection:bg-primary/30">
     <!-- TopNavBar (Shared Component 8) -->
-    <nav class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
+    <nav
+        class="fixed top-0 w-full z-50 bg-stone-950/70 backdrop-blur-xl shadow-2xl shadow-black/50 font-['Manrope'] antialiased">
         <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
             <div class="text-xl font-bold tracking-tighter text-stone-100">REMI</div>
             <!-- Desktop Nav Links -->
             <div class="hidden md:flex items-center space-x-8">
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/index.html">Home</a>
-                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/journal.html">Recipe Book</a>
+                <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/journal.html">Recipe
+                    Book</a>
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
                 <div class="flex items-center gap-6">
                     <button onclick="logout()"
@@ -261,10 +267,22 @@
             <span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-medium mt-1">Profile</span>
         </div>
     </nav> -->
-    <script src="/auth.js"></script>
+    <!-- <script src="/auth.js"></script> -->
     <script>
+
         // 1. Protection: Ensure user is logged in
-        requireAuth();
+        // requireAuth();
+
+        function login() {
+            console.log("Redirecting to login...");
+            window.location.href = "login.html";
+        }
+
+        // Placeholder for Logout: Clears the token and refreshes the UI
+        function logout() {
+            console.log("Logging out...");
+            window.location.href = "index.html";
+        }
 
         // 2. Initial Load: Populate the "Recently Recorded" section on page start
         document.addEventListener('DOMContentLoaded', loadRecent);
@@ -277,7 +295,8 @@
             const section = document.getElementById('recent-saved-section');
 
             try {
-                const response = await apiFetch("/api/recipes");
+                // const response = await apiFetch("/api/recipes");
+                const response = await fetch("http://localhost:8080/api/recipes");
                 const recipes = await response.json();
 
                 if (recipes && recipes.length > 0) {
@@ -357,8 +376,13 @@
             saveBtn.innerText = "Syncing with Repository...";
 
             try {
-                const response = await apiFetch("/api/recipes", {
+                // const response = await apiFetch("/api/recipes", {
+                const response = await fetch("/api/recipes", {
+
                     method: "POST",
+                    headers: {
+                        "Content-Type": "application/json" // Crucial for your 415 error fix
+                    },
                     body: JSON.stringify(recipeData)
                 });
 

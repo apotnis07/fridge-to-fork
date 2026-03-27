@@ -209,8 +209,23 @@
         </section>
     </main>
     <!-- on your index.html / landing page -->
-    <script src="/auth.js"></script>
+
     <script>
+
+        // Placeholder for Login: Redirects to your login page
+        function login() {
+            console.log("Redirecting to login...");
+            window.location.href = "login.html";
+        }
+
+        // Placeholder for Logout: Clears the token and refreshes the UI
+        function logout() {
+            console.log("Logging out...");
+            sessionStorage.removeItem("access_token");
+            // Refresh the UI to show the 'Login' button again
+            updateAuthUI();
+        }
+
         function updateAuthUI() {
             const token = sessionStorage.getItem("access_token");
             const btn = document.getElementById("auth-btn");
