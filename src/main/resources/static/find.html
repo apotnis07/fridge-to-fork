@@ -85,16 +85,16 @@
                         <label class="block text-primary font-bold text-sm uppercase tracking-widest mb-4">Add
                             Ingredients</label>
                         <div class="relative group">
-                            <input
+                            <input id="input_ingredients"
                                 class="w-full bg-stone-800/50 border-none ring-1 ring-outline/50 focus:ring-primary/50 rounded-xl px-6 py-4 text-on-surface placeholder-on-surface-variant/40 transition-all outline-none"
                                 placeholder="Basil, Garlic, Pasta..." type="text" />
-                            <button
+                            <button id="search-btn" onclick="addIngredients()"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm transition-transform active:scale-95 shadow-lg">
                                 Search
                             </button>
                         </div>
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            <span
+                        <div id="added_ingredients" class="flex flex-wrap gap-2 mt-4">
+                            <!-- <span
                                 class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Tomato
                                 <span class="material-symbols-outlined text-[14px]">close</span></span>
                             <span
@@ -102,7 +102,7 @@
                                 <span class="material-symbols-outlined text-[14px]">close</span></span>
                             <span
                                 class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">Basil
-                                <span class="material-symbols-outlined text-[14px]">close</span></span>
+                                <span class="material-symbols-outlined text-[14px]">close</span></span> -->
                         </div>
                     </div>
                 </div>
@@ -273,6 +273,8 @@
     </div>
     <!-- <script src="/auth.js"></script> -->
     <script>
+
+        let globalIngredients = [];
         function login() {
             console.log("Redirecting to login...");
             window.location.href = "login.html";
@@ -338,7 +340,64 @@
                 console.error("Failed to load featured recipe:", err);
             }
         }
-    </script>x
+
+        async function addIngredients() {
+            const container = document.getElementById('added_ingredients');
+            const inputArea = document.getElementById('input_ingredients');
+            const search = document.getElementById('search-btn');
+
+            
+
+            const text = inputArea.value;
+            const newIngredients = text.split(",")
+                .map(t => t.trim())
+                .filter(t => t !== "" && !globalIngredients.includes(t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()));
+
+            newIngredients.forEach(ing => {
+                const formattedIngredient = ing.charAt(0).toUpperCase() + ing.slice(1).toLowerCase();
+
+                globalIngredients.push(formattedIngredient);
+
+                container.insertAdjacentHTML('beforeend', `<span
+                                class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">${formattedIngredient}
+                                <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-red-400" onclick="removeIngredient('${formattedIngredient}', this)">close</span></span>`);
+            });
+            // let i = 0;
+            // while (i < result.length) {
+            //     const ingredient = result[i];
+            //     const newSpan = document.createElement('span');
+            //     container.insertAdjacentHTML('beforeend', `<span
+            //                     class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">${ingredient}
+            //                     <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-red-400" onclick="this.parentElement.remove()">close</span></span>`);
+            //     i++;
+            // }
+            inputArea.value = "";
+            console.table(globalIngredients);
+            
+
+
+        }
+
+        async function removeIngredient(tagName, element) {
+            globalIngredients = globalIngredients.filter(t => t !== tagName);
+
+            element.parentElement.remove();
+            console.table("Updated Global Array:", globalIngredients);
+
+
+        }
+
+        const inputArea = document.getElementById('input_ingredients');
+        const search = document.getElementById('search-btn');
+
+        inputArea.addEventListener("keydown", function(event){
+                if (event.key === "Enter"){
+                    event.preventDefault();
+                    search.click();
+                }
+            });
+
+    </script>
 </body>
 
 </html>
