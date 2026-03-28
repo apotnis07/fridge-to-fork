@@ -120,15 +120,14 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Large Feature Card -->
-                <div id="recipe-grid"
-                    class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-surface transition-all hover:shadow-2xl hover:shadow-black/60">
-                    <div class="aspect-[4/5] w-full overflow-hidden">
+                <div id="featured-recipe-card" 
+                class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-stone-950 flex flex-col transition-all hover:shadow-2xl hover:shadow-black/60">
+                    <div id="recipe-grid-1-image" class="aspect-[4/5] w-full overflow-hidden">
                         <img alt="Pesto Pasta"
                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFItxKkHApb5R0L77vrsom74IZOTtMidc2fWuVnAIisbz222RfJ1SC4DohXHNbBZgaO-m1EtMSooaH-0syjQ7dz84qRA7k_tqzkWxyAWitu7g6RFGSNJxowtscEKXTCh9FsRuUDTEkhEPl_Iivb31ghQ8HddC1UasWk2vlWWHrCdWIgnijlB-WE2VVxlBQu8TD11xAkS3RdE-FNI8YFiy1T8Bbqn8KihNmbaVlXPHartpThM2uWoTHQWa_x7sRG7we5nwnaZwXQV4" />
                     </div>
-                    <div
-                        class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent text-white">
+                    <div id="recipe-grid-1-desc" class="p-8 bg-surface text-white flex-1">
                         <span
                             class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20
                             Mins • Easy</span>
@@ -291,7 +290,9 @@
         document.addEventListener('DOMContentLoaded', loadFeaturedRecipe);
 
         async function loadFeaturedRecipe() {
-            const gridSlot = document.getElementById('recipe-grid');
+            const gridSlotImage = document.getElementById('recipe-grid-1-image');
+            const gridSlotDesc = document.getElementById('recipe-grid-1-desc');
+
 
             try {
                 // const response = await apiFetch("/api/recipes");
@@ -308,17 +309,17 @@
                     const recipe = recipes[recipes.length - 1];
 
                     // Using your provided image URL
-                    const imageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
-
-                    const featuredCardHtml = `
+                    // const imageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
+                    const imageUrl = "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+                    const featuredCardHtmlImage = `
                         <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
                             <img src="${imageUrl}" 
                                  alt="${recipe.name}" 
                                  class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                        </div>
+                    `;
                             
-                            <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent"></div>
-                            
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                    const featuredCardHtmlDesc = `<div class="p-8 bg-surface text-white flex-1">
                                 <span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
                                     ${recipe.ingredients ? recipe.ingredients.length : 0} Ingredients Mapped
                                 </span>
@@ -330,11 +331,19 @@
                                     <span class="material-symbols-outlined text-sm">calendar_month</span>
                                     Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
                                 </div>
-                            </div>
-                        </div>
-                    `;
+                    </div>`
 
-                    gridSlot.innerHTML = featuredCardHtml;
+                //     <div id="recipe-grid-1-desc" class="p-8 bg-stone-950 text-white flex-1">
+                //         <span
+                //             class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20
+                //             Mins • Easy</span>
+                //         <h3 class="text-3xl font-bold leading-tight">Hand-Crafted Pesto <br />with Linguine</h3>
+                //     </div>
+                // </div>
+
+                    gridSlotImage.innerHTML = featuredCardHtmlImage;
+                    gridSlotDesc.innerHTML = featuredCardHtmlDesc;
+
                 }
             } catch (err) {
                 console.error("Failed to load featured recipe:", err);
@@ -390,8 +399,8 @@
         const inputArea = document.getElementById('input_ingredients');
         const search = document.getElementById('search-btn');
 
-        inputArea.addEventListener("keydown", function(event){
-                if (event.key === "Enter"){
+        inputArea.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
                     event.preventDefault();
                     search.click();
                 }

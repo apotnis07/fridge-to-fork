@@ -1,6 +1,7 @@
 package com.example.fridge_to_fork;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,17 +56,29 @@ public class RecipeController {
 
     private final RecipeRepository recipeRepository;
     private final RecipeParsingService recipeParsingService;
+    private final EmbeddingService embeddingService;
 
     // Hardcoded placeholder ID to simulate a logged-in user
     private static final String MOCK_USER_ID = "temp-user-123";
 
-    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService) {
+    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService, EmbeddingService embeddingService) {
         this.recipeRepository = recipeRepository;
         this.recipeParsingService = recipeParsingService;
+        this.embeddingService = embeddingService;
     }
 
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
+
+        String ingredientsList = recipe.getIngredients().stream()
+                .map(ing -> ing.getName())
+                .collect(Collectors.joining(", "));
+
+        String searchText = recipe.getName() + " " + ingredientsList;
+
+        float[] vector = embeddingService.getEmbedding(searchText);
+        recipe.setEmbedding(vector);
+
         // Use the placeholder instead of jwt.getSubject()
         recipe.setUserId(MOCK_USER_ID);
         return ResponseEntity.ok(recipeRepository.save(recipe));
