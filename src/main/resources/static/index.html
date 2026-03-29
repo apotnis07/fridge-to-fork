@@ -116,6 +116,16 @@
         .text-glow {
             text-shadow: 0 0 20px rgba(188, 202, 190, 0.3);
         }
+
+        .hero-image-tint {
+            mix-blend-mode: multiply;
+            background-color: #869489;
+            opacity: 0.1;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 
@@ -140,33 +150,53 @@
         <!-- Hero Section -->
         <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
             <div class="absolute inset-0 z-0">
-                <img alt="Architectural culinary plating" class="w-full h-full object-cover opacity-50 grayscale contrast-125" data-alt="monochromatic minimalist pasta dish on dark stone plate with dramatic overhead lighting and deep shadows in an obsidian kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhvCE6kZEUbS5vlAQB_ni4_2Z5dQdR0MhJ40p_FhVjB7fokGcmttsKbJT0Ms1XPbgm21FRb17lJ3CSSnu9vOI3qkWgm-TAP_p6Zcg6V8mxD75bZVIOCeHY3iAMhYDXFc6rjNHCKYtxrZo-w05rsEaLBLrkZohWjVuvTUwQpd3y-Hxk1BnqQ4Yi3euO7yNnEI0FcWamoPCNlZilOPjlhMEQNXAAB0c3AF-AmFzzW-gC6RFUSHQVVS_0iefXOtLdYptK0QhLhjWhzZU"/>
+                <!-- <img alt="Architectural culinary plating" class="w-full h-full object-cover opacity-50 grayscale contrast-125" data-alt="monochromatic minimalist pasta dish on dark stone plate with dramatic overhead lighting and deep shadows in an obsidian kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhvCE6kZEUbS5vlAQB_ni4_2Z5dQdR0MhJ40p_FhVjB7fokGcmttsKbJT0Ms1XPbgm21FRb17lJ3CSSnu9vOI3qkWgm-TAP_p6Zcg6V8mxD75bZVIOCeHY3iAMhYDXFc6rjNHCKYtxrZo-w05rsEaLBLrkZohWjVuvTUwQpd3y-Hxk1BnqQ4Yi3euO7yNnEI0FcWamoPCNlZilOPjlhMEQNXAAB0c3AF-AmFzzW-gC6RFUSHQVVS_0iefXOtLdYptK0QhLhjWhzZU"/> -->
+                <img alt="Culinary Mise en Place" class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-75"
+                    src="https://plus.unsplash.com/premium_photo-1666466251916-8cf522eae133?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDZ8fHxlbnwwfHx8fHw%3D" />
+                <div class="absolute inset-0 bg-[#869489]/10 mix-blend-multiply"></div>
 
-                <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
-                <div class="absolute inset-0 bg-radial-gradient from-primary-container/20 to-surface/90 opacity-40">
-                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0c0a09] via-transparent"></div>
             </div>
             <div class="relative z-10 max-w-5xl px-8 text-center mt-20">
-                <span class="inline-block label-md text-primary tracking-[0.4em] uppercase mb-6 opacity-80">The Digital
-                    Sanctuary</span>
+                <span class="inline-block label-md text-primary tracking-[0.4em] uppercase mb-6 opacity-80">Remi. Your
+                    personal chef.</span>
                 <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter text-on-surface leading-[0.9] mb-8">
-                    YOUR CULINARY <br /> STORY, UNBOUND.
+                    <span class="text-on-surface/40 text-4xl md:text-5xl font-medium block mb-2">Your dishes.</span>
+                    YOUR STORY.<br />
+                    <span class="text-on-surface/40 text-4xl md:text-5xl font-medium block mt-2">Your chef.</span>
                 </h1>
                 <p
                     class="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-light leading-relaxed mb-12">
-                    A sanctuary for the discerning palate to map, save, and rediscover their unique kitchen heritage.
+                    Build your personal recipe archive. Then let Remi find what you can make tonight.
                 </p>
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6">
-                    <a href="#">
+                    <a href="/journal.html">
                         <button
                             class="bg-primary text-on-primary px-10 py-5 rounded-md font-bold tracking-tight text-lg shadow-[0_0_30px_rgba(188,202,190,0.2)] hover:scale-105 active:scale-95 transition-all">
-                            Start Cooking
-                        </button></a>
+                            Meet Remi
+                        </button>
+                    </a>
+                    <a href="#how-it-works"
+                        class="text-on-surface-variant text-sm font-semibold tracking-widest uppercase flex items-center gap-2 hover:text-on-surface transition-colors">
+                        <span>How it works</span>
+                        <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                    </a>
                 </div>
             </div>
+            <!-- <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+                <span class="text-on-surface-variant/30 text-[10px] uppercase tracking-widest font-bold">Scroll</span>
+                <span class="material-symbols-outlined text-on-surface-variant/30 text-sm">keyboard_arrow_down</span>
+            </div> -->
         </section>
         <!-- Value Proposition Section (Bento Inspired Grid) -->
-        <section class="py-32 px-8 max-w-[1440px] mx-auto bg-surface">
+        <section id="how-it-works" class="py-32 px-8 max-w-[1440px] mx-auto bg-surface">
+            <div class="mb-16">
+                <span class="text-primary font-bold tracking-[0.3em] text-xs uppercase block mb-4">How Remi Works</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface">
+                    Three steps.<br />
+                    <span class="text-on-surface/40 font-medium">Infinite meals.</span>
+                </h2>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- MAP -->
                 <div
@@ -177,8 +207,8 @@
                     </div>
                     <h3 class="text-2xl font-bold tracking-tight text-on-surface mb-4">MAP</h3>
                     <p class="text-on-surface-variant leading-relaxed font-light">
-                        Share your signature dishes using natural language. No rigid forms, just the fluid expression of
-                        your craft.
+                        Describe your dishes in plain English. No forms, no categories —
+                        just tell Remi how you cook and it handles the rest.
                     </p>
                     <div class="mt-8 h-px w-0 group-hover:w-full bg-primary/30 transition-all duration-700"></div>
                 </div>
@@ -191,8 +221,8 @@
                     </div>
                     <h3 class="text-2xl font-bold tracking-tight text-on-surface mb-4">PRESERVE</h3>
                     <p class="text-on-surface-variant leading-relaxed font-light">
-                        A secure, personalized digital archive of your ingredients and techniques. Your heritage, carved
-                        in digital stone.
+                        Every dish you teach Remi is saved to your personal recipe archive.
+                        Your repertoire, always ready when you need it.
                     </p>
                     <div class="mt-8 h-px w-0 group-hover:w-full bg-primary/30 transition-all duration-700"></div>
                 </div>
@@ -206,8 +236,8 @@
                     </div>
                     <h3 class="text-2xl font-bold tracking-tight text-on-surface mb-4">EVOLVE</h3>
                     <p class="text-on-surface-variant leading-relaxed font-light">
-                        Find new inspiration based on what you already have in your pantry. Intelligent discovery for
-                        the evolving palate.
+                        Tell Remi what's in your fridge. It matches what you can make
+                        from your saved dishes and suggests something new.
                     </p>
                     <div class="mt-8 h-px w-0 group-hover:w-full bg-primary/30 transition-all duration-700"></div>
                 </div>
