@@ -211,6 +211,63 @@
             <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Finder</span>
         </a>
     </div>
+    <!-- Saved Recipe Detail Overlay -->
+    <div id="saved-recipe-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeSavedRecipeOverlay()"></div>
+        <div
+            class="relative bg-surface rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-outline/20">
+
+            <!-- Close button -->
+            <button onclick="closeSavedRecipeOverlay()"
+                class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-stone-800 text-on-surface flex items-center justify-center hover:bg-stone-700 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <!-- Left — illustration -->
+            <div class="w-full md:w-1/2 h-64 md:h-auto overflow-hidden bg-stone-900">
+                <img id="saved-overlay-image" alt="Recipe" class="w-full h-full object-cover opacity-90" src="" />
+            </div>
+
+            <!-- Right — recipe details -->
+            <div class="w-full md:w-1/2 p-10 overflow-y-auto">
+
+                <!-- Name + date -->
+                <h2 id="saved-overlay-title" class="text-4xl font-extrabold tracking-tight mt-2 mb-1 text-stone-50">
+                </h2>
+                <p id="saved-overlay-date"
+                    class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mb-4"></p>
+
+                <!-- Description -->
+                <p id="saved-overlay-description"
+                    class="text-on-surface-variant text-sm italic mb-8 leading-relaxed border-l-2 border-primary/30 pl-4">
+                </p>
+
+                <div class="space-y-8">
+                    <!-- Ingredients -->
+                    <div>
+                        <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-sm">grocery</span>
+                            Ingredients
+                        </h3>
+                        <ul id="saved-overlay-ingredients" class="space-y-3"></ul>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-outline/20"></div>
+
+                    <!-- In Your Words -->
+                    <div>
+                        <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-sm">edit_note</span>
+                            In Your Words
+                        </h3>
+                        <p id="saved-overlay-raw"
+                            class="text-on-surface-variant text-sm leading-relaxed font-medium whitespace-pre-line"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Chef's Choice Detail Overlay -->
     <div id="chefs-choice-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeChefsChoiceOverlay()"></div>
@@ -267,7 +324,7 @@
             "https://plus.unsplash.com/premium_vector-1738740828565-e195444e403e?q=80&w=987&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1739875207991-5a965f8ac0ee?q=80&w=996&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1724853557152-10ef36389830?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop", 
+            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop"
         ];
 
@@ -329,55 +386,64 @@
         }
 
         function renderFeaturedCard(recipe, badgeText) {
-
             const imageUrl = getIllustration(recipe.imageIndex);
 
+            // Store recipe on the card element for onclick access
+            const card = document.getElementById('featured-recipe-card');
+            card.onclick = () => openRecipeOverlay(recipe);
+            card.classList.add('cursor-pointer');
+
             document.getElementById('recipe-grid-1-image').innerHTML = `
-                        <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
-                            <img src="${imageUrl}" 
-                                 alt="${recipe.name}" 
-                                 class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
-                        </div>
-                    `;
+                <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
+                    <img src="${imageUrl}" alt="${recipe.name}"
+                        class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                </div>`;
 
             document.getElementById('recipe-grid-1-desc').innerHTML = `
-                            <div class="p-8 bg-surface text-white flex-1">
-                                <span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
-                                ${badgeText}
-                                </span>
-                                <h3 class="text-3xl font-bold leading-tight">${recipe.name}</h3>
-                                <p class="text-sm opacity-70 mt-4 line-clamp-3 leading-relaxed">
-                                   ${recipe.description || recipe.rawInput || "No description available."}
-                                </p>
-                                <div class="mt-6 flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest">
-                                    <span class="material-symbols-outlined text-sm">calendar_month</span>
-                                    Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
-                                </div>
-                    </div>`
-
+                <div class="p-8 bg-surface text-white flex-1">
+                    <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
+                        ${badgeText}
+                    </span>
+                    <h3 class="text-3xl font-bold leading-tight">${recipe.name}</h3>
+                    <p class="text-sm opacity-70 mt-4 line-clamp-3 leading-relaxed italic">
+                        ${recipe.description || recipe.rawInput || "No description available."}
+                    </p>
+                    <div class="mt-6 flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest">
+                        <span class="material-symbols-outlined text-sm">calendar_month</span>
+                        Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
+                    </div>
+                </div>`;
         }
 
         function renderSecondaryCard(cardIndex, recipe) {
             const nameEl = document.getElementById(`secondary-card-${cardIndex}-name`);
             const tagsEl = document.getElementById(`secondary-card-${cardIndex}-tags`);
             const imageEl = document.getElementById(`secondary-card-${cardIndex}-image`);
-
+            const card = document.getElementById(`secondary-card-${cardIndex}`);
 
             if (!recipe) {
-                nameEl.innerText = "No match found."
+                nameEl.innerText = "No match found";
                 tagsEl.innerHTML = "";
-                if (imageEl) imageEl.innerHTML = `<span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
+                if (imageEl) imageEl.innerHTML = `
+            <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
+                card.onclick = null;
+                card.classList.remove('cursor-pointer');
                 return;
             }
 
+            // Make card clickable
+            card.onclick = () => openRecipeOverlay(recipe);
+            card.classList.add('cursor-pointer');
+
             nameEl.innerText = recipe.name;
+
             const tags = (recipe.ingredients || []).map(ing => `
-                <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                    ${ing.name}
-                </span>`).join('');
+        <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            ${ing.name}
+        </span>`).join('');
 
             const description = recipe.description
-                ? `<p class="text-on-surface-variant text-sm line-clamp-4 mt-6 mb-6 font-medium leading-relaxed">
+                ? `<p class="text-on-surface-variant text-sm line-clamp-4 mt-3 font-medium leading-relaxed italic">
                ${recipe.description}
            </p>`
                 : '';
@@ -385,11 +451,11 @@
             tagsEl.innerHTML = tags + description;
 
             if (imageEl) {
-                imageEl.innerHTML = `<img src="${getIllustration(recipe.imageIndex)}" 
-                                  alt="${recipe.name}"
-                                  class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />`;
+                imageEl.innerHTML = `
+            <img src="${getIllustration(recipe.imageIndex)}"
+                 alt="${recipe.name}"
+                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />`;
             }
-
         }
 
         // ─── Renders the Chef's Choice / Remi Suggests wide card ───
@@ -414,6 +480,51 @@
         <div class="w-full h-full flex items-center justify-center bg-stone-900 p-6">
             <span class="material-symbols-outlined text-primary/40 text-6xl">auto_awesome</span>
         </div>`;
+        }
+
+        // ─── Saved Recipe Overlay ───
+        function openRecipeOverlay(recipe) {
+            if (!recipe) return;
+
+            // Title
+            document.getElementById('saved-overlay-title').innerText = recipe.name;
+
+            // Date
+            document.getElementById('saved-overlay-date').innerText =
+                `Recorded ${new Date(recipe.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                })}`;
+
+            // Description
+            document.getElementById('saved-overlay-description').innerText =
+                recipe.description || '';
+
+            // Illustration — use assigned index
+            document.getElementById('saved-overlay-image').src = getIllustration(recipe.imageIndex);
+
+            // Ingredients
+            const ingredients = recipe.ingredients || [];
+            document.getElementById('saved-overlay-ingredients').innerHTML = ingredients.map(ing => `
+        <li class="flex items-center gap-3 text-sm font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+            <span>
+                ${ing.quantity ? `<span class="text-primary font-bold">${ing.quantity}${ing.unit ? ' ' + ing.unit : ''}</span> ` : ''}
+                ${ing.name}
+            </span>
+        </li>`).join('');
+
+            // In Your Words
+            document.getElementById('saved-overlay-raw').innerText =
+                recipe.rawInput || 'No notes recorded.';
+
+            // Show overlay
+            document.getElementById('saved-recipe-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSavedRecipeOverlay() {
+            document.getElementById('saved-recipe-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
 
