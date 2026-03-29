@@ -73,7 +73,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
                 <div class="lg:col-span-7">
                     <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-6 leading-[0.9]">
-                        What's in your <span class="text-primary italic">pantry?</span>
+                        What's in your <br><span class="text-primary italic font-medium">pantry?</span>
                     </h1>
                     <p class="text-on-surface-variant text-lg max-w-xl mb-10 leading-relaxed">
                         Turn your available ingredients into an extraordinary dining experience. Tell us what you have,
@@ -88,7 +88,7 @@
                             <input id="input_ingredients"
                                 class="w-full bg-stone-800/50 border-none ring-1 ring-outline/50 focus:ring-primary/50 rounded-xl px-6 py-4 text-on-surface placeholder-on-surface-variant/40 transition-all outline-none"
                                 placeholder="Basil, Garlic, Pasta..." type="text" />
-                            <button id="search-btn" onclick="addIngredients()"
+                            <button id="search-btn" onclick="searchRecipes()"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm transition-transform active:scale-95 shadow-lg">
                                 Search
                             </button>
@@ -112,80 +112,68 @@
         <section class="mb-24">
             <div class="flex justify-between items-end mb-10">
                 <div>
-                    <span class="text-primary font-bold text-xs uppercase tracking-[0.2em]">Curated for You</span>
-                    <h2 class="text-3xl font-extrabold tracking-tight mt-1">Your Saved Recipes</h2>
+                    <span id="bento-label" class="text-primary font-bold text-xs uppercase tracking-[0.2em]">Curated for
+                        You</span>
+                    <h2 id="bento-title" class="text-3xl font-extrabold tracking-tight mt-1">Your Saved Recipes</h2>
                 </div>
                 <button class="text-primary font-bold text-sm underline-offset-4 hover:underline transition-all">View
                     All Collection</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- Large Feature Card -->
-                <div id="featured-recipe-card" 
-                class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-stone-950 flex flex-col transition-all hover:shadow-2xl hover:shadow-black/60">
+                <!-- Large Feature Card - top similarity match -->
+                <div id="featured-recipe-card"
+                    class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-stone-950 flex flex-col transition-all hover:shadow-2xl hover:shadow-black/60">
                     <div id="recipe-grid-1-image" class="aspect-[4/5] w-full overflow-hidden">
-                        <img alt="Pesto Pasta"
+                        <img alt="Featured Recipe"
                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFItxKkHApb5R0L77vrsom74IZOTtMidc2fWuVnAIisbz222RfJ1SC4DohXHNbBZgaO-m1EtMSooaH-0syjQ7dz84qRA7k_tqzkWxyAWitu7g6RFGSNJxowtscEKXTCh9FsRuUDTEkhEPl_Iivb31ghQ8HddC1UasWk2vlWWHrCdWIgnijlB-WE2VVxlBQu8TD11xAkS3RdE-FNI8YFiy1T8Bbqn8KihNmbaVlXPHartpThM2uWoTHQWa_x7sRG7we5nwnaZwXQV4" />
+                            src="https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
                     </div>
                     <div id="recipe-grid-1-desc" class="p-8 bg-surface text-white flex-1">
                         <span
-                            class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20
-                            Mins • Easy</span>
-                        <h3 class="text-3xl font-bold leading-tight">Hand-Crafted Pesto <br />with Linguine</h3>
+                            class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
+                            Best Match
+                        </span>
+                        <h3 class="text-3xl font-bold leading-tight">Your Latest Recipe</h3>
                     </div>
                 </div>
-                <!-- Secondary Cards -->
-                <div
+                <!-- Secondary Card 1 - 2nd similarity match -->
+                <div id="secondary-card-1"
                     class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-                    <div class="aspect-square overflow-hidden bg-black">
-                        <img alt="Bowl"
-                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuu0Wih9e7i4ZY4Fjew3xiHTPpDIWZ1bB66PkD7KuFmiqcIw9bzr4DRf4RKfXKuQ0kIJiKYhPYOW9DS95NDrlj2EHfL0eOpB755NFN8Qka0XVeAHFL7OeRympN6-iXCeGmv8pHJNtSOUmGB0QIkl9Ae0jYzNDwEM6zA5ZefIkKEhIDodsJcTDO5adu6HfBFdcnyoHYXc3JndRGgppygtpcOt0gaG8EE8T5lg2ECpEqgQjFyDZ434N_2bP4ASSI7pjdKA3LTIriyW4" />
+                    <div class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-on-surface mb-2">Summer Harvest Bowl</h3>
-                        <div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
-                            <span class="flex items-center gap-1 text-primary/80"><span
-                                    class="material-symbols-outlined text-sm">schedule</span> 15 MIN</span>
-                            <span class="flex items-center gap-1 text-primary/80"><span
-                                    class="material-symbols-outlined text-sm">eco</span> VEGAN</span>
-                        </div>
+                        <h3 id="secondary-card-1-name" class="text-xl font-bold text-on-surface mb-2">—</h3>
+                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
                     </div>
                 </div>
-                <div
+
+                <!-- Secondary Card 2 - 3rd similarity match -->
+                <div id="secondary-card-2"
                     class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-                    <div class="aspect-square overflow-hidden bg-black">
-                        <img alt="Pizza"
-                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNbk8QHzlela1TLC38NWLB4pUaQw4xDCTGeag2cU-cl2NjrEErfL05Hu6ihn_xf_GFZzuIEx2W0vvAxz-jTjbiv7g2_w2RwzWGJDWRdC5pvG98pvawYLoFROmhktgaMDMaDuPXem0QMpwRqVE_LMUDWzyqSPTTLpkPLfBoyRHehsPf5IQvfuIeKxTvDKzS1WEHcH549Q-IVVgFr479EoJm1Ye49-y1slM2BCSXCnpaO6s4V6NIxLErjjRzTH2j0jszty4niKbZqog" />
+                    <div class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-on-surface mb-2">Artisan Margherita</h3>
-                        <div class="flex items-center gap-4 text-on-surface-variant text-xs font-bold tracking-wider">
-                            <span class="flex items-center gap-1 text-primary/80"><span
-                                    class="material-symbols-outlined text-sm">schedule</span> 30 MIN</span>
-                            <span class="flex items-center gap-1 text-primary/80"><span
-                                    class="material-symbols-outlined text-sm">local_fire_department</span> HIGH</span>
-                        </div>
+                        <h3 id="secondary-card-2-name" class="text-xl font-bold text-on-surface mb-2">—</h3>
+                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-2-tags"></div>
                     </div>
                 </div>
-                <!-- Wide Card -->
-                <div
+                <!-- Wide Card - Remi's new recipe suggestion -->
+                <div id="chefs-choice-card"
                     class="md:col-span-2 group flex bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-                    <div class="w-1/2 overflow-hidden bg-black">
-                        <img alt="Salmon"
-                            class="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYdCpCVZ6OBGEnp_HdmIc-uTXeOLdQRXi7SgDKvvM9tyaWJuVsGELAEu9hosfDcwkKjOYKn0dacJLJ9iPVzOpQm0CtdEGztygf3ma_GWoAHtcMLXKKxmuI4HdMB9kPTOxBNDYam84NLkFW_xUgp12X6XU6FI9fz8iBC67-L_b-cf3tcUw7K8QKDeZhS8rB-H8BMpVOZ7Dmvyl9httH8UCS_Y6X0MkYRCDtyYq_nAlfXb5cncQfry-AuFREnl7643_VxLRgE9aJRc" />
+                    <div class="w-1/2 overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary/20 text-5xl">auto_awesome</span>
                     </div>
                     <div class="w-1/2 p-8 flex flex-col justify-center">
-                        <span class="text-primary font-bold text-[10px] uppercase tracking-widest mb-2">Chef's
-                            Choice</span>
-                        <h3 class="text-2xl font-bold text-on-surface mb-4">Lemon Zest Wild Salmon</h3>
-                        <p class="text-on-surface-variant text-sm line-clamp-2 mb-6 font-medium">A light, refreshing
-                            protein-packed meal perfect for weeknight dinners.</p>
-                        <button
-                            class="w-max px-6 py-2 border border-primary/30 rounded-full text-xs font-extrabold text-primary hover:bg-primary/10 transition-colors">GET
-                            RECIPE</button>
+                        <span class="text-primary font-bold text-[10px] uppercase tracking-widest mb-2">Remi
+                            Suggests</span>
+                        <h3 id="chefs-choice-title" class="text-2xl font-bold text-on-surface mb-4">Ask Remi</h3>
+                        <p id="chefs-choice-body"
+                            class="text-on-surface-variant text-sm line-clamp-4 mb-6 font-medium leading-relaxed">
+                            Add your available ingredients above and hit Search — Remi will craft something new just for
+                            you.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -194,22 +182,20 @@
     <!-- Bottom Navigation Bar (Mobile) -->
     <div
         class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-stone-950/80 backdrop-blur-2xl border-t border-stone-800/30 rounded-t-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.6)]">
-        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
+        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50"
+            href="/index.html">
             <span class="material-symbols-outlined">home</span>
             <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Home</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
+        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50"
+            href="/journal.html">
             <span class="material-symbols-outlined">menu_book</span>
-            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Learn</span>
+            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Journal</span>
         </a>
         <a class="flex flex-col items-center justify-center bg-stone-800/50 text-emerald-200 rounded-xl px-4 py-2 transition-all"
-            href="#">
+            href="/find.html">
             <span class="material-symbols-outlined">restaurant_menu</span>
             <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Finder</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 hover:bg-stone-900/50" href="#">
-            <span class="material-symbols-outlined">person</span>
-            <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Profile</span>
         </a>
     </div>
     <!-- Detailed Recipe View -->
@@ -272,8 +258,9 @@
     </div>
     <!-- <script src="/auth.js"></script> -->
     <script>
-
+        const HERO_IMAGE = "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop";
         let globalIngredients = [];
+
         function login() {
             console.log("Redirecting to login...");
             window.location.href = "login.html";
@@ -296,7 +283,7 @@
 
             try {
                 // const response = await apiFetch("/api/recipes");
-                const response = await fetch("http://localhost:8080/api/recipes", {
+                const response = await fetch("/api/recipes", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -307,42 +294,7 @@
                 if (recipes && recipes.length > 0) {
                     // Get the LAST recipe in the array (the newest one)
                     const recipe = recipes[recipes.length - 1];
-
-                    // Using your provided image URL
-                    // const imageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
-                    const imageUrl = "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-                    const featuredCardHtmlImage = `
-                        <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
-                            <img src="${imageUrl}" 
-                                 alt="${recipe.name}" 
-                                 class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
-                        </div>
-                    `;
-                            
-                    const featuredCardHtmlDesc = `<div class="p-8 bg-surface text-white flex-1">
-                                <span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
-                                    ${recipe.ingredients ? recipe.ingredients.length : 0} Ingredients Mapped
-                                </span>
-                                <h3 class="text-3xl font-bold leading-tight">${recipe.name}</h3>
-                                <p class="text-sm opacity-70 mt-4 line-clamp-3 leading-relaxed">
-                                    ${recipe.rawInput || "No description available."}
-                                </p>
-                                <div class="mt-6 flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest">
-                                    <span class="material-symbols-outlined text-sm">calendar_month</span>
-                                    Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
-                                </div>
-                    </div>`
-
-                //     <div id="recipe-grid-1-desc" class="p-8 bg-stone-950 text-white flex-1">
-                //         <span
-                //             class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">20
-                //             Mins • Easy</span>
-                //         <h3 class="text-3xl font-bold leading-tight">Hand-Crafted Pesto <br />with Linguine</h3>
-                //     </div>
-                // </div>
-
-                    gridSlotImage.innerHTML = featuredCardHtmlImage;
-                    gridSlotDesc.innerHTML = featuredCardHtmlDesc;
+                    renderFeaturedCard(recipe, "Latest Recipe");
 
                 }
             } catch (err) {
@@ -350,14 +302,83 @@
             }
         }
 
+        function renderFeaturedCard(recipe, badgeText) {
+
+            document.getElementById('recipe-grid-1-image').innerHTML = `
+                        <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
+                            <img src="${HERO_IMAGE}" 
+                                 alt="${recipe.name}" 
+                                 class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                        </div>
+                    `;
+
+            document.getElementById('recipe-grid-1-desc').innerHTML = `
+                            <div class="p-8 bg-surface text-white flex-1">
+                                <span class="bg-primary/90 text-on-primary backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 inline-block">
+                                ${badgeText}
+                                </span>
+                                <h3 class="text-3xl font-bold leading-tight">${recipe.name}</h3>
+                                <p class="text-sm opacity-70 mt-4 line-clamp-3 leading-relaxed">
+                                   ${recipe.description || recipe.rawInput || "No description available."}
+                                </p>
+                                <div class="mt-6 flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest">
+                                    <span class="material-symbols-outlined text-sm">calendar_month</span>
+                                    Recorded ${new Date(recipe.createdAt).toLocaleDateString()}
+                                </div>
+                    </div>`
+
+        }
+
+        function renderSecondaryCard(cardIndex, recipe) {
+            const nameEl = document.getElementById(`secondary-card-${cardIndex}-name`);
+            const tagsEl = document.getElementById(`secondary-card-${cardIndex}-tags`);
+
+            if (!recipe) {
+                nameEl.innerText = "No match found."
+                tagsEl.innerHTML = "";
+                return;
+            }
+
+            nameEl.innerText = recipe.name;
+            tagsEl.innerHTML = (recipe.ingredients || []).map(ing => `
+                <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                    ${ing.name}
+                </span>`).join('');
+            
+        }
+
+        // ─── Renders the Chef's Choice / Remi Suggests wide card ───
+        function renderChefsChoice(newRecipeText) {
+            if (!newRecipeText) return;
+            console.log(newRecipeText);
+            // Extract first line as title, rest as body
+            const lines = newRecipeText.trim().split('\n').filter(l => l.trim() !== '');
+            const title = lines[0].replace(/^#+\s*/, '').replace(/\*\*/g, '').trim();
+
+            const description = lines.length > 1 
+                ? lines[1].replace(/\*\*/g, '').trim() 
+                : '';
+            // const body = lines.slice(1).join(' ').replace(/\*\*/g, '').trim();
+
+            document.getElementById('chefs-choice-title').innerText = title;
+            // document.getElementById('chefs-choice-body').innerText = body;
+            document.getElementById('chefs-choice-body').innerText = description;
+
+
+            // Swap the icon for something more fitting
+            document.querySelector('#chefs-choice-card .w-1\\/2.overflow-hidden').innerHTML = `
+                <div class="w-full h-full flex items-center justify-center bg-stone-900 p-6">
+                    <span class="material-symbols-outlined text-primary/40 text-6xl">auto_awesome</span>
+                </div>`;
+        }
+
+
         async function addIngredients() {
             const container = document.getElementById('added_ingredients');
             const inputArea = document.getElementById('input_ingredients');
-            const search = document.getElementById('search-btn');
-
-            
-
             const text = inputArea.value;
+
+
             const newIngredients = text.split(",")
                 .map(t => t.trim())
                 .filter(t => t !== "" && !globalIngredients.includes(t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()));
@@ -371,40 +392,75 @@
                                 class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">${formattedIngredient}
                                 <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-red-400" onclick="removeIngredient('${formattedIngredient}', this)">close</span></span>`);
             });
-            // let i = 0;
-            // while (i < result.length) {
-            //     const ingredient = result[i];
-            //     const newSpan = document.createElement('span');
-            //     container.insertAdjacentHTML('beforeend', `<span
-            //                     class="bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-primary/20">${ingredient}
-            //                     <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-red-400" onclick="this.parentElement.remove()">close</span></span>`);
-            //     i++;
-            // }
             inputArea.value = "";
             console.table(globalIngredients);
-            
-
-
         }
 
         async function removeIngredient(tagName, element) {
             globalIngredients = globalIngredients.filter(t => t !== tagName);
-
             element.parentElement.remove();
-            console.table("Updated Global Array:", globalIngredients);
-
-
+            console.table(globalIngredients);
+            if (globalIngredients.length > 0) {
+                searchRecipes();
+            }
         }
 
-        const inputArea = document.getElementById('input_ingredients');
-        const search = document.getElementById('search-btn');
+        async function searchRecipes() {
 
-        inputArea.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                    event.preventDefault();
-                    search.click();
+            // First add any typed but not yet tagged ingredients
+            addIngredients();
+
+            if (globalIngredients.length == 0) {
+                alert("Add atleast one ingredient first.");
+                return;
+            }
+
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.disabled = true;
+            searchBtn.innerText = "Asking Remi...";
+
+            try {
+                const response = await fetch("/api/suggest", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        availableIngredients: globalIngredients.join(", ")
+                    })
+                });
+
+                if (!response.ok) throw new Error("Suggest failed.");
+
+                const result = await response.json()
+                const matches = result.matches || [];
+
+                // Update bento label
+                // document.getElementById('bento-label').innerText = "Matched for You";
+                document.getElementById('bento-title').innerText = "Based on What You Have";
+
+                if (matches.length > 0) {
+                    renderFeaturedCard(matches[0], "Best Match");
                 }
-            });
+
+                renderSecondaryCard(1, matches[1] || null);
+                renderSecondaryCard(2, matches[2] || null);
+
+                renderChefsChoice(result.newRecipeSuggestion);
+
+            } catch (error) {
+                console.error("Search error:", err);
+                alert("Remi couldn't find suggestions right now. Please try again.");
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerText = "Search";
+            }
+        }
+
+        document.getElementById('input_ingredients').addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchRecipes();
+            }
+        });
 
     </script>
 </body>

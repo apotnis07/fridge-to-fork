@@ -39,6 +39,9 @@ public class Recipe {
 
     private Integer servings;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Convert(converter = IngredientConverter.class)
     @Column(name = "ingredients", columnDefinition = "text")
     private List<Ingredient> ingredients;
