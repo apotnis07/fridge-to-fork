@@ -74,6 +74,7 @@ public class RecipeController {
         try {
             // Step 1 — save recipe without embedding
             recipe.setUserId(MOCK_USER_ID);
+            recipe.setImageIndex((int)(Math.random() * 15));
             Recipe saved = recipeRepository.save(recipe);
     
             // Step 2 — generate embedding from name + ingredient names

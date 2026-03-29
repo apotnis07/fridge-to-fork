@@ -45,8 +45,13 @@ public class NewRecipeSuggestionService {
             Line 1: Recipe name only (e.g. "Garlic Butter Chicken Bowl")
             Line 2: A vivid, appetizing 10-20 word description of the finished dish
             Line 3: Blank line
-            Line 4 onwards: Ingredients and instructions, concise, under 120 words total.
+            Then output exactly two sections with these exact headers:
+            INGREDIENTS:
+            (one ingredient per line starting with -)
+            STEPS:
+            (one step per line starting with a number)
     
+            Keep ingredients and steps concise, under 120 words total.
             If missing a key ingredient, suggest a substitution inline.
             """.formatted(availableIngredients, matchedRecipeContext);
 

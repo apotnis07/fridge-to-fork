@@ -9,18 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/suggest")
 public class SuggestController {
-    
+
     private final EmbeddingService embeddingService;
     private final RecipeRepository recipeRepository;
     private final NewRecipeSuggestionService newRecipeSuggestionService;
 
     private static final String MOCK_USER_ID = "temp-user-123";
 
-    public SuggestController(EmbeddingService embeddingService, RecipeRepository recipeRepository, NewRecipeSuggestionService newRecipeSuggestionService){
+    public SuggestController(EmbeddingService embeddingService, RecipeRepository recipeRepository,
+            NewRecipeSuggestionService newRecipeSuggestionService) {
         this.embeddingService = embeddingService;
         this.recipeRepository = recipeRepository;
         this.newRecipeSuggestionService = newRecipeSuggestionService;
@@ -28,22 +28,28 @@ public class SuggestController {
 
     @PostMapping
     public ResponseEntity<SuggestionResult> suggest(@RequestBody SuggestionRequest request) {
-        
-        float[] queryVector = embeddingService.getEmbedding(request.getAvailableIngredients());
+
+        String expandedQuery = "A dish made with " + request.getAvailableIngredients();
+        float[] queryVector = embeddingService.getEmbedding(expandedQuery);
         String vectorString = toVectorString(queryVector);
 
-        List<Recipe> matches = recipeRepository.findSimilarRecipes(MOCK_USER_ID, vectorString, 0.6);
+        // Debug — log distances to console
+        List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(MOCK_USER_ID, vectorString);
+        scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
+
+        List<Recipe> matches = recipeRepository.findSimilarRecipes(MOCK_USER_ID, vectorString, 0.7);
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 
         return ResponseEntity.ok(new SuggestionResult(matches, newRecipe));
     }
-    
+
     private String toVectorString(float[] vector) {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < vector.length; i++) {
             sb.append(vector[i]);
-            if (i < vector.length - 1) sb.append(",");
+            if (i < vector.length - 1)
+                sb.append(",");
         }
         sb.append("]");
         return sb.toString();

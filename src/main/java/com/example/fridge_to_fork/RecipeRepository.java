@@ -34,4 +34,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
             LIMIT 5
             """, nativeQuery = true)
     List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding, @Param("threshold") double threshold);
+
+    @Query(value = """
+            SELECT name, (embedding <=> CAST(:embedding AS vector)) as distance
+            FROM recipes
+            WHERE user_id = :userId
+            ORDER BY distance
+            """, nativeQuery = true)
+    List<Object[]> findSimilarRecipesWithScores(
+            @Param("userId") String userId,
+            @Param("embedding") String embedding);
 }

@@ -198,6 +198,31 @@
         // 2. INITIAL LOAD
         document.addEventListener('DOMContentLoaded', loadRecent);
 
+        const ILLUSTRATIONS = [
+            "https://plus.unsplash.com/premium_vector-1722661980261-a06040a64ea4?q=80&w=1480&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1741366488984-c2c93a8849cb?q=80&w=1674&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1741366488922-284260538d01?q=80&w=1674&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1741366488984-91b0039c0336?q=80&w=1674&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1741366488757-8d4e34570303?q=80&w=1035&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1756902133272-8ce3d151d670?q=80&w=1010&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1741109886479-096317749fe7?q=80&w=1011&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1736254664484-b69ad6fb4125?w=900&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1758513947785-9d69574483f5?q=80&w=1064&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1769172620473-8703d9fa87cd?q=80&w=1480&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1738740828565-e195444e403e?q=80&w=987&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1739875207991-5a965f8ac0ee?q=80&w=996&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1724853557152-10ef36389830?q=80&w=1035&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop"
+        ];
+
+        function getIllustration(imageIndex) {
+            // Fallback to random if imageIndex is null (older recipes)
+            const index = (imageIndex !== null && imageIndex !== undefined)
+                ? imageIndex
+                : Math.floor(Math.random() * ILLUSTRATIONS.length);
+            return ILLUSTRATIONS[index];
+        }
+
         /**
          * Phase 1: ANALYZE
          * Takes raw text from the textarea and sends it to Bedrock (Draft Endpoint)
@@ -334,27 +359,21 @@
                 if (recipes && recipes.length > 0) {
                     section.classList.remove('hidden');
                     const recent = [...recipes].reverse().slice(0, 5);
-                    const heroImageUrl = "https://plus.unsplash.com/premium_vector-1713201017274-e9e97d783e75?q=80&w=1064&auto=format&fit=crop";
 
-                    grid.innerHTML = recent.map((recipe, i) => {
-                        const isLatest = i === 0;
+                    grid.innerHTML = recent.map((recipe) => {
+                        const imageUrl = getIllustration(recipe.imageIndex);
                         return `
-                            <div class="space-y-3 group cursor-pointer animate-in fade-in slide-in-from-bottom-2 duration-700">
-                                <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
-                                    ${isLatest ? `
-                                        <img src="${heroImageUrl}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
-                                    ` : `
-                                        <div class="w-full h-full flex items-center justify-center bg-stone-900/50">
-                                            <span class="material-symbols-outlined text-primary/10 text-4xl group-hover:text-primary/30 transition-colors">restaurant_menu</span>
-                                        </div>
-                                    `}
-                                    <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
-                                </div>
-                                <div class="px-1">
-                                    <h4 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">${recipe.name}</h4>
-                                    <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-bold mt-0.5">${new Date(recipe.createdAt).toLocaleDateString()}</p>
-                                </div>
-                            </div>`;
+                    <div class="space-y-3 group cursor-pointer animate-in fade-in slide-in-from-bottom-2 duration-700">
+                        <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
+                            <img src="${imageUrl}" 
+                                 class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                            <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+                        <div class="px-1">
+                            <h4 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">${recipe.name}</h4>
+                            <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-bold mt-0.5">${new Date(recipe.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>`;
                     }).join('');
                 } else {
                     section.classList.add('hidden');

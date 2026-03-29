@@ -46,8 +46,8 @@ public class Recipe {
     @Column(name = "ingredients", columnDefinition = "text")
     private List<Ingredient> ingredients;
 
-    // @Column(columnDefinition = "TEXT")
-    // private String ingredients; // Simple String now!
+    @Column(name = "image_index")
+    private Integer imageIndex;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
