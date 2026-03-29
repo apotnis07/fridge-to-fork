@@ -61,7 +61,8 @@ public class RecipeController {
     // Hardcoded placeholder ID to simulate a logged-in user
     private static final String MOCK_USER_ID = "temp-user-123";
 
-    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService, EmbeddingService embeddingService) {
+    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService,
+            EmbeddingService embeddingService) {
         this.recipeRepository = recipeRepository;
         this.recipeParsingService = recipeParsingService;
         this.embeddingService = embeddingService;
@@ -70,23 +71,41 @@ public class RecipeController {
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
 
-        String ingredientsList = recipe.getIngredients().stream()
-                .map(ing -> ing.getName())
-                .collect(Collectors.joining(", "));
+        try {
+            // Step 1 — save recipe without embedding
+            recipe.setUserId(MOCK_USER_ID);
+            Recipe saved = recipeRepository.save(recipe);
+    
+            // Step 2 — generate embedding from name + ingredient names
+            String ingredientNames = recipe.getIngredients().stream()
+                    .map(Ingredient::getName)
+                    .collect(Collectors.joining(", "));
+            String embeddingText = recipe.getName() + " " + ingredientNames;
+            float[] vector = embeddingService.getEmbedding(embeddingText);
+    
+            // Step 3 — update embedding column via native query
+            recipeRepository.updateEmbedding(saved.getId().toString(), toVectorString(vector));
+    
+            return ResponseEntity.ok(saved);
+    
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save recipe: " + e.getMessage(), e);
+        }
+    }
 
-        String searchText = recipe.getName() + " " + ingredientsList;
-
-        float[] vector = embeddingService.getEmbedding(searchText);
-        recipe.setEmbedding(vector);
-
-        // Use the placeholder instead of jwt.getSubject()
-        recipe.setUserId(MOCK_USER_ID);
-        return ResponseEntity.ok(recipeRepository.save(recipe));
+    private String toVectorString(float[] vector) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < vector.length; i++) {
+            sb.append(vector[i]);
+            if (i < vector.length - 1) sb.append(",");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @PostMapping(value = "/draft", consumes = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> draftRecipe(@RequestBody String rawInput) {
-    
+
         String jsonDraft = recipeParsingService.parseRecipeWithLLM(rawInput);
 
         return ResponseEntity.ok()

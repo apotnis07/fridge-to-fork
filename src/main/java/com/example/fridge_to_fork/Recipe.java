@@ -39,13 +39,12 @@ public class Recipe {
 
     private Integer servings;
 
-    @Column(columnDefinition = "vector(1024)")
-    private float[] embedding;
-
-    @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = IngredientConverter.class)
-    @Column(name = "ingredients", columnDefinition = "jsonb")
+    @Column(name = "ingredients", columnDefinition = "text")
     private List<Ingredient> ingredients;
+
+    // @Column(columnDefinition = "TEXT")
+    // private String ingredients; // Simple String now!
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -53,13 +52,5 @@ public class Recipe {
     @PrePersist
     public void prePersist(){
         this.createdAt = LocalDateTime.now();
-    }
-
-    public float[] getEmbedding(){
-        return embedding;
-    }
-
-    public void setEmbedding(float[] embedding){
-        this.embedding = embedding;
     }
 }
