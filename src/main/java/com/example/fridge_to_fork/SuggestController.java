@@ -32,7 +32,7 @@ public class SuggestController {
         float[] queryVector = embeddingService.getEmbedding(request.getAvailableIngredients());
         String vectorString = toVectorString(queryVector);
 
-        List<Recipe> matches = recipeRepository.findSimilarRecipes(MOCK_USER_ID, vectorString);
+        List<Recipe> matches = recipeRepository.findSimilarRecipes(MOCK_USER_ID, vectorString, 0.6);
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 

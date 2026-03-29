@@ -80,7 +80,7 @@ public class RecipeController {
             String ingredientNames = recipe.getIngredients().stream()
                     .map(Ingredient::getName)
                     .collect(Collectors.joining(", "));
-            String embeddingText = recipe.getName() + " " + ingredientNames;
+            String embeddingText = recipe.getName() + " a dish made with " + ingredientNames;
             float[] vector = embeddingService.getEmbedding(embeddingText);
     
             // Step 3 — update embedding column via native query

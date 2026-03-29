@@ -145,6 +145,7 @@
                     <div class="p-6">
                         <h3 id="secondary-card-1-name" class="text-xl font-bold text-on-surface mb-2">—</h3>
                         <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
+
                     </div>
                 </div>
 
@@ -340,11 +341,19 @@
             }
 
             nameEl.innerText = recipe.name;
-            tagsEl.innerHTML = (recipe.ingredients || []).map(ing => `
+            const tags = (recipe.ingredients || []).map(ing => `
                 <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
                     ${ing.name}
                 </span>`).join('');
-            
+
+            const description = recipe.description
+                ? `<p class="text-on-surface-variant text-sm line-clamp-4 mt-6 mb-6 font-medium leading-relaxed">
+               ${recipe.description}
+           </p>`
+                : '';
+
+            tagsEl.innerHTML = tags + description;
+
         }
 
         // ─── Renders the Chef's Choice / Remi Suggests wide card ───
@@ -355,8 +364,8 @@
             const lines = newRecipeText.trim().split('\n').filter(l => l.trim() !== '');
             const title = lines[0].replace(/^#+\s*/, '').replace(/\*\*/g, '').trim();
 
-            const description = lines.length > 1 
-                ? lines[1].replace(/\*\*/g, '').trim() 
+            const description = lines.length > 1
+                ? lines[1].replace(/\*\*/g, '').trim()
                 : '';
             // const body = lines.slice(1).join(' ').replace(/\*\*/g, '').trim();
 

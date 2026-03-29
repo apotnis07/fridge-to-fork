@@ -29,8 +29,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     @Query(value = """
             SELECT * FROM recipes
             WHERE user_id = :userId
+            AND (embedding <=> CAST(:embedding AS vector)) < :threshold
             ORDER BY embedding <=> CAST(:embedding AS vector)
             LIMIT 5
             """, nativeQuery = true)
-    List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding);
+    List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding, @Param("threshold") double threshold);
 }
