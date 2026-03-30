@@ -76,8 +76,7 @@
                         What's in your <br><span class="text-primary italic font-medium">pantry?</span>
                     </h1>
                     <p class="text-on-surface-variant text-lg max-w-xl mb-10 leading-relaxed">
-                        Turn your available ingredients into an extraordinary dining experience. Tell us what you have,
-                        and we'll craft the perfect menu.
+                        List what's in your fridge and Remi will find something worth making tonight.
                     </p>
                 </div>
                 <div class="lg:col-span-5 w-full">
@@ -116,8 +115,8 @@
                         You</span>
                     <h2 id="bento-title" class="text-3xl font-extrabold tracking-tight mt-1">Your Saved Recipes</h2>
                 </div>
-                <button class="text-primary font-bold text-sm underline-offset-4 hover:underline transition-all">View
-                    All Collection</button>
+                <!-- <button class="text-primary font-bold text-sm underline-offset-4 hover:underline transition-all">View
+                    All Collection</button> -->
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Large Feature Card - top similarity match -->
@@ -136,40 +135,13 @@
                         <h3 class="text-3xl font-bold leading-tight">Your Latest Recipe</h3>
                     </div>
                 </div>
-                <!-- Secondary Card 1 - 2nd similarity match -->
-                <div id="secondary-card-1"
-                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-                    <div id="secondary-card-1-image"
-                        class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 id="secondary-card-1-name" class="text-xl font-bold text-on-surface mb-2">—</h3>
-                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
-
-                    </div>
-                </div>
-
-                <!-- Secondary Card 2 - 3rd similarity match -->
-                <div id="secondary-card-2"
-                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
-                    <div id="secondary-card-2-image"
-                        class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 id="secondary-card-2-name" class="text-xl font-bold text-on-surface mb-2">—</h3>
-                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-2-tags"></div>
-                    </div>
-                </div>
                 <!-- Wide Card - Remi's new recipe suggestion -->
                 <div id="chefs-choice-card"
-                    class="md:col-span-2 group flex bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10 cursor-pointer"
-                    onclick="openChefsChoiceOverlay()">
+                    class="md:col-span-2 group flex bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
                     <div class="w-1/2 overflow-hidden bg-stone-900 flex items-center justify-center">
                         <span class="material-symbols-outlined text-primary/20 text-5xl">auto_awesome</span>
                     </div>
-                    <div class="w-1/2 p-8 flex flex-col justify-center">
+                    <div class="w-1/2 p-8 flex flex-col justify-center min-h-[400px] flex-grow">
                         <span class="text-primary font-bold text-[10px] uppercase tracking-widest mb-2">Remi
                             Suggests</span>
                         <h3 id="chefs-choice-title" class="text-2xl font-bold text-on-surface mb-4">Ask Remi</h3>
@@ -189,6 +161,33 @@
                         </span>
                     </div>
                 </div>
+                <!-- Secondary Card 1 - 2nd similarity match -->
+                <div id="secondary-card-1"
+                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
+                    <div id="secondary-card-1-image"
+                        class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
+                    </div>
+                    <div class="p-6">
+                        <h2 id="secondary-card-1-name" class="text-2xl font-bold text-on-surface mb-4">—</h2> 
+                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
+
+                    </div>
+                </div>
+
+                <!-- Secondary Card 2 - 3rd similarity match -->
+                <div id="secondary-card-2"
+                    class="group bg-surface rounded-xl overflow-hidden hover:shadow-lg transition-all border border-outline/10">
+                    <div id="secondary-card-2-image"
+                        class="aspect-square overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 id="secondary-card-2-name" class="text-2xl font-bold text-on-surface mb-4">—</h3>
+                        <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-2-tags"></div>
+                    </div>
+                </div>
+                
             </div>
         </section>
     </main>
@@ -210,6 +209,36 @@
             <span class="material-symbols-outlined">restaurant_menu</span>
             <span class="font-manrope text-[10px] uppercase tracking-widest font-medium">Finder</span>
         </a>
+    </div>
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeDeleteConfirm()"></div>
+        <div
+            class="relative bg-surface-container rounded-2xl max-w-sm w-full p-8 shadow-2xl border border-outline/20 text-center">
+
+            <!-- Icon -->
+            <div class="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-error">delete</span>
+            </div>
+
+            <!-- Text -->
+            <h3 class="text-xl font-extrabold text-on-surface mb-2">Remove Recipe?</h3>
+            <p id="delete-confirm-message" class="text-on-surface-variant text-sm leading-relaxed mb-8 font-medium">
+                This will permanently remove this dish from your Recipe Book.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex gap-3">
+                <button onclick="closeDeleteConfirm()"
+                    class="flex-1 py-3 border border-outline/30 text-on-surface-variant rounded-xl font-bold text-sm hover:bg-surface-container-high transition-all">
+                    Keep It
+                </button>
+                <button id="delete-confirm-btn"
+                    class="flex-1 py-3 bg-error/20 text-error border border-error/30 rounded-xl font-bold text-sm hover:bg-error/30 transition-all">
+                    Yes, Remove
+                </button>
+            </div>
+        </div>
     </div>
     <!-- Saved Recipe Detail Overlay -->
     <div id="saved-recipe-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
@@ -264,6 +293,14 @@
                         <p id="saved-overlay-raw"
                             class="text-on-surface-variant text-sm leading-relaxed font-medium whitespace-pre-line"></p>
                     </div>
+
+                    <div class="border-t border-outline/20 pt-6 mt-6">
+                        <button onclick="deleteRecipe(currentOpenRecipe)"
+                            class="w-full py-3 border border-error/30 text-error rounded-xl font-bold text-sm hover:bg-error/10 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                            Remove from Recipe Book
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -308,8 +345,13 @@
             </div>
         </div>
     </div>
-    <!-- <script src="/auth.js"></script> -->
-    <script>
+    <script type="module">
+
+        import { requireAuth, logout, apiFetch } from '/auth.js';
+        await requireAuth();
+        window.logout = logout;
+
+
         const ILLUSTRATIONS = [
             "https://plus.unsplash.com/premium_vector-1722661980261-a06040a64ea4?q=80&w=1480&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1741366488984-c2c93a8849cb?q=80&w=1674&auto=format&fit=crop",
@@ -332,8 +374,11 @@
         const HERO_IMAGE = "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop";
         let globalIngredients = [];
         let currentChefsChoiceText = null;
+        let currentOpenRecipe = null;
 
+        window.currentOpenRecipe = currentOpenRecipe;
 
+        document.addEventListener('DOMContentLoaded', loadFeaturedRecipe);
 
 
         function getIllustration(imageIndex) {
@@ -344,45 +389,74 @@
             return ILLUSTRATIONS[index];
         }
 
-        function login() {
-            console.log("Redirecting to login...");
-            window.location.href = "login.html";
-        }
-
-        // Placeholder for Logout: Clears the token and refreshes the UI
-        function logout() {
-            console.log("Logging out...");
-            window.location.href = "index.html";
-            // Refresh the UI to show the 'Login' button again
-        }
 
         // Call the function when the page loads
-        document.addEventListener('DOMContentLoaded', loadFeaturedRecipe);
 
         async function loadFeaturedRecipe() {
-            const gridSlotImage = document.getElementById('recipe-grid-1-image');
-            const gridSlotDesc = document.getElementById('recipe-grid-1-desc');
-
-
             try {
-                // const response = await apiFetch("/api/recipes");
-                const response = await fetch("/api/recipes", {
+                const response = await apiFetch("/api/recipes", {
                     method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                    headers: { "Content-Type": "application/json" }
                 });
                 const recipes = await response.json();
 
+                const descElement = document.getElementById('recipe-grid-1-desc');
+
                 if (recipes && recipes.length > 0) {
-                    // Get the LAST recipe in the array (the newest one)
+                    // Normal flow for existing users
                     const recipe = recipes[recipes.length - 1];
                     renderFeaturedCard(recipe, "Latest Recipe");
 
+                    if (recipes.length > 1) renderSecondaryCard(1, recipes[recipes.length - 2]);
+                    if (recipes.length > 2) renderSecondaryCard(2, recipes[recipes.length - 3]);
+                }
+                else {
+                    // 2. THE NEW USER EXPERIENCE
+                    renderEmptyState();
                 }
             } catch (err) {
                 console.error("Failed to load featured recipe:", err);
             }
+        }
+
+        function renderEmptyState() {
+            // Update section title
+            document.getElementById('bento-title').innerText = "Your Recipe Book is Empty";
+
+            document.getElementById('recipe-grid-1-image').innerHTML = `
+                <div class="aspect-[4/5] w-full bg-stone-900 relative overflow-hidden">
+                    <img src="${HERO_IMAGE}" 
+                        alt="Start cooking"
+                        class="w-full h-full object-cover opacity-50" />
+                </div>`;
+
+            // Update featured card description
+            document.getElementById('recipe-grid-1-desc').innerHTML = `
+        <div class="p-8 bg-surface text-white flex-1 flex flex-col justify-center">
+            <span class="text-primary font-bold tracking-widest text-[10px] uppercase block mb-3">
+                Getting Started
+            </span>
+            <h3 class="text-2xl font-bold leading-tight mb-4">
+                Teach Remi your first dish
+            </h3>
+            <p class="text-sm opacity-60 leading-relaxed mb-6">
+                Add a recipe to your book and Remi will learn your cooking style — 
+                then find what you can make from whatever's in your fridge.
+            </p>
+            <button onclick="window.location.href='/journal.html'"
+                class="w-fit bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest hover:brightness-105 transition-all">
+                Add First Recipe →
+            </button>
+        </div>`;
+
+            // Remove clickability from featured card since there's nothing to open
+            const card = document.getElementById('featured-recipe-card');
+            card.onclick = null;
+            card.classList.remove('cursor-pointer');
+
+            // Clear secondary cards
+            renderSecondaryCard(1, null);
+            renderSecondaryCard(2, null);
         }
 
         function renderFeaturedCard(recipe, badgeText) {
@@ -422,15 +496,18 @@
             const card = document.getElementById(`secondary-card-${cardIndex}`);
 
             if (!recipe) {
-                nameEl.innerText = "No match found";
-                tagsEl.innerHTML = "";
-                if (imageEl) imageEl.innerHTML = `
-            <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
+                card.classList.add('hidden');
+            //     nameEl.innerText = "No match found";
+            //     tagsEl.innerHTML = "";
+            //     if (imageEl) imageEl.innerHTML = `
+            // <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
                 card.onclick = null;
                 card.classList.remove('cursor-pointer');
                 return;
             }
-
+            else{
+                card.classList.remove('hidden');
+            }
             // Make card clickable
             card.onclick = () => openRecipeOverlay(recipe);
             card.classList.add('cursor-pointer');
@@ -443,7 +520,7 @@
         </span>`).join('');
 
             const description = recipe.description
-                ? `<p class="text-on-surface-variant text-sm line-clamp-4 mt-3 font-medium leading-relaxed italic">
+                ? `<p class="text-on-surface-variant text-sm line-clamp-4 mt-4 font-medium leading-relaxed italic">
                ${recipe.description}
            </p>`
                 : '';
@@ -464,6 +541,13 @@
 
             // Store for overlay use
             currentChefsChoiceText = newRecipeText;
+
+            // 1. Get the card element
+            const card = document.getElementById('chefs-choice-card');
+
+            // 2. Enable the click and change the cursor to a pointer
+            card.onclick = () => openChefsChoiceOverlay();
+            card.classList.add('cursor-pointer', 'hover:shadow-lg');
 
             const lines = newRecipeText.trim().split('\n').filter(l => l.trim() !== '');
             const title = lines[0].replace(/^#+\s*/, '').replace(/\*\*/g, '').trim();
@@ -486,6 +570,8 @@
         // ─── Saved Recipe Overlay ───
         function openRecipeOverlay(recipe) {
             if (!recipe) return;
+            currentOpenRecipe = recipe; // store for delete access
+            window.currentOpenRecipe = recipe;
 
             // Title
             document.getElementById('saved-overlay-title').innerText = recipe.name;
@@ -518,6 +604,7 @@
             document.getElementById('saved-overlay-raw').innerText =
                 recipe.rawInput || 'No notes recorded.';
 
+
             // Show overlay
             document.getElementById('saved-recipe-overlay').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -528,6 +615,66 @@
             document.body.style.overflow = '';
         }
 
+        // Opens the styled confirmation modal
+        function deleteRecipe(recipe) {
+            if (!recipe) return;
+
+            // Set the recipe name in the message
+            document.getElementById('delete-confirm-message').innerText =
+                `"${recipe.name}" will be permanently removed from your Recipe Book.`;
+
+            // Wire the confirm button to actually execute the delete
+            document.getElementById('delete-confirm-btn').onclick = () => confirmDelete(recipe);
+
+            // Show modal
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteConfirm() {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        async function confirmDelete(recipe) {
+            const confirmBtn = document.getElementById('delete-confirm-btn');
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = "Removing...";
+
+            try {
+                const response = await apiFetch(`/api/recipes/${recipe.id}`, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    closeDeleteConfirm();
+                    closeSavedRecipeOverlay();
+                    currentOpenRecipe = null;
+
+                    // Refresh featured card
+                    await loadFeaturedRecipe();
+
+                    // Reset secondary cards and Chef's Choice
+                    renderSecondaryCard(1, null);
+                    renderSecondaryCard(2, null);
+                    document.getElementById('bento-title').innerText = "Your Saved Recipes";
+                    document.getElementById('chefs-choice-title').innerText = "Ask Remi";
+                    document.getElementById('chefs-choice-body').innerText =
+                        "Add your available ingredients above and hit Search — Remi will craft something new just for you.";
+                    currentChefsChoiceText = null;
+                    document.getElementById('chefs-choice-hint').classList.add('hidden');
+
+                } else {
+                    alert("Couldn't remove the recipe. Please try again.");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("Connection error. Please try again.");
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Yes, Remove";
+            }
+        }
 
         function openChefsChoiceOverlay() {
             if (!currentChefsChoiceText) return;
@@ -619,6 +766,10 @@
             if (globalIngredients.length > 0) {
                 searchRecipes();
             }
+            else{
+                loadFeaturedRecipe(); // Reset UI to default
+                return;
+            }
         }
 
         async function searchRecipes() {
@@ -627,7 +778,8 @@
             addIngredients();
 
             if (globalIngredients.length == 0) {
-                alert("Add atleast one ingredient first.");
+                loadFeaturedRecipe(); // Reset UI to default
+                // alert("Add atleast one ingredient first.");
                 return;
             }
 
@@ -636,7 +788,7 @@
             searchBtn.innerText = "Asking Remi...";
 
             try {
-                const response = await fetch("/api/suggest", {
+                const response = await apiFetch("/api/suggest", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -656,6 +808,11 @@
                 if (matches.length > 0) {
                     renderFeaturedCard(matches[0], "Best Match");
                 }
+                else {
+                    document.getElementById('bento-title').innerText = "No Matches Found";
+                    loadFeaturedRecipe(); // Reset UI to default
+                }
+
 
                 renderSecondaryCard(1, matches[1] || null);
                 renderSecondaryCard(2, matches[2] || null);
@@ -677,7 +834,19 @@
                 searchRecipes();
             }
         });
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     loadFeaturedRecipe();
+        // });
 
+        window.removeIngredient = removeIngredient;
+        window.searchRecipes = searchRecipes;
+        window.openChefsChoiceOverlay = openChefsChoiceOverlay;
+        window.closeChefsChoiceOverlay = closeChefsChoiceOverlay;
+        window.openRecipeOverlay = openRecipeOverlay;
+        window.closeSavedRecipeOverlay = closeSavedRecipeOverlay;
+        window.deleteRecipe = deleteRecipe;
+        window.closeDeleteConfirm = closeDeleteConfirm;
+        window.confirmDelete = confirmDelete;
     </script>
 </body>
 

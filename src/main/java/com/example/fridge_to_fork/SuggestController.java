@@ -3,6 +3,8 @@ package com.example.fridge_to_fork;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,7 @@ public class SuggestController {
     private final RecipeRepository recipeRepository;
     private final NewRecipeSuggestionService newRecipeSuggestionService;
 
-    private static final String MOCK_USER_ID = "temp-user-123";
+    // private static final String MOCK_USER_ID = "temp-user-123";
 
     public SuggestController(EmbeddingService embeddingService, RecipeRepository recipeRepository,
             NewRecipeSuggestionService newRecipeSuggestionService) {
@@ -27,31 +29,25 @@ public class SuggestController {
     }
 
     @PostMapping
-    public ResponseEntity<SuggestionResult> suggest(@RequestBody SuggestionRequest request) {
+    public ResponseEntity<SuggestionResult> suggest(@RequestBody SuggestionRequest request, HttpServletRequest httpRequest) {
 
-        String expandedQuery = "A dish made with " + request.getAvailableIngredients();
+        String userId = (String) httpRequest.getAttribute("userId");
+
+        String cleanInput = request.getAvailableIngredients().toLowerCase().trim();
+
+        String expandedQuery = "Ingredients: " + cleanInput + ", " + cleanInput;
+
         float[] queryVector = embeddingService.getEmbedding(expandedQuery);
-        String vectorString = toVectorString(queryVector);
+        String vectorString = embeddingService.toVectorString(queryVector);
 
         // Debug — log distances to console
-        List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(MOCK_USER_ID, vectorString);
+        List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
         scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
 
-        List<Recipe> matches = recipeRepository.findSimilarRecipes(MOCK_USER_ID, vectorString, 0.7);
+        List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.75);
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 
         return ResponseEntity.ok(new SuggestionResult(matches, newRecipe));
-    }
-
-    private String toVectorString(float[] vector) {
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < vector.length; i++) {
-            sb.append(vector[i]);
-            if (i < vector.length - 1)
-                sb.append(",");
-        }
-        sb.append("]");
-        return sb.toString();
     }
 }

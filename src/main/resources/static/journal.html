@@ -120,11 +120,10 @@
         <header class="mb-16">
             <span class="text-primary font-bold tracking-[0.2em] text-[10px] uppercase block mb-4">Teaching Remi</span>
             <h1 class="text-5xl md:text-7xl font-extrabold text-on-surface tracking-tighter leading-none mb-6">
-                Tell us your <br /><span class="text-primary italic font-medium">culinary story.</span>
+                What did you <br /><span class="text-primary italic font-medium">make today?</span>
             </h1>
-            <p class="text-on-surface-variant text-lg max-w-xl leading-relaxed">
-                Describe your dish, the process, and every ingredient. Our engine learns your style to suggest pairings
-                that honor your heritage.
+            <p class="text-on-surface-variant text-lg max-w-xl mb-10 leading-relaxed">
+                Just describe it naturally — ingredients, rough quantities, how you cook it. Remi handles the rest.
             </p>
         </header>
         <!-- Input Section: The Natural Language Field -->
@@ -179,6 +178,71 @@
                 </div>
             </div>
         </div>
+        <!-- Saved Recipe Detail Overlay -->
+    <div id="saved-recipe-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeSavedRecipeOverlay()"></div>
+        <div
+            class="relative bg-surface rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row shadow-2xl border border-outline/20">
+
+            <!-- Close button -->
+            <button onclick="closeSavedRecipeOverlay()"
+                class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-stone-800 text-on-surface flex items-center justify-center hover:bg-stone-700 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <!-- Left — illustration -->
+            <div class="w-full md:w-1/2 h-64 md:h-auto overflow-hidden bg-stone-900">
+                <img id="saved-overlay-image" alt="Recipe" class="w-full h-full object-cover opacity-90" src="" />
+            </div>
+
+            <!-- Right — recipe details -->
+            <div class="w-full md:w-1/2 p-10 overflow-y-auto">
+
+                <!-- Name + date -->
+                <h2 id="saved-overlay-title" class="text-4xl font-extrabold tracking-tight mt-2 mb-1 text-stone-50">
+                </h2>
+                <p id="saved-overlay-date"
+                    class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mb-4"></p>
+
+                <!-- Description -->
+                <p id="saved-overlay-description"
+                    class="text-on-surface-variant text-sm italic mb-8 leading-relaxed border-l-2 border-primary/30 pl-4">
+                </p>
+
+                <div class="space-y-8">
+                    <!-- Ingredients -->
+                    <div>
+                        <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-sm">grocery</span>
+                            Ingredients
+                        </h3>
+                        <ul id="saved-overlay-ingredients" class="space-y-3"></ul>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-outline/20"></div>
+
+                    <!-- In Your Words -->
+                    <div>
+                        <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-sm">edit_note</span>
+                            In Your Words
+                        </h3>
+                        <p id="saved-overlay-raw"
+                            class="text-on-surface-variant text-sm leading-relaxed font-medium whitespace-pre-line"></p>
+                    </div>
+
+                    <div class="border-t border-outline/20 pt-6 mt-6">
+                        <button onclick="deleteRecipe(window.currentOpenRecipe)"
+                            class="w-full py-3 border border-error/30 text-error rounded-xl font-bold text-sm hover:bg-error/10 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                            Remove from Recipe Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <section id="recent-saved-section" class="mt-16 pt-10 border-t border-outline/20">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-2xl font-extrabold tracking-tight">Recently Recorded</h2>
@@ -190,10 +254,22 @@
         </section>
     </main>
 
-    <!-- <script src="/auth.js"></script> -->
-    <script>
+    <script type="module">
+        import { requireAuth, logout, apiFetch } from '/auth.js';
+
+        // Require auth on page load
+        await requireAuth();
+
+        // Wire logout button
+        window.logout = logout;
+
         // 1. STATE MANAGEMENT
         let currentDraftData = null;
+        let recipeIdToDelete = null;
+        window.recentRecipesCache = []
+        let currentOpenRecipe = null;
+
+
 
         // 2. INITIAL LOAD
         document.addEventListener('DOMContentLoaded', loadRecent);
@@ -212,7 +288,8 @@
             "https://plus.unsplash.com/premium_vector-1738740828565-e195444e403e?q=80&w=987&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1739875207991-5a965f8ac0ee?q=80&w=996&auto=format&fit=crop",
             "https://plus.unsplash.com/premium_vector-1724853557152-10ef36389830?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop"
+            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop",
+            "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop"
         ];
 
         function getIllustration(imageIndex) {
@@ -223,10 +300,7 @@
             return ILLUSTRATIONS[index];
         }
 
-        /**
-         * Phase 1: ANALYZE
-         * Takes raw text from the textarea and sends it to Bedrock (Draft Endpoint)
-         */
+
         async function saveRecipe() {
             const inputArea = document.getElementById('recipe-input');
             const rawText = inputArea.value.trim();
@@ -238,15 +312,13 @@
                 return;
             }
 
-            // UI Feedback: Start the "Perception" Glow
             saveBtn.disabled = true;
             loading.classList.add('animate-sync-glow', 'text-white');
             const originalText = saveBtn.innerText;
             saveBtn.innerText = "Remi is perceiving...";
 
             try {
-                // Step 1: Request structured JSON from the AI Draft endpoint
-                const response = await fetch("/api/recipes/draft", {
+                const response = await apiFetch("/api/recipes/draft", {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: rawText
@@ -255,19 +327,12 @@
                 if (!response.ok) throw new Error("AI Mapping failed");
 
                 const draftedJSON = await response.json();
-
-                // Store the data and original input for the final save
-                currentDraftData = {
-                    ...draftedJSON,
-                    rawInput: rawText
-                };
-
-                // Step 2: Open the Review Overlay
+                currentDraftData = { ...draftedJSON, rawInput: rawText };
                 openReview(currentDraftData);
 
             } catch (err) {
                 console.error("Analysis Error:", err);
-                alert("Remi couldn't quite map that. Try being a bit more descriptive with ingredients.");
+                alert("Remi couldn't quite map that. Try being a bit more descriptive.");
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerText = originalText;
@@ -275,15 +340,9 @@
             }
         }
 
-        /**
-         * Phase 2: REVIEW
-         * Injects the AI's "perception" into the Bento-style review card
-         */
         function openReview(data) {
             document.getElementById('preview-name').innerText = data.name;
             const grid = document.getElementById('preview-ingredients');
-
-            // Render ingredients: Handles null quantity as "To Taste"
             grid.innerHTML = data.ingredients.map(ing => `
                 <div class="flex items-center p-4 bg-stone-900/50 rounded-xl border border-white/5 group hover:border-primary/30 transition-colors">
                     <span class="material-symbols-outlined text-primary/40 mr-3 text-xl group-hover:text-primary transition-colors">restaurant</span>
@@ -295,39 +354,27 @@
                     </div>
                 </div>
             `).join('');
-
             document.getElementById('review-overlay').classList.remove('hidden');
         }
 
-        /**
-         * Phase 3: CONFIRM & COMMIT
-         * Sends the verified data to the permanent database
-         */
         async function finalCommit() {
-            console.log("Attempting to commit:", currentDraftData); // Debug line
-            if (!currentDraftData) {
-                console.error("No draft data found to save.");
-                return;
-            }
+            if (!currentDraftData) return;
 
             const confirmBtn = document.getElementById('confirm-btn');
             confirmBtn.disabled = true;
             confirmBtn.innerText = "Recording to Journal...";
 
             try {
-                const response = await fetch("/api/recipes", {
+                const response = await apiFetch("/api/recipes", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(currentDraftData)
                 });
 
                 if (response.ok) {
-                    // Success Flow
                     closeReview();
                     document.getElementById('recipe-input').value = "";
-                    await loadRecent(); // Refresh the grid below
+                    await loadRecent();
                     currentDraftData = null;
-                    // alert("Dish successfully recorded in your journal!");
                 } else {
                     const errorText = await response.text();
                     alert("Server Error: " + errorText);
@@ -345,35 +392,149 @@
             document.getElementById('review-overlay').classList.add('hidden');
         }
 
-        /**
-         * UI HELPER: Load Recently Recorded Grid
-         */
+        // ─── Saved Recipe Overlay ───
+        function openRecipeOverlay(recipe) {
+            if (!recipe) return;
+            currentOpenRecipe = recipe; // store for delete access
+            window.currentOpenRecipe = recipe;
+
+            // Title
+            document.getElementById('saved-overlay-title').innerText = recipe.name;
+
+            // Date
+            document.getElementById('saved-overlay-date').innerText =
+                `Recorded ${new Date(recipe.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                })}`;
+
+            // Description
+            document.getElementById('saved-overlay-description').innerText =
+                recipe.description || '';
+
+            // Illustration — use assigned index
+            document.getElementById('saved-overlay-image').src = getIllustration(recipe.imageIndex);
+
+            // Ingredients
+            const ingredients = recipe.ingredients || [];
+            document.getElementById('saved-overlay-ingredients').innerHTML = ingredients.map(ing => `
+        <li class="flex items-center gap-3 text-sm font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+            <span>
+                ${ing.quantity ? `<span class="text-primary font-bold">${ing.quantity}${ing.unit ? ' ' + ing.unit : ''}</span> ` : ''}
+                ${ing.name}
+            </span>
+        </li>`).join('');
+
+            // In Your Words
+            document.getElementById('saved-overlay-raw').innerText =
+                recipe.rawInput || 'No notes recorded.';
+
+
+            // Show overlay
+            document.getElementById('saved-recipe-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSavedRecipeOverlay() {
+            document.getElementById('saved-recipe-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+
+        function deleteRecipe(recipe) {
+            console.log("deleteRecipe called with:", recipe); // add this
+            console.log("recipe.name:", recipe?.name);        // add this
+            console.log("recipe.id:", recipe?.id);            // add this
+            recipeIdToDelete = recipe.id;
+            // Set the recipe name in the message
+            document.getElementById('delete-confirm-message').innerText =
+                `"${recipe.name}" will be permanently removed from your Recipe Book.`;
+
+            // Wire the confirm button to actually execute the delete
+            document.getElementById('delete-confirm-btn').onclick = () => confirmDelete();
+
+            // Show modal
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+            // document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteConfirm() {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            recipeIdToDelete = null;
+            // document.body.style.overflow = '';
+        }
+
+        async function confirmDelete() {
+
+            if (!recipeIdToDelete) return;
+
+            const confirmBtn = document.getElementById('delete-confirm-btn');
+            const originalText = confirmBtn.innerText;
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = "Removing...";
+
+            try {
+                const response = await apiFetch(`/api/recipes/${recipe.id}`, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    closeDeleteConfirm();
+                    closeSavedRecipeOverlay();
+                    window.currentOpenRecipe = null;
+
+                    // Refresh featured card
+                    await loadRecent();
+                } else {
+                    alert("Couldn't remove the recipe. Please try again.");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = originalText;
+            }
+        }
+
+
         async function loadRecent() {
             const grid = document.getElementById('recent-grid');
             const section = document.getElementById('recent-saved-section');
 
             try {
-                const response = await fetch("/api/recipes");
+                const response = await apiFetch("/api/recipes");
                 const recipes = await response.json();
 
                 if (recipes && recipes.length > 0) {
                     section.classList.remove('hidden');
                     const recent = [...recipes].reverse().slice(0, 5);
+                    window.recentRecipesCache = recent; // store on window
 
-                    grid.innerHTML = recent.map((recipe) => {
+
+                    grid.innerHTML = recent.map((recipe, index) => {
                         const imageUrl = getIllustration(recipe.imageIndex);
                         return `
-                    <div class="space-y-3 group cursor-pointer animate-in fade-in slide-in-from-bottom-2 duration-700">
-                        <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
-                            <img src="${imageUrl}" 
-                                 class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
-                            <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
-                        </div>
-                        <div class="px-1">
-                            <h4 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">${recipe.name}</h4>
-                            <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-bold mt-0.5">${new Date(recipe.createdAt).toLocaleDateString()}</p>
-                        </div>
-                    </div>`;
+                            <div class="relative group animate-in fade-in slide-in-from-bottom-2 duration-700">
+                                <!-- Delete button -->
+                                 <button onclick="event.stopPropagation(); deleteRecipe(window.recentRecipesCache[${index}])"
+                                    class="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md text-white/40 hover:text-red-400 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl">
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                </button>
+
+                                <!-- Card — clickable to open overlay -->
+                                <div class="space-y-3 cursor-pointer"
+                                    onclick="openRecipeOverlay(window.recentRecipesCache[${index}])">
+                                    <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
+                                        <img src="${imageUrl}"
+                                            class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                                        <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
+                                    </div>
+                                    <div class="px-1">
+                                        <h4 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">${recipe.name}</h4>
+                                        <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-bold mt-0.5">${new Date(recipe.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            </div>`;
                     }).join('');
                 } else {
                     section.classList.add('hidden');
@@ -383,9 +544,45 @@
             }
         }
 
-        function login() { window.location.href = "login.html"; }
-        function logout() { console.log("Logging out..."); window.location.href = "index.html"; }
+        // Expose functions needed by HTML onclick handlers
+        window.saveRecipe = saveRecipe;
+        window.finalCommit = finalCommit;
+        window.closeReview = closeReview;
+        window.deleteRecipe = deleteRecipe;
+        window.closeDeleteConfirm = closeDeleteConfirm;
+        window.confirmDelete = confirmDelete;
+        window.openRecipeOverlay = openRecipeOverlay;
+        window.closeSavedRecipeOverlay = closeSavedRecipeOverlay;
+        // window.getIllustration = getIllustration;
     </script>
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeDeleteConfirm()"></div>
+        <div
+            class="relative bg-surface-container rounded-2xl max-w-sm w-full p-8 shadow-2xl border border-outline/20 text-center">
+
+            <!-- Icon -->
+            <div class="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-error">delete</span>
+            </div>
+
+            <!-- Text -->
+            <h3 class="text-xl font-extrabold text-on-surface mb-2">Remove Recipe?</h3>
+            <p id="delete-confirm-message" class="text-on-surface-variant text-sm leading-relaxed mb-8 font-medium">
+                This will permanently remove this dish from your Recipe Book.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex gap-3">
+                <button onclick="closeDeleteConfirm()"
+                    class="flex-1 py-3 border border-outline/30 text-on-surface-variant rounded-xl font-bold text-sm hover:bg-surface-container-high transition-all">
+                    Keep It
+                </button>
+                <button id="delete-confirm-btn"
+                    class="flex-1 py-3 bg-error/20 text-error border border-error/30 rounded-xl font-bold text-sm hover:bg-error/30 transition-all">
+                    Yes, Remove
+                </button>
+            </div>
+        </div>
 </body>
 
 </html>

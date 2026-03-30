@@ -15,33 +15,39 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
-    List<Recipe> findByUserId(String userId);
+        List<Recipe> findByUserId(String userId);
 
-    List<Recipe> findByUserIdAndNameContaining(String userId, String name);
+        List<Recipe> findByUserIdAndNameContaining(String userId, String name);
 
-    Optional<Recipe> findByIdAndUserId(UUID id, String userId);
+        Optional<Recipe> findByIdAndUserId(UUID id, String userId);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE recipes SET embedding = CAST(:embedding AS vector) WHERE id = CAST(:id AS uuid)", nativeQuery = true)
-    void updateEmbedding(@Param("id") String id, @Param("embedding") String embedding);
+        @Modifying
+        @Transactional
+        void deleteByIdAndUserId(UUID id, String userId);
 
-    @Query(value = """
-            SELECT * FROM recipes
-            WHERE user_id = :userId
-            AND (embedding <=> CAST(:embedding AS vector)) < :threshold
-            ORDER BY embedding <=> CAST(:embedding AS vector)
-            LIMIT 5
-            """, nativeQuery = true)
-    List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding, @Param("threshold") double threshold);
+        @Modifying
+        @Transactional
+        @Query(value = "UPDATE recipes SET embedding = CAST(:embedding AS vector) WHERE id = CAST(:id AS uuid)", nativeQuery = true)
+        void updateEmbedding(@Param("id") String id, @Param("embedding") String embedding);
 
-    @Query(value = """
-            SELECT name, (embedding <=> CAST(:embedding AS vector)) as distance
-            FROM recipes
-            WHERE user_id = :userId
-            ORDER BY distance
-            """, nativeQuery = true)
-    List<Object[]> findSimilarRecipesWithScores(
-            @Param("userId") String userId,
-            @Param("embedding") String embedding);
+        @Query(value = """
+                        SELECT * FROM recipes
+                        WHERE user_id = :userId
+                        AND (embedding <=> CAST(:embedding AS vector)) < :threshold
+                        ORDER BY embedding <=> CAST(:embedding AS vector)
+                        LIMIT 5
+                        """, nativeQuery = true)
+        List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding,
+                        @Param("threshold") double threshold);
+
+        @Query(value = """
+                        SELECT name, (embedding <=> CAST(:embedding AS vector)) as distance
+                        FROM recipes
+                        WHERE user_id = :userId
+                        ORDER BY distance
+                        """, nativeQuery = true)
+        List<Object[]> findSimilarRecipesWithScores(
+                        @Param("userId") String userId,
+                        @Param("embedding") String embedding);
+
 }

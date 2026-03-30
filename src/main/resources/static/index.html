@@ -138,7 +138,7 @@
             <div class="nav-links hidden md:flex items-center space-x-8">
                 <a class="text-emerald-200 font-semibold border-b-2 border-emerald-200 pb-1" href="/index.html">Home</a>
                 <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/journal.html">Recipe Book</a>
-                <a class="text-stone-400 hover:text-stone-200 trançsition-colors" href="/find.html">Meal Finder</a>
+                <a class="text-stone-400 hover:text-stone-200 transition-colors" href="/find.html">Meal Finder</a>
             </div>
             <div class="flex items-center gap-6" id="auth-button-container">
                 <button onclick="login()" id="auth-btn"
@@ -150,7 +150,6 @@
         <!-- Hero Section -->
         <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
             <div class="absolute inset-0 z-0">
-                <!-- <img alt="Architectural culinary plating" class="w-full h-full object-cover opacity-50 grayscale contrast-125" data-alt="monochromatic minimalist pasta dish on dark stone plate with dramatic overhead lighting and deep shadows in an obsidian kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhvCE6kZEUbS5vlAQB_ni4_2Z5dQdR0MhJ40p_FhVjB7fokGcmttsKbJT0Ms1XPbgm21FRb17lJ3CSSnu9vOI3qkWgm-TAP_p6Zcg6V8mxD75bZVIOCeHY3iAMhYDXFc6rjNHCKYtxrZo-w05rsEaLBLrkZohWjVuvTUwQpd3y-Hxk1BnqQ4Yi3euO7yNnEI0FcWamoPCNlZilOPjlhMEQNXAAB0c3AF-AmFzzW-gC6RFUSHQVVS_0iefXOtLdYptK0QhLhjWhzZU"/> -->
                 <img alt="Culinary Mise en Place" class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-75"
                     src="https://plus.unsplash.com/premium_photo-1666466251916-8cf522eae133?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDZ8fHxlbnwwfHx8fHw%3D" />
                 <div class="absolute inset-0 bg-[#869489]/10 mix-blend-multiply"></div>
@@ -161,9 +160,9 @@
                 <span class="inline-block label-md text-primary tracking-[0.4em] uppercase mb-6 opacity-80">Remi. Your
                     personal chef.</span>
                 <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter text-on-surface leading-[0.9] mb-8">
-                    <span class="text-on-surface/40 text-4xl md:text-5xl font-medium block mb-2">Your dishes.</span>
-                    YOUR STORY.<br />
-                    <span class="text-on-surface/40 text-4xl md:text-5xl font-medium block mt-2">Your chef.</span>
+                    <!-- <span class="text-on-surface/40 text-4xl md:text-5xl font-medium block mb-2">Your dishes.</span> -->
+                    Every ingredient<br />
+                    <span class="text-on-surface/40 text-4xl md:text-5xl tracking-tight block mt-2">has a recipe</span>
                 </h1>
                 <p
                     class="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-light leading-relaxed mb-12">
@@ -183,10 +182,6 @@
                     </a>
                 </div>
             </div>
-            <!-- <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-                <span class="text-on-surface-variant/30 text-[10px] uppercase tracking-widest font-bold">Scroll</span>
-                <span class="material-symbols-outlined text-on-surface-variant/30 text-sm">keyboard_arrow_down</span>
-            </div> -->
         </section>
         <!-- Value Proposition Section (Bento Inspired Grid) -->
         <section id="how-it-works" class="py-32 px-8 max-w-[1440px] mx-auto bg-surface">
@@ -246,45 +241,35 @@
     </main>
     <!-- on your index.html / landing page -->
 
-    <script>
-
-        // Placeholder for Login: Redirects to your login page
-        function login() {
-            console.log("Redirecting to login...");
-            window.location.href = "login.html";
-        }
-
-        // Placeholder for Logout: Clears the token and refreshes the UI
-        function logout() {
-            console.log("Logging out...");
-            sessionStorage.removeItem("access_token");
-            // Refresh the UI to show the 'Login' button again
-            updateAuthUI();
-        }
-
-        function updateAuthUI() {
-            const token = sessionStorage.getItem("access_token");
-            const btn = document.getElementById("auth-btn");
-
-            if (token) {
-                btn.innerText = "Logout";
-                btn.onclick = logout;
-
-                // btn.classList.remove("bg-[#bccabe]");
-                // btn.classList.add("bg-stone-800", "text-stone-200", "border", "border-stone-700");
+    <script type="module">
+        import { getCurrentUser, signOut } from 'https://esm.sh/aws-amplify@6/auth';
+        import { Amplify } from 'https://esm.sh/aws-amplify@6';
+    
+        Amplify.configure({
+            Auth: {
+                Cognito: {
+                    userPoolId: 'us-east-1_E8orXN70T',
+                    userPoolClientId: '2bcr0f7nd14rv75lh7colsakif',
+                    loginWith: { email: true }
+                }
             }
-            else {
-                btn.innerText = "Login";
-                btn.onclick = login;
-            }
-        }
-
-        updateAuthUI();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('login_success')) {
-            updateAuthUI();
-            window.history.replaceState({}, document.title, "/index.html");
+        });
+    
+        window.login = () => window.location.href = '/login.html';
+    
+        window.logout = async () => {
+            await signOut();
+            window.location.href = '/index.html';
+        };
+    
+        // Check if logged in to show logout button
+        try {
+            await getCurrentUser();
+            const btn = document.getElementById('auth-btn');
+            btn.innerText = 'Logout';
+            btn.onclick = window.logout;
+        } catch {
+            // Not logged in — show login button as default
         }
     </script>
 </body>
