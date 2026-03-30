@@ -87,18 +87,30 @@ public class RecipeController {
 
             // Step 2 — generate embedding from name + ingredient names
             // String ingredientNames = recipe.getIngredients().stream()
-            //         .map(Ingredient::getName)
-            //         .collect(Collectors.joining(", "));
+            // .map(Ingredient::getName)
+            // .collect(Collectors.joining(", "));
 
-            List<String> cleanNames = recipe.getIngredients().stream()
+            // List<String> cleanNames = recipe.getIngredients().stream()
+            //         .map(ing -> ing.getName().toLowerCase().trim())
+            //         .filter(name -> !name.isEmpty())
+            //         .collect(Collectors.toList());
+
+            // Get the ingredients already ordered by the LLM
+            List<Ingredient> ingredients = recipe.getIngredients();
+
+            // Take top 5 (or fewer if the list is small)
+            int limit = Math.min(ingredients.size(), 5);
+            List<String> essentialNames = ingredients.subList(0, limit).stream()
                     .map(ing -> ing.getName().toLowerCase().trim())
-                    .filter(name -> !name.isEmpty())
                     .collect(Collectors.toList());
 
-            String ingredientList = String.join(", ", cleanNames);
-            String weightedIngredients = ingredientList + ", " + ingredientList;
+            String essentialList = String.join(", ", essentialNames);
 
-            String embeddingText = "Recipe: " + recipe.getName().toLowerCase().trim() + " | Ingredients " + weightedIngredients;
+            // Apply the weight to the essentials
+            String weightedIngredients = essentialList + ", " + essentialList;
+
+            String embeddingText = "Recipe: " + recipe.getName().toLowerCase().trim() + " | Essentials: "
+                    + weightedIngredients;
             float[] vector = embeddingService.getEmbedding(embeddingText);
 
             // Step 3 — update embedding column via native query

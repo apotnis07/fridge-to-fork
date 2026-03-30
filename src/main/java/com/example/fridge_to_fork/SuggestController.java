@@ -35,7 +35,7 @@ public class SuggestController {
 
         String cleanInput = request.getAvailableIngredients().toLowerCase().trim();
 
-        String expandedQuery = "Ingredients: " + cleanInput + ", " + cleanInput;
+        String expandedQuery = "Ingredients: " + cleanInput + ". A recipe that has " + cleanInput;
 
         float[] queryVector = embeddingService.getEmbedding(expandedQuery);
         String vectorString = embeddingService.toVectorString(queryVector);
@@ -44,7 +44,7 @@ public class SuggestController {
         List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
         scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
 
-        List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.75);
+        List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.78);
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 

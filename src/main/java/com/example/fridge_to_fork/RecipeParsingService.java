@@ -22,25 +22,26 @@ public class RecipeParsingService {
 
     public String parseRecipeWithLLM(String userDescription) {
         String prompt = """
-                Human: Transform the following recipe description into a JSON object strictly following this schema:
-                {
-                  "name": "string",
-                  "description": "string (a vivid, appetizing 10-20 word summary of the dish based on the raw description. Must read like editorial food writing, not a list of ingredients.)",
-                  "rawInput": "string (the full original description)",
-                  "ingredients": [
-                    {
-                      "name": "string",
-                      "quantity": "number (double) or null",
-                      "unit": "string (e.g., 'g', 'oz', 'tbsp') or null"
-                    }
-                  ]
-                }
-                Return ONLY the valid JSON. No conversational text, no markdown backticks.
-                If a quantity is not explicitly mentioned (e.g., 'a splash of soy sauce' or 'add ginger' or 'handful of basil'), set the 'quantity' to null and the 'unit' to null. Do not invent numbers.
-                Description: %s
-
-                Assistant: """
-                .formatted(userDescription);
+        Human: Transform the following recipe description into a JSON object strictly following this schema:
+        {
+          "name": "string",
+          "description": "string (a vivid, appetizing 10-20 word summary of the dish based on the raw description. Must read like editorial food writing, not a list of ingredients.)",
+          "rawInput": "string (the full original description)",
+          "ingredients": [
+            {
+              "name": "string",
+              "quantity": number(double) or null,
+              "unit": "string (e.g., 'g', 'oz', 'tbsp') or null"
+            }
+          ]
+        }
+        Return ONLY the valid JSON. No conversational text, no markdown backticks.
+        If a quantity is not explicitly mentioned (e.g., 'a splash of soy sauce' or 'add ginger' or 'handful of basil'), set the 'quantity' to null and the 'unit' to null. Do not invent numbers.
+        Order the ingredients array by importance to the dish from most to least essential.
+        Prioritize primary proteins (meat, tofu, beans), starches (bread, rice, potatoes), and main vegetables over spices, oils, condiments, and garnishes.
+        Description: %s
+        
+        Assistant: """.formatted(userDescription);
 
         JSONObject payload = new JSONObject()
                 .put("anthropic_version", "bedrock-2023-05-31")
