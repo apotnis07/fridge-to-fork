@@ -666,6 +666,7 @@
                     // Reset secondary cards and Chef's Choice
                     renderSecondaryCard(1, null);
                     renderSecondaryCard(2, null);
+                    await searchRecipes();
                     document.getElementById('bento-title').innerText = "Your Saved Recipes";
                     document.getElementById('chefs-choice-title').innerText = "Ask Remi";
                     document.getElementById('chefs-choice-body').innerText =
