@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Random;
+
 // @RestController
 // @RequestMapping("/api/recipes")
 // public class RecipeController {
@@ -77,12 +79,14 @@ public class RecipeController {
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe, HttpServletRequest request) {
 
+        Random rand = new Random();
+
         try {
             // Step 1 — save recipe without embedding
             String userId = (String) request.getAttribute("userId");
             recipe.setUserId(userId);
             // recipe.setUserId(MOCK_USER_ID);
-            recipe.setImageIndex((int) (Math.random() * 14));
+            recipe.setImageIndex(rand.nextInt(18));
             Recipe saved = recipeRepository.save(recipe);
 
             // Step 2 — generate embedding from name + ingredient names

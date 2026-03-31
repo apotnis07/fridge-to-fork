@@ -178,13 +178,13 @@
                 </div>
             </div>
         </div>
-        <div id="library-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4 md:px-10">
+        <div id="library-overlay" class="hidden fixed inset-0 z-[60] flex items-center justify-center px-4 md:px-10 overflow-hidden">
             <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeLibrary()"></div>
 
             <div
-                class="relative bg-surface border border-outline/20 w-full max-w-6xl max-h-[85vh] rounded-2xl flex flex-col shadow-2xl">
+                class="relative bg-surface border border-outline/20 w-full max-w-6xl h-[85vh] max-h-[85vh] rounded-2xl flex flex-col shadow-2xl overflow-hidden">
 
-                <div class="p-6 border-b border-outline/10 flex justify-between items-center">
+                <div class="p-6 border-b border-outline/10 flex justify-between items-center flex-shrink-0">
                     <div>
                         <h2 class="text-2xl font-bold text-stone-50">Your Recipe Book</h2>
                         <p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1"><span
@@ -197,7 +197,7 @@
                 </div>
 
                 <div id="library-grid"
-                    class="p-8 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                class="p-8 overflow-y-auto flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 </div>
             </div>
         </div>
@@ -305,21 +305,24 @@
         document.addEventListener('DOMContentLoaded', loadRecent);
 
         const ILLUSTRATIONS = [
-            "https://plus.unsplash.com/premium_vector-1722661980261-a06040a64ea4?q=80&w=1480&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488984-c2c93a8849cb?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488922-284260538d01?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488984-91b0039c0336?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488757-8d4e34570303?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1756902133272-8ce3d151d670?q=80&w=1010&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741109886479-096317749fe7?q=80&w=1011&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1736254664484-b69ad6fb4125?w=900&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1758513947785-9d69574483f5?q=80&w=1064&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1769172620473-8703d9fa87cd?q=80&w=1480&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1738740828565-e195444e403e?q=80&w=987&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1739875207991-5a965f8ac0ee?q=80&w=996&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1724853557152-10ef36389830?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop"
+            "/assets/illustrations/recipe-0.jpg",
+            "/assets/illustrations/recipe-1.jpg",
+            "/assets/illustrations/recipe-2.jpg",
+            "/assets/illustrations/recipe-3.jpg",
+            "/assets/illustrations/recipe-4.jpg",
+            "/assets/illustrations/recipe-5.jpg",
+            "/assets/illustrations/recipe-6.jpg",
+            "/assets/illustrations/recipe-7.jpg",
+            "/assets/illustrations/recipe-8.jpg",
+            "/assets/illustrations/recipe-9.jpg",
+            "/assets/illustrations/recipe-10.jpg",
+            "/assets/illustrations/recipe-11.jpg",
+            "/assets/illustrations/recipe-12.jpg",
+            "/assets/illustrations/recipe-13.jpg",
+            "/assets/illustrations/recipe-14.jpg",
+            "/assets/illustrations/recipe-15.jpg",
+            "/assets/illustrations/recipe-16.jpg",
+            "/assets/illustrations/recipe-17.jpg"
         ];
 
         function getIllustration(imageIndex) {
@@ -594,14 +597,20 @@
             const imageUrl = getIllustration(recipe.imageIndex);
             // We pass the recipe object to the detail opener
             return `
-                <div onclick='handleLibraryClick(${index})' 
-                    class="group cursor-pointer bg-stone-900/50 border border-outline/10 rounded-xl overflow-hidden hover:border-primary/50 transition-all">
-                    <div class="aspect-video overflow-hidden">
-                        <img src="${imageUrl || 'placeholder.jpg'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div onclick="handleLibraryClick(${index})" 
+                    class="group cursor-pointer bg-stone-900 border border-outline/10 rounded-xl overflow-hidden flex flex-col h-full min-h-[220px]">
+                    
+                    <div class="aspect-video w-full overflow-hidden flex-shrink-0 bg-stone-950">
+                        <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                     </div>
-                    <div class="p-4">
-                        <h4 class="font-bold text-stone-100 truncate">${recipe.name}</h4>
-                        <p class="text-xs text-stone-500 mt-1">${new Date(recipe.createdAt).toLocaleDateString()}</p>
+
+                    <div class="p-3 flex-grow flex flex-col justify-center bg-stone-900">
+                        <h4 class="font-bold text-stone-50 text-sm leading-tight break-words line-clamp-2">
+                            ${recipe.name || "Untitled Recipe"}
+                        </h4>
+                        <p class="text-[10px] text-stone-500 uppercase mt-1">
+                            ${recipe.createdAt ? new Date(recipe.createdAt).toLocaleDateString() : 'New'}
+                        </p>
                     </div>
                 </div>
             `;

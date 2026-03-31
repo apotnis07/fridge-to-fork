@@ -29,7 +29,7 @@ public class RecipeParsingService {
           "rawInput": "string (the full original description)",
           "ingredients": [
             {
-              "name": "string",
+              "name": "string" (Fix any spelling mistakes or typos),
               "quantity": number(double) or null,
               "unit": "string (e.g., 'g', 'oz', 'tbsp') or null"
             }

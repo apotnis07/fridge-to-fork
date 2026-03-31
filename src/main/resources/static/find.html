@@ -169,7 +169,7 @@
                         <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h2 id="secondary-card-1-name" class="text-2xl font-bold text-on-surface mb-4">—</h2> 
+                        <h2 id="secondary-card-1-name" class="text-2xl font-bold text-on-surface mb-4">Slot open for a new favorite.</h2>
                         <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
 
                     </div>
@@ -183,11 +183,11 @@
                         <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h3 id="secondary-card-2-name" class="text-2xl font-bold text-on-surface mb-4">—</h3>
+                        <h3 id="secondary-card-2-name" class="text-2xl font-bold text-on-surface mb-4">What's cooking next?</h3>
                         <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-2-tags"></div>
                     </div>
                 </div>
-                
+
             </div>
         </section>
     </main>
@@ -353,21 +353,24 @@
 
 
         const ILLUSTRATIONS = [
-            "https://plus.unsplash.com/premium_vector-1722661980261-a06040a64ea4?q=80&w=1480&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488984-c2c93a8849cb?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488922-284260538d01?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488984-91b0039c0336?q=80&w=1674&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741366488757-8d4e34570303?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1756902133272-8ce3d151d670?q=80&w=1010&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1741109886479-096317749fe7?q=80&w=1011&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1736254664484-b69ad6fb4125?w=900&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1758513947785-9d69574483f5?q=80&w=1064&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1769172620473-8703d9fa87cd?q=80&w=1480&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1738740828565-e195444e403e?q=80&w=987&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1739875207991-5a965f8ac0ee?q=80&w=996&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1724853557152-10ef36389830?q=80&w=1035&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1723208948729-6b8b3d3a65e3?q=80&w=1064&auto=format&fit=crop",
-            "https://plus.unsplash.com/premium_vector-1727360595566-45523bd5461b?q=80&w=927&auto=format&fit=crop"
+            "/assets/illustrations/recipe-0.jpg",
+            "/assets/illustrations/recipe-1.jpg",
+            "/assets/illustrations/recipe-2.jpg",
+            "/assets/illustrations/recipe-3.jpg",
+            "/assets/illustrations/recipe-4.jpg",
+            "/assets/illustrations/recipe-5.jpg",
+            "/assets/illustrations/recipe-6.jpg",
+            "/assets/illustrations/recipe-7.jpg",
+            "/assets/illustrations/recipe-8.jpg",
+            "/assets/illustrations/recipe-9.jpg",
+            "/assets/illustrations/recipe-10.jpg",
+            "/assets/illustrations/recipe-11.jpg",
+            "/assets/illustrations/recipe-12.jpg",
+            "/assets/illustrations/recipe-13.jpg",
+            "/assets/illustrations/recipe-14.jpg",
+            "/assets/illustrations/recipe-15.jpg",
+            "/assets/illustrations/recipe-16.jpg",
+            "/assets/illustrations/recipe-17.jpg"
         ];
 
 
@@ -395,8 +398,8 @@
         async function loadFeaturedRecipe() {
 
             const imageContainer = document.getElementById('recipe-grid-1-image');
-    
-             // 1. Show a dark shimmer placeholder immediately
+
+            // 1. Show a dark shimmer placeholder immediately
             imageContainer.innerHTML = `
                 <div class="w-full h-full bg-stone-900 animate-pulse flex items-center justify-center">
                     <span class="material-symbols-outlined text-stone-800 text-6xl">image</span>
@@ -506,15 +509,15 @@
 
             if (!recipe) {
                 card.classList.add('hidden');
-            //     nameEl.innerText = "No match found";
-            //     tagsEl.innerHTML = "";
-            //     if (imageEl) imageEl.innerHTML = `
-            // <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
+                //     nameEl.innerText = "No match found";
+                //     tagsEl.innerHTML = "";
+                //     if (imageEl) imageEl.innerHTML = `
+                // <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>`;
                 card.onclick = null;
                 card.classList.remove('cursor-pointer');
                 return;
             }
-            else{
+            else {
                 card.classList.remove('hidden');
             }
             // Make card clickable
@@ -666,13 +669,13 @@
                     // Reset secondary cards and Chef's Choice
                     renderSecondaryCard(1, null);
                     renderSecondaryCard(2, null);
-                    await searchRecipes();
-                    document.getElementById('bento-title').innerText = "Your Saved Recipes";
-                    document.getElementById('chefs-choice-title').innerText = "Ask Remi";
-                    document.getElementById('chefs-choice-body').innerText =
-                        "Add your available ingredients above and hit Search — Remi will craft something new just for you.";
-                    currentChefsChoiceText = null;
-                    document.getElementById('chefs-choice-hint').classList.add('hidden');
+                    await loadFeaturedRecipe();
+                    // document.getElementById('bento-title').innerText = "Your Saved Recipes";
+                    // document.getElementById('chefs-choice-title').innerText = "Ask Remi";
+                    // document.getElementById('chefs-choice-body').innerText =
+                    //     "Add your available ingredients above and hit Search — Remi will craft something new just for you.";
+                    // currentChefsChoiceText = null;
+                    // document.getElementById('chefs-choice-hint').classList.add('hidden');
 
                 } else {
                     alert("Couldn't remove the recipe. Please try again.");
@@ -776,7 +779,7 @@
             if (globalIngredients.length > 0) {
                 searchRecipes();
             }
-            else{
+            else {
                 loadFeaturedRecipe(); // Reset UI to default
                 return;
             }
