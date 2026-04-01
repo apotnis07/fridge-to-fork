@@ -301,8 +301,8 @@
 
 
 
-        // 2. INITIAL LOAD
-        document.addEventListener('DOMContentLoaded', loadRecent);
+        // 2. INITIAL LOAD — call directly, DOMContentLoaded already fired by module time
+        loadRecent();   
 
         const ILLUSTRATIONS = [
             "/assets/illustrations/recipe-0.jpg",
