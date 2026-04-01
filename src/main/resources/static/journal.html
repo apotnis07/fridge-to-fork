@@ -197,7 +197,7 @@
                 </div>
 
                 <div id="library-grid"
-                class="p-8 overflow-y-auto flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                class="p-8 overflow-y-auto flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 content-start">
                 </div>
             </div>
         </div>
@@ -365,7 +365,7 @@
 
             } catch (err) {
                 console.error("Analysis Error:", err);
-                alert("Remi couldn't quite map that. Try being a bit more descriptive.");
+                // alert("Remi couldn't quite map that. Try being a bit more descriptive.");
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerText = originalText;

@@ -44,7 +44,7 @@ public class SuggestController {
         List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
         scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
 
-        List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.78);
+        List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.70);
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 
