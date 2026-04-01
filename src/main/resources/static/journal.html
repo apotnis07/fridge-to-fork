@@ -287,7 +287,16 @@
         import { requireAuth, logout, apiFetch } from '/auth.js';
 
         // Require auth on page load
-        await requireAuth();
+        async function init(){
+            try{
+                await requireAuth();
+                await loadRecent();   
+            } catch(err) {
+                console.error("Initialization failed:", err);
+            }
+        }
+
+        init();
 
         // Wire logout button
         window.logout = logout;
@@ -302,7 +311,6 @@
 
 
         // 2. INITIAL LOAD — call directly, DOMContentLoaded already fired by module time
-        loadRecent();   
 
         const ILLUSTRATIONS = [
             "/assets/illustrations/recipe-0.jpg",
