@@ -2,7 +2,6 @@ package com.example.fridge_to_fork;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
-import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
@@ -25,7 +24,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String JWKS_URL = "https://cognito-idp." + REGION + ".amazonaws.com/" + USER_POOL_ID
             + "/.well-known/jwks.json";
 
-    // Build JWKSource once — not on every request
     private final JWKSource<SecurityContext> jwkSource;
 
     public JwtFilter() throws Exception {
@@ -42,21 +40,24 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
+        System.out.println("=== JWT FILTER RUNNING for path: " + path);
 
-        // Only protect API routes — let everything else through
         if (!path.startsWith("/api/")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String authHeader = request.getHeader("Authorization");
+        System.out.println("=== Auth header present: " + (authHeader != null));
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("=== REJECTED: Missing or invalid Authorization header");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authHeader.substring(7);
+        System.out.println("=== Token preview: " + token.substring(0, Math.min(50, token.length())));
 
         try {
             ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
@@ -65,12 +66,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
             var claims = jwtProcessor.process(token, null);
             String userId = claims.getSubject();
+            System.out.println("=== JWT valid, userId: " + userId);
 
-            // Pass user ID to controllers via header
             request.setAttribute("userId", userId);
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
+            System.out.println("=== JWT VALIDATION FAILED ===");
+            System.out.println("=== Error type: " + e.getClass().getName());
+            System.out.println("=== Error message: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
