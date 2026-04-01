@@ -1,6 +1,11 @@
 import { Amplify } from 'https://esm.sh/aws-amplify@6';
 import { fetchAuthSession, getCurrentUser, signOut } from 'https://esm.sh/aws-amplify@6/auth';
 
+
+const API_BASE = window.location.hostname === 'localhost'
+    ? ''
+    : 'http://remi.us-east-1.elasticbeanstalk.com';
+
 Amplify.configure({
     Auth: {
         Cognito: {
@@ -35,7 +40,7 @@ export async function logout() {
 // Authenticated fetch — attaches JWT automatically
 export async function apiFetch(url, options = {}) {
     const token = await getToken();
-    return fetch(url, {
+    return fetch(`${API_BASE}${url}`, {
         ...options,
         headers: {
             ...options.headers,
