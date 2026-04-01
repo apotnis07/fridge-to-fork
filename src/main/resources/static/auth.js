@@ -15,7 +15,7 @@ Amplify.configure({
 // Get JWT token for API calls
 export async function getToken() {
     const session = await fetchAuthSession();
-    return session.tokens.idToken.toString();
+    return session.tokens.accessToken.toString();
 }
 
 // Redirect to login if not authenticated
