@@ -50,4 +50,26 @@ public class SuggestController {
 
         return ResponseEntity.ok(new SuggestionResult(matches, newRecipe));
     }
+
+
+    @PostMapping("/suggestBorrowedRecipes")
+    public ResponseEntity<SuggestionResult> suggestBorrowedRecipes(@RequestBody SuggestionRequest request, HttpServletRequest httpRequest) {
+
+        String userId = (String) httpRequest.getAttribute("userId");
+
+        String cleanInput = request.getAvailableIngredients().toLowerCase().trim();
+
+        String expandedQuery = "Ingredients: " + cleanInput + ". A recipe that has " + cleanInput;
+
+        float[] queryVector = embeddingService.getEmbedding(expandedQuery);
+        String vectorString = embeddingService.toVectorString(queryVector);
+
+        // Debug — log distances to console
+        List<Object[]> scores = recipeRepository.findSimilarRecipesOtherUsersWithScores(userId, vectorString);
+        scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
+
+        List<Recipe> matches = recipeRepository.findSimilarRecipesOtherUsers(userId, vectorString, 0.6);
+
+        return ResponseEntity.ok(new SuggestionResult(matches, null));
+    }
 }

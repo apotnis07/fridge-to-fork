@@ -40,6 +40,17 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
         List<Recipe> findSimilarRecipes(@Param("userId") String userId, @Param("embedding") String embedding,
                         @Param("threshold") double threshold);
 
+
+        @Query(value = """
+                        SELECT * FROM recipes
+                        WHERE user_id != :userId
+                        AND (embedding <=> CAST(:embedding AS vector)) < :threshold
+                        ORDER BY embedding <=> CAST(:embedding AS vector)
+                        LIMIT 2
+                        """, nativeQuery = true)
+        List<Recipe> findSimilarRecipesOtherUsers(@Param("userId") String userId, @Param("embedding") String embedding,
+                        @Param("threshold") double threshold);
+
         @Query(value = """
                         SELECT name, (embedding <=> CAST(:embedding AS vector)) as distance
                         FROM recipes
@@ -47,6 +58,17 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
                         ORDER BY distance
                         """, nativeQuery = true)
         List<Object[]> findSimilarRecipesWithScores(
+                        @Param("userId") String userId,
+                        @Param("embedding") String embedding);
+
+
+                        @Query(value = """
+                        SELECT name, (embedding <=> CAST(:embedding AS vector)) as distance
+                        FROM recipes
+                        WHERE user_id != :userId
+                        ORDER BY distance
+                        """, nativeQuery = true)
+        List<Object[]> findSimilarRecipesOtherUsersWithScores(
                         @Param("userId") String userId,
                         @Param("embedding") String embedding);
 

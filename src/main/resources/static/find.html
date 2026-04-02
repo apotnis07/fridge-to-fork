@@ -169,7 +169,8 @@
                         <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h2 id="secondary-card-1-name" class="text-2xl font-bold text-on-surface mb-4">Slot open for a new favorite.</h2>
+                        <h2 id="secondary-card-1-name" class="text-2xl font-bold text-on-surface mb-4">Slot open for a
+                            new favorite.</h2>
                         <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-1-tags"></div>
 
                     </div>
@@ -183,7 +184,8 @@
                         <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
                     </div>
                     <div class="p-6">
-                        <h3 id="secondary-card-2-name" class="text-2xl font-bold text-on-surface mb-4">What's cooking next?</h3>
+                        <h3 id="secondary-card-2-name" class="text-2xl font-bold text-on-surface mb-4">What's cooking
+                            next?</h3>
                         <div class="flex flex-wrap gap-1 mt-2" id="secondary-card-2-tags"></div>
                     </div>
                 </div>
@@ -501,7 +503,7 @@
                 </div>`;
         }
 
-        function renderSecondaryCard(cardIndex, recipe) {
+        function renderSecondaryCard(cardIndex, recipe, communityBadge = null) {
             const nameEl = document.getElementById(`secondary-card-${cardIndex}-name`);
             const tagsEl = document.getElementById(`secondary-card-${cardIndex}-tags`);
             const imageEl = document.getElementById(`secondary-card-${cardIndex}-image`);
@@ -524,7 +526,20 @@
             card.onclick = () => openRecipeOverlay(recipe);
             card.classList.add('cursor-pointer');
 
-            nameEl.innerText = recipe.name;
+            // 1. BADGE - Reduced margin from mb-3 to mb-1 to save height
+            const badgeHtml = communityBadge ? `
+    <div class="flex mb-4"> 
+        <span class="inline-flex items-center justify-center bg-primary/90 text-on-primary px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest leading-none shadow-sm min-h-[24px]">
+            ${communityBadge}
+        </span>
+    </div>` : '';
+
+            // 2. NAME - Using text-lg instead of text-xl to keep the card short
+            nameEl.innerHTML = `
+        ${badgeHtml}
+        <h3 class="text-lg font-bold leading-tight text-white line-clamp-1">${recipe.name}</h3>
+    `;
+
 
             const tags = (recipe.ingredients || []).map(ing => `
         <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
@@ -829,6 +844,40 @@
 
                 renderSecondaryCard(1, matches[1] || null);
                 renderSecondaryCard(2, matches[2] || null);
+
+                if (!matches[2]) {
+                    try {
+                        const responseOther = await apiFetch("/api/suggest/suggestBorrowedRecipes", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                availableIngredients: globalIngredients.join(", ")
+                            })
+                        });
+
+                        if (!responseOther.ok) throw new Error("Suggest from other users failed.");
+
+                        const resulOthers = await responseOther.json()
+                        const matchesOthers = resulOthers.matches || [];
+
+                        if (matchesOthers.length > 0) {
+                            if (!matches[1]) {
+                                renderSecondaryCard(1, matchesOthers[0], "Community"); //From the Crowd or Fellow Table
+                                renderSecondaryCard(2, matchesOthers[1] || null, "Community");
+                            }
+                            else if (!matches[2]) {
+                                renderSecondaryCard(2, matchesOthers[0], "Community");
+                            }
+                        }
+                        // else {
+                        //     // document.getElementById('bento-title').innerText = "No Matches Found";
+                        //     loadFeaturedRecipe(); // Reset UI to default
+                        // }
+                    } catch (err) {
+                        console.error("Other Users recipe suggestion failed:", err);
+                    }
+                }
+
 
                 renderChefsChoice(result.newRecipeSuggestion);
 
