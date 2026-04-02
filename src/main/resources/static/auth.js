@@ -1,58 +1,47 @@
-const COGNITO_DOMAIN = "https://us-east-1e8orxn70t.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "2bcr0f7nd14rv75lh7colsakif";
-const REDIRECT_URI = "http://localhost:8080/callback.html";
-const SCOPES = "openid email profile";
+import { Amplify } from 'https://esm.sh/aws-amplify@6';
+import { fetchAuthSession, getCurrentUser, signOut } from 'https://esm.sh/aws-amplify@6/auth';
 
-function login() {
-    const authUrl = `${COGNITO_DOMAIN}/oauth2/authorize`
-        + `?response_type=code`
-        + `&client_id=${CLIENT_ID}`
-        + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
-        + `&scope=${encodeURIComponent(SCOPES)}`;
-    window.location.href = authUrl;
-}
 
-function logout() {
-    sessionStorage.clear();
-    const logoutUrl = `${COGNITO_DOMAIN}/logout`
-        + `?client_id=${CLIENT_ID}`
-        + `&logout_uri=${encodeURIComponent("http://localhost:8080/index.html")}`;
-    window.location.href = logoutUrl;
-}
-
-// Use this for every API call instead of plain fetch()
-async function apiFetch(url, options = {}) {
-    const token = sessionStorage.getItem("access_token");
-
-    if (!token) {
-        login(); // token missing, bounce to login
-        return;
+Amplify.configure({
+    Auth: {
+        Cognito: {
+            userPoolId: 'us-east-1_E8orXN70T',
+            userPoolClientId: '2bcr0f7nd14rv75lh7colsakif',
+            loginWith: { email: true }
+        }
     }
+});
 
-    const response = await fetch(url, {
+// Get JWT token for API calls
+export async function getToken() {
+    const session = await fetchAuthSession();
+    return session.tokens.accessToken.toString();
+}
+
+// Redirect to login if not authenticated
+export async function requireAuth() {
+    try {
+        await getCurrentUser();
+    } catch {
+        window.location.href = '/login.html';
+    }
+}
+
+// Sign out and redirect to home
+export async function logout() {
+    await signOut();
+    window.location.href = '/index.html';
+}
+
+// Authenticated fetch — attaches JWT automatically
+export async function apiFetch(url, options = {}) {
+    const token = await getToken();
+    return fetch(url, {
         ...options,
         headers: {
             ...options.headers,
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': options.headers?.['Content-Type'] || 'application/json'
         }
     });
-
-    if (response.status === 401) {
-        // Token expired or invalid
-        sessionStorage.clear();
-        login();
-        return;
-    }
-
-    return response;
-} 
-
-// Call this on any page that requires login
-function requireAuth() {
-    const token = sessionStorage.getItem("access_token");
-    if (!token) {
-        login();
-    }
 }
-

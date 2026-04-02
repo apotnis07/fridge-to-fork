@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Remi | Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface": "#e1e7df",
+                        "surface": "#0d0f0d",
+                        "surface-container": "#171b17",
+                        "surface-container-low": "#111411",
+                        "on-surface-variant": "#a7ada5",
+                        "outline-variant": "#434944",
+                        "primary": "#bccabe",
+                        "on-primary": "#36433a",
+                        "error": "#ee7d77",
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0d0f0d;
+            color: #e1e7df;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #111411;
+            border: 1px solid #434944;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #051101;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Manrope', sans-serif;
+            color-scheme: dark;
+        }
+
+        .input-field:-webkit-autofill,
+        .input-field:-webkit-autofill:hover,
+        .input-field:-webkit-autofill:focus {
+            -webkit-text-fill-color: #030901;
+            -webkit-box-shadow: 0 0 0px 1000px #111411 inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        .input-field,
+        .input-field:focus,
+        .input-field:active {
+            color: #020900 !important;
+            -webkit-text-fill-color: #030801 !important;
+        }
+
+        .input-field:focus {
+            border-color: #bccabe;
+        }
+
+        .input-field::placeholder {
+            color: #434944;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 px-8 py-5">
+        <a href="/index.html" class="text-xl font-bold tracking-tighter text-stone-100">REMI</a>
+    </nav>
+
+    <!-- Two column layout -->
+    <div class="min-h-screen grid grid-cols-1 md:grid-cols-2">
+
+        <!-- Left — branding panel -->
+        <div
+            class="hidden md:flex flex-col justify-between p-16 bg-surface-container-low border-r border-outline-variant/20 relative overflow-hidden">
+
+            <!-- Background texture -->
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary blur-3xl"></div>
+                <div class="absolute bottom-20 right-10 w-48 h-48 rounded-full bg-primary blur-3xl"></div>
+            </div>
+
+            <!-- Top -->
+            <div class="relative z-10">
+                <span class="text-primary font-bold tracking-[0.3em] text-xs uppercase block mb-12">
+                    Remi. Your personal chef.
+                </span>
+                <h2 class="text-5xl font-extrabold tracking-tighter text-on-surface leading-[0.95]">
+                    Every ingredient
+                    <br />
+                    <span class="text-primary italic font-medium">has a recipe.</span>
+                </h2>
+            </div>
+
+            <!-- Feature list -->
+            <div class="relative z-10 space-y-6">
+                <div class="flex items-start gap-4">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-sm">edit_note</span>
+                    </div>
+                    <div>
+                        <p class="text-on-surface font-bold text-sm">Teach Remi your dishes</p>
+                        <p class="text-on-surface-variant text-xs leading-relaxed mt-1">Describe them naturally — no
+                            forms, no structure required.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-sm">inventory_2</span>
+                    </div>
+                    <div>
+                        <p class="text-on-surface font-bold text-sm">Build your personal archive</p>
+                        <p class="text-on-surface-variant text-xs leading-relaxed mt-1">Your recipe book, always ready
+                            when you need it.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                    </div>
+                    <div>
+                        <p class="text-on-surface font-bold text-sm">Cook what you have</p>
+                        <p class="text-on-surface-variant text-xs leading-relaxed mt-1">Tell Remi what's in your fridge.
+                            Dinner sorted.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom quote -->
+            <div class="relative z-10 border-t border-outline-variant/20 pt-8">
+                <p class="text-on-surface-variant text-xs leading-relaxed italic">
+                    "Stop staring at your fridge. Remi's got dinner covered."
+                </p>
+            </div>
+        </div>
+
+        <!-- Right — auth form -->
+        <div class="flex flex-col items-center justify-center px-8 py-24 md:px-16">
+
+            <div class="w-full max-w-sm">
+
+                <!-- Header -->
+                <div class="mb-10">
+                    <span id="auth-eyebrow"
+                        class="text-primary font-bold tracking-[0.3em] text-[10px] uppercase block mb-3">
+                        Welcome back
+                    </span>
+                    <h1 id="auth-title" class="text-3xl font-extrabold tracking-tighter text-on-surface">
+                        Sign in to Remi
+                    </h1>
+                </div>
+
+                <!-- Tab toggle -->
+                <div class="flex mb-8 border-b border-outline-variant/20">
+                    <button id="signin-tab" onclick="showTab('signin')"
+                        class="flex-1 pb-3 text-sm font-bold text-primary border-b-2 border-primary transition-all">
+                        Sign In
+                    </button>
+                    <button id="signup-tab" onclick="showTab('signup')"
+                        class="flex-1 pb-3 text-sm font-bold text-on-surface-variant border-b-2 border-transparent transition-all">
+                        Create Account
+                    </button>
+                </div>
+
+                <!-- Message -->
+                <div id="auth-message" class="hidden mb-6 p-4 rounded-xl border">
+                    <p class="text-sm font-medium" id="auth-message-text"></p>
+                </div>
+
+                <!-- Sign In Form -->
+                <div id="signin-form">
+                    <div class="space-y-5">
+                        <div>
+                            <label
+                                class="block text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-2">
+                                Email
+                            </label>
+                            <input id="signin-email" type="email" placeholder="you@example.com"
+                                class="input-field rounded-xl" />
+                        </div>
+                        <div>
+                            <label
+                                class="block text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-2">
+                                Password
+                            </label>
+                            <input id="signin-password" type="password" placeholder="••••••••"
+                                class="input-field rounded-xl" />
+                        </div>
+                        <button id="signin-btn" onclick="handleSignIn()"
+                            class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold text-sm hover:brightness-105 active:scale-95 transition-all mt-2 tracking-tight">
+                            Sign In
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sign Up Form -->
+                <div id="signup-form" class="hidden">
+                    <div class="space-y-5">
+                        <div>
+                            <label
+                                class="block text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-2">
+                                Email
+                            </label>
+                            <input id="signup-email" type="email" placeholder="you@example.com"
+                                class="input-field rounded-xl" />
+                        </div>
+                        <div>
+                            <label
+                                class="block text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-2">
+                                Password
+                            </label>
+                            <input id="signup-password" type="password" placeholder="Min 8 characters"
+                                class="input-field rounded-xl" />
+                        </div>
+                        <button id="signup-btn" onclick="handleSignUp()"
+                            class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold text-sm hover:brightness-105 active:scale-95 transition-all mt-2 tracking-tight">
+                            Create Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Verify Form -->
+                <div id="verify-form" class="hidden">
+                    <div class="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-xl">
+                        <p class="text-on-surface-variant text-sm leading-relaxed">
+                            Check your email for a verification code and enter it below.
+                        </p>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <label
+                                class="block text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-2">
+                                Verification Code
+                            </label>
+                            <input id="verify-code" type="text" placeholder="123456"
+                                class="input-field tracking-[0.5em] text-center text-lg" />
+                        </div>
+                        <button id="verify-btn" onclick="handleVerify()"
+                            class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-bold text-sm hover:brightness-105 active:scale-95 transition-all tracking-tight">
+                            Verify Email
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Amplify } from 'https://esm.sh/aws-amplify@6';
+        import {
+            getCurrentUser,
+            signIn,
+            signUp,
+            confirmSignUp
+        } from 'https://esm.sh/aws-amplify@6/auth';
+
+        Amplify.configure({
+            Auth: {
+                Cognito: {
+                    userPoolId: 'us-east-1_E8orXN70T',
+                    userPoolClientId: '2bcr0f7nd14rv75lh7colsakif',
+                    loginWith: { email: true }
+                }
+            }
+        });
+
+        try {
+            await getCurrentUser();
+            window.location.href = '/journal.html';
+        } catch {
+            // Not logged in
+        }
+
+        let pendingEmail = '';
+
+        window.showTab = (tab) => {
+            const isSignIn = tab === 'signin';
+            document.getElementById('signin-form').classList.toggle('hidden', !isSignIn);
+            document.getElementById('signup-form').classList.toggle('hidden', isSignIn);
+            document.getElementById('verify-form').classList.add('hidden');
+
+            document.getElementById('signin-tab').className = `flex-1 pb-3 text-sm font-bold border-b-2 transition-all ${isSignIn ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent'}`;
+            document.getElementById('signup-tab').className = `flex-1 pb-3 text-sm font-bold border-b-2 transition-all ${!isSignIn ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent'}`;
+
+            // Update header text based on active tab
+            document.getElementById('auth-eyebrow').innerText = isSignIn ? 'Welcome back' : 'New here?';
+            document.getElementById('auth-title').innerText = isSignIn ? 'Sign in to Remi' : 'Sign up to meet Remi';
+
+            hideMessage();
+        };
+
+        function showError(message) {
+            const el = document.getElementById('auth-message');
+            const text = document.getElementById('auth-message-text');
+            el.className = 'mb-6 p-4 rounded-xl border bg-error/10 border-error/20';
+            text.className = 'text-sm font-medium text-error';
+            text.innerText = message;
+            el.classList.remove('hidden');
+        }
+
+        function showSuccess(message) {
+            const el = document.getElementById('auth-message');
+            const text = document.getElementById('auth-message-text');
+            el.className = 'mb-6 p-4 rounded-xl border bg-primary/10 border-primary/20';
+            text.className = 'text-sm font-medium text-primary';
+            text.innerText = message;
+            el.classList.remove('hidden');
+        }
+
+        function hideMessage() {
+            document.getElementById('auth-message').classList.add('hidden');
+        }
+
+        function setButtonLoading(btnId, loading, originalText) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.disabled = loading;
+                btn.innerText = loading ? 'Please wait...' : originalText;
+            }
+        }
+
+        window.handleSignIn = async () => {
+            const email = document.getElementById('signin-email').value.trim();
+            const password = document.getElementById('signin-password').value;
+            hideMessage();
+            if (!email || !password) { showError('Please enter your email and password.'); return; }
+            setButtonLoading('signin-btn', true, 'Sign In');
+            try {
+                const result = await signIn({ username: email, password });
+                if (result.isSignedIn) window.location.href = '/journal.html';
+            } catch (err) {
+                showError(err.message || 'Sign in failed. Please try again.');
+            } finally {
+                setButtonLoading('signin-btn', false, 'Sign In');
+            }
+        };
+
+        window.handleSignUp = async () => {
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            hideMessage();
+            if (!email || !password) { showError('Please fill in all fields.'); return; }
+            setButtonLoading('signup-btn', true, 'Create Account');
+            try {
+                await signUp({ username: email, password, options: { userAttributes: { email } } });
+                pendingEmail = email;
+                document.getElementById('signup-form').classList.add('hidden');
+                document.getElementById('verify-form').classList.remove('hidden');
+            } catch (err) {
+                showError(err.message || 'Sign up failed. Please try again.');
+            } finally {
+                setButtonLoading('signup-btn', false, 'Create Account');
+            }
+        };
+
+        window.handleVerify = async () => {
+            const code = document.getElementById('verify-code').value.trim();
+            hideMessage();
+            if (!code) { showError('Please enter the verification code.'); return; }
+            setButtonLoading('verify-btn', true, 'Verify Email');
+            try {
+                await confirmSignUp({ username: pendingEmail, confirmationCode: code });
+                window.showTab('signin');
+                document.getElementById('signin-email').value = pendingEmail;
+                showSuccess('Email verified! Please sign in.');
+            } catch (err) {
+                showError(err.message || 'Verification failed. Please try again.');
+            } finally {
+                setButtonLoading('verify-btn', false, 'Verify Email');
+            }
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            const signinVisible = !document.getElementById('signin-form').classList.contains('hidden');
+            const signupVisible = !document.getElementById('signup-form').classList.contains('hidden');
+            const verifyVisible = !document.getElementById('verify-form').classList.contains('hidden');
+            if (signinVisible) window.handleSignIn();
+            else if (signupVisible) window.handleSignUp();
+            else if (verifyVisible) window.handleVerify();
+        });
+    </script>
+</body>
+
+</html>

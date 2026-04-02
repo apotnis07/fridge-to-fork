@@ -39,10 +39,15 @@ public class Recipe {
 
     private Integer servings;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Convert(converter = IngredientConverter.class)
-    @Column(name = "ingredients", columnDefinition = "jsonb")
+    @Column(name = "ingredients", columnDefinition = "text")
     private List<Ingredient> ingredients;
+
+    @Column(name = "image_index")
+    private Integer imageIndex;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
