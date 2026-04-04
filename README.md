@@ -250,7 +250,7 @@ Remi transforms unstructured natural language into structured data. Users can pa
 ### 3. Context-Aware AI Suggestions (RAG)
 Remi goes beyond just searching your existing "Recipe Book." It uses **Retrieval-Augmented Generation (RAG)** to act as a creative chef.
 * **Taste-Informed Logic:** When suggesting a new meal, the LLM is fed the matches for the available ingredients from your existing recipe history as "context." This ensures suggestions align with your personal cooking style and flavor preferences.
-* **Community Recipes:** If there are a low number of available recipes, in the user's recipe book it borrows recipes from the community.
+* **Cold-Start Solution (Community Recipes)**: To ensure value for new users, the engine intelligently "borrows" highly-rated community recipes when a user's personal "Recipe Book" is still growing.
 ---
 
 ## Tech Stack
