@@ -13,7 +13,8 @@ A full-stack RAG application that leverages a microservices architecture to reco
 
 Live Demo: [fridge-to-fork-eyju.onrender.com](https://fridge-to-fork-eyju.onrender.com/)
 
-(Note: As this is hosted on a free tier, please allow ~60 seconds for the server to spin up on your first visit.)
+(Note: Hosted on Render's free tier — the server spins down after 15 minutes 
+of inactivity. First visit may take ~60 seconds to wake up.)
 
 ## Video Demos
 
@@ -264,7 +265,7 @@ Remi goes beyond just searching your existing "Recipe Book." It uses **Retrieval
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Google Stitch, Tailwind CSS, HTML, JavaScript |
+| Frontend | Tailwind CSS, HTML, JavaScript |
 | API Gateway | Spring Boot 4.0 |
 | AI Service | Claude Haiku 4.5, Titan Embeddings v2 |
 | Containerization | Docker, Docker Compose |
