@@ -2,7 +2,13 @@
 
 A full-stack RAG application that leverages a microservices architecture to record user-created recipes and returns the best matched recipes based on the available ingredients in the users' pantry. It also generates AI suggested recipes that can be made from the available ingredients. Built with Spring Boot, AWS Bedrock, AWS Cognito, Postgres, HTML, CSS and JavaScript. Deployed on Render.
 
-## Demos
+## Website
+
+Live Demo: [fridge-to-fork-eyju.onrender.com](https://fridge-to-fork-eyju.onrender.com/)
+
+(Note: As this is hosted on a free tier, please allow ~60 seconds for the server to spin up on your first visit.)
+
+## Video Demos
 
 ### Home & Login Page
 
