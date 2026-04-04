@@ -2,6 +2,26 @@
 
 A full-stack RAG application that leverages a microservices architecture to record user-created recipes and returns the best matched recipes based on the available ingredients in the users' pantry. It also generates AI suggested recipes that can be made from the available ingredients. Built with Spring Boot, AWS Bedrock, AWS Cognito, Postgres, HTML, CSS and JavaScript. Deployed on Render.
 
+## Demos
+
+### Home & Login Page
+
+![Home & Login](src/main/resources/static/assets/demo/home_login.gif)
+
+### Save Recipe
+
+![Save Recipe](src/main/resources/static/assets/demo/SaveRecipe.gif)
+
+### Delete Recipe
+
+![Delete Recipe](src/main/resources/static/assets/demo/DeleteRecipe.gif)
+
+### Search Recipe, Remi Suggests - AI-generated recipe, Community-sourced recipe
+
+<div align="left">
+  <img src="src/main/resources/static/assets/demo/SearchRecipe.gif" width="100%" alt="Search Recipe">
+</div>
+
 ## Architecture
 
 ```mermaid
