@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.config;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.JWKSourceBuilder;

@@ -1,11 +1,10 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import com.example.fridge_to_fork.util.IngredientConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

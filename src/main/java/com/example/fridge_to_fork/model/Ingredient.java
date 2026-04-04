@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

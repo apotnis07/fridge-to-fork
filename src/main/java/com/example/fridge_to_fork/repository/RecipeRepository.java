@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.example.fridge_to_fork.model.Recipe;
 
 import jakarta.transaction.Transactional;
 

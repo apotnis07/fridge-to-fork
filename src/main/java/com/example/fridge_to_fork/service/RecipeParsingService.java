@@ -1,9 +1,8 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.service;
 
 import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelRequest;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse;

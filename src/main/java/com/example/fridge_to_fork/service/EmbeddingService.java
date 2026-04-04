@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

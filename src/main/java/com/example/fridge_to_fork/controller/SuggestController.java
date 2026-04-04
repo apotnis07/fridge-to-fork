@@ -1,7 +1,14 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.fridge_to_fork.model.Recipe;
+import com.example.fridge_to_fork.model.SuggestionRequest;
+import com.example.fridge_to_fork.model.SuggestionResult;
+import com.example.fridge_to_fork.repository.RecipeRepository;
+import com.example.fridge_to_fork.service.EmbeddingService;
+import com.example.fridge_to_fork.service.NewRecipeSuggestionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,8 +25,6 @@ public class SuggestController {
     private final EmbeddingService embeddingService;
     private final RecipeRepository recipeRepository;
     private final NewRecipeSuggestionService newRecipeSuggestionService;
-
-    // private static final String MOCK_USER_ID = "temp-user-123";
 
     public SuggestController(EmbeddingService embeddingService, RecipeRepository recipeRepository,
             NewRecipeSuggestionService newRecipeSuggestionService) {
@@ -41,8 +46,8 @@ public class SuggestController {
         String vectorString = embeddingService.toVectorString(queryVector);
 
         // Debug — log distances to console
-        List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
-        scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
+        // List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
+        // scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
 
         List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.70);
 
@@ -65,8 +70,8 @@ public class SuggestController {
         String vectorString = embeddingService.toVectorString(queryVector);
 
         // Debug — log distances to console
-        List<Object[]> scores = recipeRepository.findSimilarRecipesOtherUsersWithScores(userId, vectorString);
-        scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
+        // List<Object[]> scores = recipeRepository.findSimilarRecipesOtherUsersWithScores(userId, vectorString);
+        // scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
 
         List<Recipe> matches = recipeRepository.findSimilarRecipesOtherUsers(userId, vectorString, 0.6);
 

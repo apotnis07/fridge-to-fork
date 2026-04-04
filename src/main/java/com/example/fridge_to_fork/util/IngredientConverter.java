@@ -1,5 +1,6 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.util;
 
+import com.example.fridge_to_fork.model.Ingredient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

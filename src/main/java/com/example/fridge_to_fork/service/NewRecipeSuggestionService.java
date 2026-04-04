@@ -1,4 +1,4 @@
-package com.example.fridge_to_fork;
+package com.example.fridge_to_fork.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+
+import com.example.fridge_to_fork.model.Ingredient;
+import com.example.fridge_to_fork.model.Recipe;
 
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
