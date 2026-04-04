@@ -12,20 +12,26 @@ Live Demo: [fridge-to-fork-eyju.onrender.com](https://fridge-to-fork-eyju.onrend
 
 ### Home & Login Page
 
-![Home & Login](src/main/resources/static/assets/demo/home_login.gif)
+<div align="left">
+  <img src="src/main/resources/static/assets/demo/home_login.gif" width="95%" alt="Home & Login">
+</div>
 
 ### Save Recipe
 
-![Save Recipe](src/main/resources/static/assets/demo/SaveRecipe.gif)
+<div align="left">
+  <img src="src/main/resources/static/assets/demo/SaveRecipe.gif" width="95%" alt="Save Recipe">
+</div>
 
 ### Delete Recipe
 
-![Delete Recipe](src/main/resources/static/assets/demo/DeleteRecipe.gif)
+<div align="left">
+  <img src="src/main/resources/static/assets/demo/DeleteRecipe.gif" width="95%" alt="Delete Recipe">
+</div>
 
 ### Search Recipe, Remi Suggests - AI-generated recipe, Community-sourced recipe
 
 <div align="left">
-  <img src="src/main/resources/static/assets/demo/SearchRecipe.gif" width="100%" alt="Search Recipe">
+  <img src="src/main/resources/static/assets/demo/SearchRecipe.gif" width="95%" alt="Search Recipe">
 </div>
 
 ## Architecture
