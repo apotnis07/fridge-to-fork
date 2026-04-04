@@ -340,359 +340,19 @@ For the deployment of this application, a few options were explored and here are
 
 ---
 
-### Setup 1 - AWS Deployment - Amplify + Elastic Beanstalk + RDS - (Not Free Tier, needs domain)
-
-1. Create a .jar file
-```bash
-# 1. Build Jar
-./mvnw clean package -DskipTests
-
-# 2. Check the JAR exists
-ls target/*.jar
-
-# 3. Push code to GitHub
-git status
-git push 
-```
-
-2. Modified application-prod.properties for AWS Deployment
-```bash
-spring.datasource.url=${RDS_URL}
-spring.datasource.username=${RDS_USERNAME}
-spring.datasource.password=${RDS_PASSWORD}
-spring.security.oauth2.resourceserver.jwt.issuer-uri=your_url
-app.cors.allowed-origins=${AMPLIFY_URL}
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-```
-
-3. `amplify.yml` in project root
-```bash
-version: 1
-frontend:
-  phases:
-    build:
-      commands: []
-  artifacts:
-    baseDirectory: src/main/resources/static
-    files:
-      - '**/*'
-  cache:
-    paths: []
-```
-
-#### RDS 
-1. Engine Type: PostgreSQL
-2. Engine version: Latest
-3. Keep default options for free tier
-4. DB instance identifier: `fridge-to-fork-db`
-5. Username: `postgres`
-6. Credentials: self-managed
-7. Password: Enter your paassword
-8. DB instance class: db.t3.micro
-9. Compute resource: Don't connect to an EC2 compute resource
-10. IPv4 and default VPC, subnet
-11. Public access - enabled
-12. VPC security group - create new and name `fridge-to-fork-db-sg`
-13. Port - 5432
-14. DB authentication - Password Authentication
-15. Initial DB name: `recipeapp`
-16. Create DB
-17. After creation note the RDS URL - append jdbc:postgresql://{your RDS URL}
-18. AWS Console → EC2 → Security Groups → find fridge-to-fork-db-sg → Edit inbound rules → Add rule
-    1. Type: PostgreSQL
-    2. Port: 5432
-    3. Source: Anywhere IPv4 (0.0.0.0/0)
-19. Go to Beekeeper studio or any other Postgres client
-    - New Connection settings:
-    - Connection type: PostgreSQL
-    - Host: fridge-to-fork-db.{your_rds_url}.rds.amazonaws.com
-    - Port: 5432
-    - Database: recipeapp
-    - Username: postgres
-    - Password: your RDS password
-    - SSL: enable it — RDS requires SSL
-20. Execute the following commands after the app runs once, and creates the table
-```bash
-CREATE EXTENSION IF NOT EXISTS vector;
-ALTER TABLE recipes ADD COLUMN IF NOT EXISTS embedding vector(1024);
-```
-
-#### AWS Elastic Beanstalk
-
-Beanstalk expects your app on port `5000` by default, but Spring Boot runs on `8080`. Add this to your application-prod.properties
-```bash
-server.port=5000
-```
-
-Rebuild .jar
-```bash
-./mvnw clean package -DskipTests
-```
-
-Navigate to AWS Elastic Beanstalk and `Create Application`
-
-1. Application name: `fridge-to-fork`
-2. Environment name: `fridge-to-fork-env`
-3. Platform: Java
-4. Platform Branch: Select Corretto 21
-5. In application code, upload the .jar file and select version v1.
-6. Create Service role and EC2 instance profile if not already created. -- Add the `AWSElasticBeanstalkWebTier` and `AWSElasticBeanstalkWorkerTier` policy to the `aws-elasticbeanstalk-ec2-role` through IAM -> Roles
-7. Select VPC, enable public IP, and select all subnets.
-8. Instance type: t3.micro
-9. In environment properites add the following:
-
-| Key | Value |
-|----|----|
-|SERVER_PORT|5000|
-|SPRING_PROFILES_ACTIVE| prod|
-|RDS_URL| your_url |
-|RDS_USERNAME| postgres |
-|RDS_PASSWORD | your_rds_password |
-|AMPLIFY_URL| * for now, update after Amplify is set up |
-
-10. Create
-
-
-#### Amplify
-
-1. Create app -> Select GitHub and authorize repo and select the branch to be deployed. Amplify will deploy this branch on every push to the branch.
-2. App name - fridge-to-fork
-3. Add an environment variable - API_BASE : your_elastic_beanstalk_domain_url
-4. Save and deploy
-5. Upon creation note the amplify url and update in the elastic beanstalk env variables, previously saved as `*`.
-6. In auth.js add the following under the imports
-```bash
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? ''
-    : 'http://remi.us-east-1.elasticbeanstalk.com';
-```
-
-Also, update the apiFetch method,
-```bash
-export async function apiFetch(url, options = {}) {
-    const token = await getToken();
-    return fetch(`${API_BASE}${url}`, {
-        ...options,
-        headers: {
-            ...options.headers,
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': options.headers?.['Content-Type'] || 'application/json'
-        }
-    });
-}
-```
-
-7. In Cognito → App Client → Login pages → Edit, add to callback and sign-out urls,
-```bash
-https://{your_amplify_url}/index.html
-```
-8. In application-prod.properties,
-```bash
-app.cors.allowed-origins=https://feature-amplify-migration.d3o958g59kr7wd.amplifyapp.com
-```
-9. Rebuild and deploy jar to beanstalk.
-10. At this point we get the authentication error for http/https endpoints and brings in the need to own a domain.
-
-
----
-
-### Setup 2 - AWS Elastic Beanstalk + RDS - (Not free tier - needs domain)
-
-#### RDS 
-1. Engine Type: PostgreSQL
-2. Engine version: Latest
-3. Keep default options for free tier
-4. DB instance identifier: `fridge-to-fork-db`
-5. Username: `postgres`
-6. Credentials: self-managed
-7. Password: Enter your paassword
-8. DB instance class: db.t3.micro
-9. Compute resource: Don't connect to an EC2 compute resource
-10. IPv4 and default VPC, subnet
-11. Public access - enabled
-12. VPC security group - create new and name `fridge-to-fork-db-sg`
-13. Port - 5432
-14. DB authentication - Password Authentication
-15. Initial DB name: `recipeapp`
-16. Create DB
-17. After creation note the RDS URL - append jdbc:postgresql://{your RDS URL}
-18. AWS Console → EC2 → Security Groups → find fridge-to-fork-db-sg → Edit inbound rules → Add rule
-    1. Type: PostgreSQL
-    2. Port: 5432
-    3. Source: Anywhere IPv4 (0.0.0.0/0)
-19. Go to Beekeeper studio or any other Postgres client
-    - New Connection settings:
-    - Connection type: PostgreSQL
-    - Host: fridge-to-fork-db.{your_rds_url}.rds.amazonaws.com
-    - Port: 5432
-    - Database: recipeapp
-    - Username: postgres
-    - Password: your RDS password
-    - SSL: enable it — RDS requires SSL
-20. Execute the following commands after the app runs once, and creates the table
-```bash
-CREATE EXTENSION IF NOT EXISTS vector;
-ALTER TABLE recipes ADD COLUMN IF NOT EXISTS embedding vector(1024);
-```
-
-#### AWS Elastic Beanstalk
-
-Beanstalk expects your app on port `5000` by default, but Spring Boot runs on `8080`. Add this to your application-prod.properties
-```bash
-server.port=5000
-```
-
-Rebuild .jar
-```bash
-./mvnw clean package -DskipTests
-```
-
-Navigate to AWS Elastic Beanstalk and `Create Application`
-
-1. Application name: `fridge-to-fork`
-2. Environment name: `fridge-to-fork-env`
-3. Platform: Java
-4. Platform Branch: Select Corretto 21
-5. In application code, upload the .jar file and select version v1.
-6. Create Service role and EC2 instance profile if not already created. -- Add the `AWSElasticBeanstalkWebTier` and `AWSElasticBeanstalkWorkerTier` policy to the `aws-elasticbeanstalk-ec2-role` through IAM -> Roles
-7. Select VPC, enable public IP, and select all subnets.
-8. Instance type: t3.micro
-9. In environment properites add the following:
-
-| Key | Value |
-|----|----|
-|SERVER_PORT|5000|
-|SPRING_PROFILES_ACTIVE| prod|
-|RDS_URL| your_url |
-|RDS_USERNAME| postgres |
-|RDS_PASSWORD | your_rds_password |
-|AMPLIFY_URL| * for now, update after Amplify is set up |
-
-10. Create
-11. In application-prod.properties
-app.cors.allowed-origins=`your_elastic_beanstalk_domain`
-12. Rebuild jars and re-deploy to beanstalk.
-13. Here, when we add the elastic beanstalk endpoints `http://remi.us-east-1.elasticbeanstalk.com/index.html` and `http://remi.us-east-1.elasticbeanstalk.com/journal.html` in Cognito to callback and sign-out urls, we get the error about how Cognito doesn't accept http endpoints other than localhost.
-14. Buy a domain and enter the respective urls in the form of `https://{your_url}/index.html` and `https://{your_url}/journal.html`
-
-
----
-
-### Setup 3 - Render + RDS (Free tier in Render and RDS can be used with AWS Free tier credits)
-
-1. Create a minimal IAM policy named `fridge-to-fork-bedrock-policy`
-Go to AWS Console → IAM → Policies → Create policy → select JSON: 
-```bash
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "BedrockInvokeOnly",
-            "Effect": "Allow",
-            "Action": "bedrock:InvokeModel",
-            "Resource": "*"
-        }
-    ]
-}
-```
-
-
-3. Create the IAM user, IAM → Users → Create user:
-- Name: fridge-to-fork-app
-- No console access
-- Attach policy: fridge-to-fork-bedrock-policy
-
-3. Then create access keys:
-
-- IAM → Users → fridge-to-fork-app → Security credentials → Create access key
-- Use case: "Application running outside AWS"
-- Copy both values immediately — secret is only shown once
-
-#### RDS 
-1. Engine Type: PostgreSQL
-2. Engine version: Latest
-3. Keep default options for free tier
-4. DB instance identifier: `fridge-to-fork-db`
-5. Username: `postgres`
-6. Credentials: self-managed
-7. Password: Enter your paassword
-8. DB instance class: db.t3.micro
-9. Compute resource: Don't connect to an EC2 compute resource
-10. IPv4 and default VPC, subnet
-11. Public access - enabled
-12. VPC security group - create new and name `fridge-to-fork-db-sg`
-13. Port - 5432
-14. DB authentication - Password Authentication
-15. Initial DB name: `recipeapp`
-16. Create DB
-17. After creation note the RDS URL - append jdbc:postgresql://{your RDS URL}
-18. AWS Console → EC2 → Security Groups → find fridge-to-fork-db-sg → Edit inbound rules → Add rule
-    1. Type: PostgreSQL
-    2. Port: 5432
-    3. Source: Anywhere IPv4 (0.0.0.0/0)
-19. Go to Beekeeper studio or any other Postgres client
-    - New Connection settings:
-    - Connection type: PostgreSQL
-    - Host: fridge-to-fork-db.{your_rds_url}.rds.amazonaws.com
-    - Port: 5432
-    - Database: recipeapp
-    - Username: postgres
-    - Password: your RDS password
-    - SSL: enable it — RDS requires SSL
-20. Execute the following commands after the app runs once, and creates the table
-```bash
-CREATE EXTENSION IF NOT EXISTS vector;
-ALTER TABLE recipes ADD COLUMN IF NOT EXISTS embedding vector(1024);
-```
-
-#### Render
-1. Render -> New -> Web Service
-2. Connect GitHub, add repo and branch.
-3. Configure the service
-|Field|Value|
-|--|----|
-|Name|fridge-to-fork|
-|Language|Docker|
-|Region|US East (Ohio)|
-|Branch|`your_branch`|
-|Instance type| Free|
-
-4. Add environment variables - generate aws access key and secret access key from aws
-|Key|Value|
-|--|----|
-|AWS_ACCESS_KEY_ID|`your_key_id`|
-|AWS_REGION|`your_region`
-|AWS_SECRET_ACCESS_KEY|`your_secret_access_key`|
-|SPRING_PROFILES_ACTIVE|prod|
-|RDS_URL|`your_rds_url`|
-|RDS_USERNAME|postgres|
-|RDS_PASSWORD|`your_password`|
-|SERVER_PORT|8080|
-
-5. Create web service.
-6. After deployment, in application-prod.properties
-```bash
-spring.datasource.url=${RDS_URL}
-spring.datasource.username=${RDS_USERNAME}
-spring.datasource.password=${RDS_PASSWORD}
-spring.security.oauth2.resourceserver.jwt.issuer-uri=your_url
-app.cors.allowed-origins=your_render_url
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-server.port=8080
-```
-7. Commit and push.
-
-
 ### Setup 4 - Render + Render Postgres (Free tier)
 
-
+#### Render PostgreSQL
+1. Render dashboard → New → PostgreSQL
+2. Name - fridge-to-fork-db, Region - Ohio (US East), PostgreSQL version - 16, Instance type - Free
+3. Create DB
+4. Once created, get the Internal DB URL, example - postgresql://fridge_to_fork_db_user:password@dpg-xxxxx-a/fridge_to_fork_db
 
 #### Render 
 1. Render -> New -> Web Service
 2. Connect GitHub, add repo and branch.
 3. Configure the service
+   
 |Field|Value|
 |--|----|
 |Name|fridge-to-fork|
@@ -702,23 +362,20 @@ server.port=8080
 |Instance type| Free|
 
 4. Add environment variables - generate aws access key and secret access key from aws
+
 |Key|Value|
 |--|----|
 |AWS_ACCESS_KEY_ID|`your_key_id`|
 |AWS_REGION|`your_region`
 |AWS_SECRET_ACCESS_KEY|`your_secret_access_key`|
 |SPRING_PROFILES_ACTIVE|prod|
-|RDS_URL|`your_rds_url`|
-|RDS_USERNAME|postgres|
-|RDS_PASSWORD|`your_password`|
-|SERVER_PORT|8080|
+|SPRING_DATASOURCE_URL|`jdbc:postgresql://dpg-xxxxx-a/fridge_to_fork_db`|
+|SPRING_DATASOURCE_USERNAME|`from Render DB details`|
+|SPRING_DATASOURCE_PASSWORD|`from Render DB details`|
 
 5. Create web service.
 6. After deployment, in application-prod.properties
 ```bash
-spring.datasource.url=${RDS_URL}
-spring.datasource.username=${RDS_USERNAME}
-spring.datasource.password=${RDS_PASSWORD}
 spring.security.oauth2.resourceserver.jwt.issuer-uri=your_url
 app.cors.allowed-origins=your_render_url
 spring.jpa.hibernate.ddl-auto=update
