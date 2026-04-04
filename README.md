@@ -192,6 +192,35 @@ When a user searches for recipes, an LLM call is also made to generate a new rec
 
 ---
 
+Since you are building this for your portfolio and Medium, the text should highlight the **technical complexity** while keeping the **user benefit** clear. 
+
+Here is the refined text for those three key features, formatted for a professional README:
+
+---
+
+## Key Features
+
+### 1. Intelligent Recipe Parsing (Claude 4.5 Haiku)
+Remi transforms unstructured natural language into structured data. Users can paste a messy list of ingredients or a brief description of a dish, and the application utilizes **Claude 4.5 Haiku** to:
+* **Extract & Normalize:** Identify ingredients and quantities from free-text.
+* **Weighted Importance:** Automatically rank ingredients by their role in the dish (e.g., "Chicken" is prioritized over "Salt").
+* **Interactive Preview:** Provides a structured "Draft" state, allowing users to verify and edit parsed data before it hits the database.
+
+
+
+### 2. Semantic Ingredient Search (Vector Embeddings)
+* **Titan Embeddings:** Converts recipe ingredients into 1024-dimensional vectors.
+* **pgvector & Cosine Similarity:** Executes high-performance vector similarity searches within PostgreSQL to find recipes that best match the available ingredients in your pantry.
+* **Primary Ingredient Bias:** The embedding logic is tuned to give higher mathematical weight to core proteins and vegetables, ensuring matches are culinarily relevant, not just statistically similar.
+
+
+
+### 3. Context-Aware AI Suggestions (RAG)
+Remi goes beyond just searching your existing "Recipe Book." It uses **Retrieval-Augmented Generation (RAG)** to act as a creative chef.
+* **Taste-Informed Logic:** When suggesting a new meal, the LLM is fed the matches for the available ingredients from your existing recipe history as "context." This ensures suggestions align with your personal cooking style and flavor preferences.
+* **Community Recipes:** If there are a low number of available recipes, in the user's recipe book it borrows recipes from the community.
+---
+
 ## Tech Stack
 
 | Layer | Technology |
