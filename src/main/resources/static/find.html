@@ -801,13 +801,10 @@
         }
 
         async function searchRecipes() {
-
-            // First add any typed but not yet tagged ingredients
             addIngredients();
 
-            if (globalIngredients.length == 0) {
-                loadFeaturedRecipe(); // Reset UI to default
-                // alert("Add atleast one ingredient first.");
+            if (globalIngredients.length === 0) {
+                loadFeaturedRecipe();
                 return;
             }
 
@@ -816,6 +813,7 @@
             searchBtn.innerText = "Asking Remi...";
 
             try {
+                // Step 1 — get user's own recipe matches
                 const response = await apiFetch("/api/suggest", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -826,28 +824,14 @@
 
                 if (!response.ok) throw new Error("Suggest failed.");
 
-                const result = await response.json()
-                const matches = result.matches || [];
+                const result = await response.json();
+                const userMatches = result.matches || [];
 
-                // Update bento label
-                // document.getElementById('bento-label').innerText = "Matched for You";
-                document.getElementById('bento-title').innerText = "Based on What You Have";
-
-                if (matches.length > 0) {
-                    renderFeaturedCard(matches[0], "Best Match");
-                }
-                else {
-                    document.getElementById('bento-title').innerText = "No Matches Found";
-                    loadFeaturedRecipe(); // Reset UI to default
-                }
-
-
-                renderSecondaryCard(1, matches[1] || null);
-                renderSecondaryCard(2, matches[2] || null);
-
-                if (!matches[2]) {
+                // Step 2 — fetch community recipes if user has fewer than 3 matches
+                let communityMatches = [];
+                if (userMatches.length < 3) {
                     try {
-                        const responseOther = await apiFetch("/api/suggest/suggestBorrowedRecipes", {
+                        const communityResponse = await apiFetch("/api/suggest/suggestBorrowedRecipes", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
@@ -855,34 +839,43 @@
                             })
                         });
 
-                        if (!responseOther.ok) throw new Error("Suggest from other users failed.");
-
-                        const resulOthers = await responseOther.json()
-                        const matchesOthers = resulOthers.matches || [];
-
-                        if (matchesOthers.length > 0) {
-                            if (!matches[1]) {
-                                renderSecondaryCard(1, matchesOthers[0], "Community"); //From the Crowd or Fellow Table
-                                renderSecondaryCard(2, matchesOthers[1] || null, "Community");
-                            }
-                            else if (!matches[2]) {
-                                renderSecondaryCard(2, matchesOthers[0], "Community");
-                            }
+                        if (communityResponse.ok) {
+                            const communityResult = await communityResponse.json();
+                            communityMatches = communityResult.matches || [];
                         }
-                        // else {
-                        //     // document.getElementById('bento-title').innerText = "No Matches Found";
-                        //     loadFeaturedRecipe(); // Reset UI to default
-                        // }
                     } catch (err) {
-                        console.error("Other Users recipe suggestion failed:", err);
+                        console.error("Community fetch failed:", err);
+                        // Non-fatal — continue with whatever user matches exist
                     }
                 }
 
+                // Step 3 — fill the 3 card slots
+                // User matches take priority, community fills the gaps
+                const slot0 = userMatches[0] || communityMatches[0] || null;
+                const slot1 = userMatches[1] || communityMatches[userMatches.length > 0 ? 0 : 1] || null;
+                const slot2 = userMatches[2] || communityMatches[userMatches.length > 1 ? 0 : userMatches.length > 0 ? 1 : 2] || null;
+
+                // Step 4 — determine badges
+                const badge0 = userMatches[0] ? "Best Match" : communityMatches.length > 0 ? "Community Match" : null;
+                const badge1 = userMatches[1] ? null : communityMatches.length > 0 ? "Community" : null;
+                const badge2 = userMatches[2] ? null : communityMatches.length > 0 ? "Community" : null;
+
+                // Step 5 — render
+                if (!slot0) {
+                    // No matches at all
+                    document.getElementById('bento-title').innerText = "No Matches Found";
+                    loadFeaturedRecipe();
+                } else {
+                    document.getElementById('bento-title').innerText = "Based on What You Have";
+                    renderFeaturedCard(slot0, badge0);
+                    renderSecondaryCard(1, slot1, badge1);
+                    renderSecondaryCard(2, slot2, badge2);
+                }
 
                 renderChefsChoice(result.newRecipeSuggestion);
 
             } catch (error) {
-                console.error("Search error:", err);
+                console.error("Search error:", error);
                 alert("Remi couldn't find suggestions right now. Please try again.");
             } finally {
                 searchBtn.disabled = false;
