@@ -21,7 +21,7 @@ of inactivity. First visit may take ~60 seconds to wake up.)
 ### Home & Login Page
 
 <div align="left">
-  <img src="src/main/resources/static/assets/demo/home_login.gif" width="95%" alt="Home & Login">
+  <img src="src/main/resources/static/assets/demo/Home.gif" width="95%" alt="Home & Login">
 </div>
 
 ### Save Recipe
