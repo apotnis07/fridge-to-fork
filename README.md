@@ -232,12 +232,6 @@ When a user searches for recipes, an LLM call is also made to generate a new rec
 
 ---
 
-Since you are building this for your portfolio and Medium, the text should highlight the **technical complexity** while keeping the **user benefit** clear. 
-
-Here is the refined text for those three key features, formatted for a professional README:
-
----
-
 ## Key Features
 
 ### 1. Intelligent Recipe Parsing (Claude 4.5 Haiku)
