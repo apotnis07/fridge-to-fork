@@ -1,0 +1,281 @@
+{
+  "metadata": {
+    "timestamp": "2026-04-23T08:03:59.559012",
+    "total_cases": 15,
+    "model_used": "claude-haiku-4-5-20251001",
+    "api_base": "http://localhost:8080"
+  },
+  "overall_metrics": {
+    "hit_rate_at_1": "80.0%",
+    "hit_rate_at_3": "93.3%",
+    "avg_retrieval_relevance": 4.6,
+    "avg_faithfulness": 4.69,
+    "avg_practicality": 4.11,
+    "avg_overall": 4.41
+  },
+  "by_difficulty": {
+    "easy": {
+      "count": 5,
+      "hit_rate_at_1": "100.0%",
+      "hit_rate_at_3": "100.0%",
+      "avg_overall": 4.58
+    },
+    "medium": {
+      "count": 5,
+      "hit_rate_at_1": "80.0%",
+      "hit_rate_at_3": "100.0%",
+      "avg_overall": 4.36
+    },
+    "hard": {
+      "count": 5,
+      "hit_rate_at_1": "60.0%",
+      "hit_rate_at_3": "80.0%",
+      "avg_overall": 4.3
+    }
+  },
+  "failed_cases": [
+    {
+      "query": "bread, garlic, seasoning",
+      "expected": "Avocado Toast",
+      "retrieved": [
+        "Aloo Sandwich"
+      ],
+      "reasoning": "Retrieved recipe shares only bread and garlic with available ingredients making it poorly relevant, but generated recipe correctly uses only available ingredients; practicality is limited since the recipe lacks essential components like butter or oil for proper garlic bread preparation."
+    }
+  ],
+  "all_results": [
+    {
+      "query": "noodles, cabbage, carrot, onion, garlic, soy sauce, vinegar",
+      "expected": "Hakka Noodles",
+      "retrieved": [
+        "Hakka Noodles"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "easy",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 4.5,
+      "practicality": 3.5,
+      "overall": 4.0,
+      "reasoning": "The retrieved recipe perfectly matches available ingredients and the generated recipe faithfully uses only those ingredients, though the instructions are incomplete (cuts off mid-step) and assume oil availability which wasn't listed."
+    },
+    {
+      "query": "potatoes, bread, ginger garlic paste, green chillies, curry leaves, cilantro chutney, butter, cumin, mustard seeds, turmeric, garam masala, red chilli powder",
+      "expected": "Aloo Sandwich",
+      "retrieved": [
+        "Aloo Sandwich"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "easy",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 5.0,
+      "practicality": 4.5,
+      "overall": 4.8,
+      "reasoning": "The system perfectly matched available ingredients with a relevant recipe, used only those ingredients in the recipe, and provided a practical dish that could be made, though the instructions were incomplete."
+    },
+    {
+      "query": "chicken, yogurt, tandoori masala, ginger garlic paste, lemon juice, spices, pickled onions",
+      "expected": "Chicken Tikka",
+      "retrieved": [
+        "Chicken Tikka",
+        "Chicken Shawarma",
+        "Classic Egg Bhurji",
+        "Butter Chicken",
+        "Hakka Noodles"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "easy",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 5.0,
+      "practicality": 4.5,
+      "overall": 4.8,
+      "reasoning": "The system perfectly retrieved the Chicken Tikka recipe which exactly matches all available ingredients, generated a faithful recipe using only those ingredients, and provided practical cooking instructions that someone could follow, with only minor deduction for the truncated steps."
+    },
+    {
+      "query": "avocado, bread, honey, everything bagel seasoning, salt, pepper, garlic powder",
+      "expected": "Avocado Toast",
+      "retrieved": [
+        "Avocado Toast"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "easy",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 5.0,
+      "practicality": 4.5,
+      "overall": 4.8,
+      "reasoning": "The system retrieved a highly relevant recipe using all available ingredients, generated a faithful variation using only those ingredients, and provided practical cooking instructions that are executable despite being truncated."
+    },
+    {
+      "query": "eggs, onion, tomatoes, green chilli",
+      "expected": "Classic Egg Bhurji",
+      "retrieved": [
+        "Classic Egg Bhurji"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "easy",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 4.5,
+      "practicality": 4.0,
+      "overall": 4.5,
+      "reasoning": "The retrieval perfectly matched available ingredients, the recipe faithfully uses only provided ingredients but lacks oil/salt/seasonings, and while cookable, the instructions are incomplete (cut off mid-step)."
+    },
+    {
+      "query": "noodles, cabbage, carrot, soy sauce",
+      "expected": "Hakka Noodles",
+      "retrieved": [
+        "Hakka Noodles"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "medium",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 4.0,
+      "practicality": 3.5,
+      "overall": 4.0,
+      "reasoning": "Retrieved recipe is highly relevant with 5/7 matching ingredients; generated recipe appropriately uses only available ingredients but assumes oil availability and provides incomplete instructions, limiting practical usability."
+    },
+    {
+      "query": "potatoes, bread, green chillies, cilantro chutney, butter",
+      "expected": "Aloo Sandwich",
+      "retrieved": [
+        "Aloo Sandwich"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "medium",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 5.0,
+      "practicality": 4.0,
+      "overall": 4.3,
+      "reasoning": "The retrieved recipe is highly relevant with 5/12 ingredients available, the generated recipe faithfully uses only provided ingredients, but execution is somewhat incomplete (step 5 cuts off) and lacks traditional spice elements that would enhance the dish."
+    },
+    {
+      "query": "chicken, yogurt, ginger garlic paste, lemon juice",
+      "expected": "Chicken Tikka",
+      "retrieved": [
+        "Butter Chicken",
+        "Chicken Tikka",
+        "Chicken Shawarma"
+      ],
+      "hit_at_1": false,
+      "hit_at_3": true,
+      "difficulty": "medium",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 4.0,
+      "practicality": 4.5,
+      "overall": 4.3,
+      "reasoning": "The system retrieved highly relevant recipes (Chicken Tikka matches user ingredients almost perfectly), generated a faithful recipe using available ingredients with minor pantry staples, and provided a practical suggestion, though the recipe instruction was incomplete."
+    },
+    {
+      "query": "avocado, bread, honey, salt, pepper",
+      "expected": "Avocado Toast",
+      "retrieved": [
+        "Avocado Toast"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "medium",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 5.0,
+      "practicality": 4.5,
+      "overall": 4.7,
+      "reasoning": "The system retrieved a highly relevant recipe and generated a practical suggestion using only available ingredients, though the retrieved recipe included unavailable items like everything bagel seasoning and garlic powder."
+    },
+    {
+      "query": "eggs, onion, tomatoes",
+      "expected": "Classic Egg Bhurji",
+      "retrieved": [
+        "Classic Egg Bhurji"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "medium",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 4.5,
+      "practicality": 4.0,
+      "overall": 4.5,
+      "reasoning": "The system retrieved a highly relevant recipe and generated a practical dish using only available ingredients, though the response was cut off mid-instruction and lacks the green chilli mentioned in the retrieved recipe."
+    },
+    {
+      "query": "chicken, tomato",
+      "expected": "Butter Chicken",
+      "retrieved": [
+        "Butter Chicken",
+        "Chicken Shawarma"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "hard",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 4.8,
+      "practicality": 4.7,
+      "overall": 4.7,
+      "reasoning": "The system successfully identified relevant recipes and generated a practical dish using only available ingredients plus common pantry staples, though the retrieval could have been slightly more aligned since both retrieved recipes required additional specialty ingredients."
+    },
+    {
+      "query": "chicken, ginger garlic paste, spices",
+      "expected": "Chicken Tikka",
+      "retrieved": [
+        "Butter Chicken",
+        "Chicken Tikka"
+      ],
+      "hit_at_1": false,
+      "hit_at_3": true,
+      "difficulty": "hard",
+      "retrieval_relevance": 4.5,
+      "faithfulness": 5.0,
+      "practicality": 4.0,
+      "overall": 4.5,
+      "reasoning": "Both retrieved recipes are highly relevant to available ingredients, the generated recipe faithfully uses only available ingredients, and it's practical to cook though the recipe is incomplete with missing steps."
+    },
+    {
+      "query": "bread, garlic, seasoning",
+      "expected": "Avocado Toast",
+      "retrieved": [
+        "Aloo Sandwich"
+      ],
+      "hit_at_1": false,
+      "hit_at_3": false,
+      "difficulty": "hard",
+      "retrieval_relevance": 2.0,
+      "faithfulness": 5.0,
+      "practicality": 3.5,
+      "overall": 3.5,
+      "reasoning": "Retrieved recipe shares only bread and garlic with available ingredients making it poorly relevant, but generated recipe correctly uses only available ingredients; practicality is limited since the recipe lacks essential components like butter or oil for proper garlic bread preparation."
+    },
+    {
+      "query": "beef, ancho chiles, cinnamon",
+      "expected": "Beef Birria Tacos",
+      "retrieved": [
+        "Beef Birria Tacos"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "hard",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 4.0,
+      "practicality": 3.5,
+      "overall": 4.0,
+      "reasoning": "Retrieved recipe perfectly matches available ingredients, generated recipe stays faithful to those ingredients but introduces necessary additions (water/broth, salt, pepper) and the instructions are incomplete, limiting practical usability."
+    },
+    {
+      "query": "shrimp, lime, cilantro",
+      "expected": "Spicy Shrimp Ceviche",
+      "retrieved": [
+        "Spicy Shrimp Ceviche"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "difficulty": "hard",
+      "retrieval_relevance": 5.0,
+      "faithfulness": 5.0,
+      "practicality": 4.5,
+      "overall": 4.8,
+      "reasoning": "The system perfectly matched available ingredients with a highly relevant recipe and generated a faithful, practical dish, though the incomplete instructions and raw shrimp food safety considerations slightly reduce practicality."
+    }
+  ]
+}
