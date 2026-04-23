@@ -231,6 +231,27 @@ When a user searches for recipes, an LLM call is also made to generate a new rec
 </details>
 
 ---
+## Evaluation
+
+|Metric| Score|
+|------|-------|
+|Hit Rate @1| 80.0%|
+|Hit Rate @3| 93.3%|
+|Retrieval Relevance: | 4.6/5|
+|Faithfulness:| 4.69/5|
+|Practicality:| 4.11/5|
+|Overall Quality:| 4.41/5|
+
+To ensure the reliability of the RAG pipeline, a custom LLM-as-a-Judge evaluation was implemented. The system was benchmarked against synthetic test cases of varying difficulty (Easy, Medium, Hard) to quantify retrieval accuracy and generation faithfulness.
+
+* Hit Rate @ 1: 80.0% — The most relevant recipe is correctly retrieved as the top result in 4 out of 5 cases.
+
+* Hit Rate @ 3: 93.3% — The system successfully identifies the target recipe within the top 3 results for nearly all queries.
+
+* Average Faithfulness: 4.69/5 — The AI-generated suggestions strictly adhere to the user's available ingredients.
+
+* Retrieval Relevance: 4.6/5 — Semantic search effectively bridges the gap between natural language input and stored recipes.
+---
 
 ## Key Features
 
