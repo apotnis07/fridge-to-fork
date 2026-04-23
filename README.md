@@ -84,7 +84,7 @@ flowchart TB
     Security --> SuggestAPI
 
     DraftAPI -- "parse ingredients" --> Claude
-    SuggestAPI -- "suggest new recipe" --> Claude
+    SuggestAPI -- "suggest new recipe with matches as context" --> Claude
 
     RecipeAPI -- "generate embedding on save" --> Titan
     SuggestAPI -- "embed available ingredients" --> Titan
