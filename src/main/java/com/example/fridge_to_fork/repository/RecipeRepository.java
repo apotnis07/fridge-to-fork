@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,18 +19,26 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
+        @Cacheable(value="userRecipes", key="#userId")
         List<Recipe> findByUserId(String userId);
 
+        @Override
+        @CacheEvict(value = "userRecipes", key = "#entity.userId")
+        <S extends Recipe> S save(S entity);
+
+        @Cacheable(value = "userRecipes", key = "#userId")
         List<Recipe> findByUserIdAndNameContaining(String userId, String name);
 
         Optional<Recipe> findByIdAndUserId(UUID id, String userId);
 
         @Modifying
         @Transactional
+        @CacheEvict(value = "userRecipes", key = "#userId")
         void deleteByIdAndUserId(UUID id, String userId);
 
         @Modifying
         @Transactional
+        @CacheEvict(value = "userRecipes", key = "#userId")
         @Query(value = "UPDATE recipes SET embedding = CAST(:embedding AS vector) WHERE id = CAST(:id AS uuid)", nativeQuery = true)
         void updateEmbedding(@Param("id") String id, @Param("embedding") String embedding);
 

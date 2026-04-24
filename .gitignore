@@ -35,6 +35,10 @@ build/
 ### Environment Variables
 **/.env
 
+**/venv
+
 .DS_Store
 
 application-local.properties
+
+eval/results/*.json
