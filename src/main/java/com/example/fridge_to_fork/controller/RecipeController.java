@@ -1,9 +1,11 @@
 package com.example.fridge_to_fork.controller;
 
+import com.example.fridge_to_fork.service.RecipeService;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -27,52 +29,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Random;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeRepository recipeRepository;
+    private final RecipeService recipeService;
     private final RecipeParsingService recipeParsingService;
-    private final EmbeddingService embeddingService;
 
-    public RecipeController(RecipeRepository recipeRepository, RecipeParsingService recipeParsingService,
-            EmbeddingService embeddingService) {
-        this.recipeRepository = recipeRepository;
+    @Autowired
+    private CacheManager cacheManager;
+
+
+    public RecipeController(RecipeParsingService recipeParsingService, RecipeService recipeService) {
         this.recipeParsingService = recipeParsingService;
-        this.embeddingService = embeddingService;
+        this.recipeService = recipeService;
     }
 
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe, HttpServletRequest request) {
 
-        Random rand = new Random();
+        String userId = (String) request.getAttribute("userId");
 
         try {
-            String userId = (String) request.getAttribute("userId");
-            recipe.setUserId(userId);
-
-            recipe.setImageIndex(rand.nextInt(18));
-            Recipe saved = recipeRepository.save(recipe);
-
-            List<Ingredient> ingredients = recipe.getIngredients();
-
-            int limit = Math.min(ingredients.size(), 5);
-            List<String> essentialNames = ingredients.subList(0, limit).stream()
-                    .map(ing -> ing.getName().toLowerCase().trim())
-                    .collect(Collectors.toList());
-
-            String essentialList = String.join(", ", essentialNames);
-
-            String weightedIngredients = essentialList + ", " + essentialList;
-
-            String embeddingText = "Recipe: " + recipe.getName().toLowerCase().trim() + " | Essentials: "
-                    + weightedIngredients;
-            float[] vector = embeddingService.getEmbedding(embeddingText);
-
-            recipeRepository.updateEmbedding(saved.getId().toString(), embeddingService.toVectorString(vector));
-
+            recipe.setImageIndex(new Random().nextInt(18));
+            Recipe saved = recipeService.createRecipe(recipe, userId);
             return ResponseEntity.ok(saved);
 
         } catch (Exception e) {
@@ -93,19 +77,24 @@ public class RecipeController {
     @GetMapping
     public List<Recipe> getMyRecipes(HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
-        return recipeRepository.findByUserId(userId);
+        return recipeService.getRecipesForUser(userId);
     }
 
-    @GetMapping("/search")
-    public List<Recipe> searchRecipes(@RequestParam String name, HttpServletRequest request) {
-        String userId = (String) request.getAttribute("userId");
-        return recipeRepository.findByUserIdAndNameContaining(userId, name);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable UUID id, HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
-        recipeRepository.deleteByIdAndUserId(id, userId);
+        recipeService.deleteRecipe(id, userId);
         return ResponseEntity.noContent().build();
     }
+
+//     @DeleteMapping("/cache/evict")
+//     public ResponseEntity<Void> evictCache(HttpServletRequest request) {
+//     String userId = (String) request.getAttribute("userId");
+//     Cache cache = cacheManager.getCache("userRecipes");
+//     if (cache != null) {
+//         cache.evict(userId);
+//     }
+//     return ResponseEntity.noContent().build();
+// }
 }
