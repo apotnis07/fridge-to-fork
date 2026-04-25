@@ -609,7 +609,7 @@
                     class="group cursor-pointer bg-stone-900 border border-outline/10 rounded-xl overflow-hidden flex flex-col h-full min-h-[220px]">
                     
                     <div class="aspect-video w-full overflow-hidden flex-shrink-0 bg-stone-950">
-                        <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                        <img src="${imageUrl}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                     </div>
 
                     <div class="p-3 flex-grow flex flex-col justify-center bg-stone-900">
@@ -677,8 +677,7 @@
                                 <div class="space-y-3 cursor-pointer"
                                     onclick="openRecipeOverlay(window.recentRecipesCache[${index}])">
                                     <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
-                                        <img src="${imageUrl}"
-                                            class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                                        <img src="${imageUrl}" loading="lazy" decoding="async" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                                         <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
                                     <div class="px-1">

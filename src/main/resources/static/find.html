@@ -39,6 +39,7 @@
     </script>
     <style>
         .material-symbols-outlined {
+            font-display: block;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
@@ -122,10 +123,12 @@
                 <!-- Large Feature Card - top similarity match -->
                 <div id="featured-recipe-card"
                     class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-stone-950 flex flex-col transition-all hover:shadow-2xl hover:shadow-black/60">
-                    <div id="recipe-grid-1-image" class="aspect-[4/5] w-full overflow-hidden">
-                        <img alt="Featured Recipe"
+                    <div id="recipe-grid-1-image" class="aspect-[4/5] w-full overflow-hidden bg-stone-900 flex items-center justify-center">
+                        <!-- <img 
                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                            src="" />
+                            src="" /> -->
+                            <span class="material-symbols-outlined text-primary/20 text-5xl">restaurant_menu</span>
+
                     </div>
                     <div id="recipe-grid-1-desc" class="p-8 bg-surface text-white flex-1">
                         <span
@@ -256,7 +259,7 @@
 
             <!-- Left — illustration -->
             <div class="w-full md:w-1/2 h-64 md:h-auto overflow-hidden bg-stone-900">
-                <img id="saved-overlay-image" alt="Recipe" class="w-full h-full object-cover opacity-90" src="" />
+                <img id="saved-overlay-image" alt="Recipe" class="w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-in-out" decoding="async" src="" />
             </div>
 
             <!-- Right — recipe details -->
@@ -439,7 +442,7 @@
 
             document.getElementById('recipe-grid-1-image').innerHTML = `
                 <div class="aspect-[4/5] w-full bg-stone-900 relative overflow-hidden">
-                    <img src="${HERO_IMAGE}" 
+                    <img src="${HERO_IMAGE}" fetchpriority="high" decoding="async"
                         alt="Start cooking"
                         class="w-full h-full object-cover opacity-50" />
                 </div>`;
@@ -483,7 +486,7 @@
 
             document.getElementById('recipe-grid-1-image').innerHTML = `
                 <div class="aspect-[4/5] w-full overflow-hidden bg-stone-900 relative">
-                    <img src="${imageUrl}" alt="${recipe.name}"
+                    <img src="${imageUrl}" fetchpriority="high" decoding="async" alt="${recipe.name}"
                         class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
                 </div>`;
 
@@ -556,7 +559,7 @@
 
             if (imageEl) {
                 imageEl.innerHTML = `
-            <img src="${getIllustration(recipe.imageIndex)}"
+            <img src="${getIllustration(recipe.imageIndex)}" fetchpriority="high" decoding="async"
                  alt="${recipe.name}"
                  class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />`;
             }
@@ -600,6 +603,11 @@
             currentOpenRecipe = recipe; // store for delete access
             window.currentOpenRecipe = recipe;
 
+            const img = document.getElementById('saved-overlay-image');
+
+            img.classList.remove('opacity-90');
+            img.classList.add('opacity-0');
+
             // Title
             document.getElementById('saved-overlay-title').innerText = recipe.name;
 
@@ -613,8 +621,23 @@
             document.getElementById('saved-overlay-description').innerText =
                 recipe.description || '';
 
-            // Illustration — use assigned index
-            document.getElementById('saved-overlay-image').src = getIllustration(recipe.imageIndex);
+            const newImageUrl = getIllustration(recipe.imageIndex);
+            const tempImage = new Image();
+
+            tempImage.onload = () => {
+                // Only swap and fade in once the browser has the bytes ready
+                img.src = newImageUrl;
+                img.classList.remove('opacity-0');
+                img.classList.add('opacity-90');
+            };
+
+            tempImage.onerror = () => {
+                img.src = "/assets/illustrations/recipe-0.jpg"; // Fallback
+                img.classList.remove('opacity-0');
+                img.classList.add('opacity-90');
+            };
+
+            tempImage.src = newImageUrl;
 
             // Ingredients
             const ingredients = recipe.ingredients || [];
