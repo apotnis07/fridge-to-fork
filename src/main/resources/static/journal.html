@@ -677,7 +677,7 @@
                                 <div class="space-y-3 cursor-pointer"
                                     onclick="openRecipeOverlay(window.recentRecipesCache[${index}])">
                                     <div class="aspect-[3/4] overflow-hidden rounded-xl bg-surface border border-outline/10 relative shadow-inner">
-                                        <img src="${imageUrl}" loading="lazy" decoding="async" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                                        <img src="${imageUrl}" fetchPriority="high" decoding="async" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                                         <div class="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
                                     <div class="px-1">
