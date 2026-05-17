@@ -10,12 +10,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.net.URL;
 
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -40,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        System.out.println("=== JWT FILTER RUNNING for path: " + path);
+        log.debug("JWT filter intercepted: {}", path);
 
         if (!path.startsWith("/api/")) {
             filterChain.doFilter(request, response);
@@ -48,16 +50,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println("=== Auth header present: " + (authHeader != null));
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("=== REJECTED: Missing or invalid Authorization header");
+            log.warn("Rejected request to {} — missing or invalid Authorization header", path);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authHeader.substring(7);
-        System.out.println("=== Token preview: " + token.substring(0, Math.min(50, token.length())));
 
         try {
             ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
@@ -66,15 +66,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
             var claims = jwtProcessor.process(token, null);
             String userId = claims.getSubject();
-            System.out.println("=== JWT valid, userId: " + userId);
+            log.debug("JWT validated for userId: {}", userId);
 
             request.setAttribute("userId", userId);
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            System.out.println("=== JWT VALIDATION FAILED ===");
-            System.out.println("=== Error type: " + e.getClass().getName());
-            System.out.println("=== Error message: " + e.getMessage());
+            log.warn("JWT validation failed for {}: {} — {}", path, e.getClass().getSimpleName(), e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }

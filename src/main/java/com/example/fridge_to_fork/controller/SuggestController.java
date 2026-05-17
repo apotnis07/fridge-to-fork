@@ -1,5 +1,6 @@
 package com.example.fridge_to_fork.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/suggest")
 public class SuggestController {
@@ -45,11 +47,8 @@ public class SuggestController {
         float[] queryVector = embeddingService.getEmbedding(expandedQuery);
         String vectorString = embeddingService.toVectorString(queryVector);
 
-        // Debug — log distances to console
-        // List<Object[]> scores = recipeRepository.findSimilarRecipesWithScores(userId, vectorString);
-        // scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
-
         List<Recipe> matches = recipeRepository.findSimilarRecipes(userId, vectorString, 0.70);
+        log.debug("Similarity search for user {} returned {} match(es)", userId, matches.size());
 
         String newRecipe = newRecipeSuggestionService.suggestNewRecipe(request.getAvailableIngredients(), matches);
 
@@ -69,11 +68,8 @@ public class SuggestController {
         float[] queryVector = embeddingService.getEmbedding(expandedQuery);
         String vectorString = embeddingService.toVectorString(queryVector);
 
-        // Debug — log distances to console
-        // List<Object[]> scores = recipeRepository.findSimilarRecipesOtherUsersWithScores(userId, vectorString);
-        // scores.forEach(row -> System.out.println("Recipe: " + row[0] + " | Distance: " + row[1]));
-
         List<Recipe> matches = recipeRepository.findSimilarRecipesOtherUsers(userId, vectorString, 0.6);
+        log.debug("Community similarity search for user {} returned {} match(es)", userId, matches.size());
 
         return ResponseEntity.ok(new SuggestionResult(matches, null));
     }
