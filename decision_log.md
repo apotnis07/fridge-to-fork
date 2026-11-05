@@ -18,4 +18,24 @@ If recipeId is made key, then there wont be a way to make out which recipe was s
 
 # Learning Log
 With a plain new ObjectMapper() serializing an Instant either fails with an error prints a large number instead of a string in the ISO-8601 format.
-Hence we make changes to its configuration by adding the JavaTimeModule() [JavaTimeModule is a Jackson add-on module that teaches Jackson how to handle Java’s date and time types (Instant, LocalDateTime, Duration, …).] and disabling the SerializationFeature.WRITE_DATES_AS_TIMESTAMPS that would 
+Hence we make changes to its configuration by adding the JavaTimeModule() [JavaTimeModule is a Jackson add-on module that teaches Jackson how to handle Java’s date and time types (Instant, LocalDateTime, Duration, …).] and disabling the SerializationFeature.WRITE_DATES_AS_TIMESTAMPS would make it an int but we want a string (ISO-8601 format) so we disable it
+
+Flow of Serialization:
+RecipeSaved.of(...) creates a Java Object, which is not a JSON yet -> mapper.writeValueAsString(event) Serializes that object into a JSON string like so {"eventType":"RecipeSaved","schemaVersion":1,"userId":"customer-1","recipeId":"88c11bc9-1905-406b-a3c8-1e6f33ba3658","ingredients":["potatoes","milk","butter","garlic"],"timestamp":"2026-11-05T06:11:12.689155Z"}
+
+
+
+Example with RF=3 and min.insync.replicas=2:
+
+- 3 replicas in sync: acks=all waits for all 3, not 2.
+- One broker fails, 2 in sync: it waits for those 2, and the write is still accepted.
+- Two fail, 1 in sync: the write is rejected with NotEnoughReplicasException. Kafka refuses to accept data that only one broker holds.
+
+acks=all waits for the replicas that are in the ISR right now, not for every replica that exists. In-sync is what counts, not the total number of copies.
+
+If an acknowledgement is lost, the producer retries. With idempotence enabled, each message carries the producer’s ID and a per-partition sequence number, so the broker recognises the retry as a duplicate and drops it while still acknowledging it. Without it, the retry would be written twice.
+
+This only covers the producer’s own retries within one session. If the app sends twice or restarts and resends, duplicates are still possible. End to end Remi is at-least-once, so consumers must tolerate duplicates.
+
+By default, spring-kafka’s JsonSerializer adds a header to each message containing the full Java class name, e.g. com.example.fridge_to_fork.event.RecipeSaved. Consumers can use it to pick the class to deserialize into.
+But, if a class is renamed or moved the consumer can no longer deserealize using the header. Hence, we set spring.kafka.producer.properties.spring.json.add.type.headers=false and use the eventType in the json.
