@@ -69,3 +69,12 @@ Searches aren’t persisted, so CDC can’t capture them. For recipes, CDC would
 
 
 That’s a special rule in SLF4J, the logging API Spring Boot uses: if the last argument is an exception and no {} placeholder is left for it, it’s logged as the exception, with its full stack trace printed below the message.
+
+
+## Todo 7: the flag
+How to approach it
+
+1. Define the property. Choose where `remi.events.enabled` goes in each profile: `true` locally, `false` in prod. Then decide what happens when it’s missing. Which is the safer default, and why? -- Default false because an environment without a broker shouldn’t attempt to connect.
+
+When broker is not enabled, through docker. On startup the app looks to connect to the broker, localhost:9092 to create the NewTopic beans. But after 30 secs, logs the error and starts the app
+To avoid this warning, set the spring.kafka.admin.auto-create flag. Set is so that it takes the same value as remi.events.enabled so they dont drift apart accidentally.
