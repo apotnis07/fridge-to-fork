@@ -13,7 +13,7 @@ public record RecipeSaved(
     UUID recipeId,
     List<String> ingredients,
     @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
-) {
+) implements RemiEvent {
 
     public static final String EVENT_TYPE = "RecipeSaved";
     public static final int SCHEMA_VERSION = 1;

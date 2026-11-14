@@ -30,9 +30,9 @@ public class EventPublisherTest {
     void disabledPublisherNeverTouchesKafka() {
         EventPublisher publisher = new EventPublisher(kafkaTemplate, "recipe", "search", false);
 
-        publisher.publishRecipeSaved(RecipeSaved.of("user-1", UUID.randomUUID(), List.of("ing1", "ing2")));
-        publisher.publishRecipeDeleted(RecipeDeleted.of("user-1", UUID.randomUUID()));
-        publisher.publishSearchPerformed(SearchPerformed.of("user-1", List.of("ing1"), 0));
+        publisher.publish(RecipeSaved.of("user-1", UUID.randomUUID(), List.of("ing1", "ing2")));
+        publisher.publish(RecipeDeleted.of("user-1", UUID.randomUUID()));
+        publisher.publish(SearchPerformed.of("user-1", List.of("ing1"), 0));
 
         verifyNoInteractions(kafkaTemplate);
     }
@@ -46,9 +46,13 @@ public class EventPublisherTest {
         EventPublisher publisher = new EventPublisher(kafkaTemplate, "recipe", "search", true);
 
         RecipeSaved event = RecipeSaved.of("user-1", UUID.randomUUID(), List.of("ing1", "ing2"));
-        publisher.publishRecipeSaved(event);
-
-
+        publisher.publish(event);
         verify(kafkaTemplate).send("recipe", "user-1", event);
+
+
+        SearchPerformed search = SearchPerformed.of("user-1", List.of("ing1"), 0);
+        publisher.publish(search);
+        verify(kafkaTemplate).send("search", "user-1", search);
+
     }
 }

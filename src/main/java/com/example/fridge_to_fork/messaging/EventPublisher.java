@@ -5,6 +5,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.fridge_to_fork.event.RecipeDeleted;
+import com.example.fridge_to_fork.event.RemiEvent;
 import com.example.fridge_to_fork.event.RecipeSaved;
 import com.example.fridge_to_fork.event.SearchPerformed;
 
@@ -19,7 +20,6 @@ public class EventPublisher {
     private final String searchTopic;
     private final boolean enabled;
 
-
     public EventPublisher(KafkaTemplate<String, Object> kafkaTemplate,
             @Value("${app.kafka.topic.recipe-events}") String recipeTopic,
             @Value("${app.kafka.topic.search-events}") String searchTopic,
@@ -29,13 +29,17 @@ public class EventPublisher {
         this.searchTopic = searchTopic;
         this.enabled = enabled;
 
-        if(!enabled) log.info("Remi events disabled (remi.events.enabled=false)");
+        if (!enabled)
+            log.info("Remi events disabled (remi.events.enabled=false)");
     }
 
-    public void publishRecipeSaved(RecipeSaved event) {
+    public void publish(RemiEvent event) {
+        if (!enabled)
+            return;
 
-        if (!enabled) return;
-        kafkaTemplate.send(recipeTopic, event.userId(), event)
+        String topic = topicFor(event);
+
+        kafkaTemplate.send(topic, event.userId(), event)
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
                         log.error("Failed to publish {} for user {}", event.eventType(), event.userId(), ex);
@@ -46,38 +50,15 @@ public class EventPublisher {
                     }
 
                 });
+
     }
 
-    public void publishSearchPerformed(SearchPerformed event) {
-
-        if (!enabled) return;
-        kafkaTemplate.send(searchTopic, event.userId(), event)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("Failed to publish {} for user {}", event.eventType(), event.userId(), ex);
-                    } else {
-                        var meta = result.getRecordMetadata();
-                        log.info("Published {} to {}-{}@{}", event.eventType(), meta.topic(), meta.partition(),
-                                meta.offset());
-                    }
-
-                });
+    private String topicFor(RemiEvent event) {
+        return switch (event) {
+            case RecipeSaved r -> recipeTopic;
+            case RecipeDeleted d -> recipeTopic;
+            case SearchPerformed s -> searchTopic;
+        };
     }
 
-
-    public void publishRecipeDeleted(RecipeDeleted event) {
-
-        if (!enabled) return;
-        kafkaTemplate.send(recipeTopic, event.userId(), event)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("Failed to publish {} for user {}", event.eventType(), event.userId(), ex);
-                    } else {
-                        var meta = result.getRecordMetadata();
-                        log.info("Published {} to {}-{}@{}", event.eventType(), meta.topic(), meta.partition(),
-                                meta.offset());
-                    }
-
-                });
-    }
 }

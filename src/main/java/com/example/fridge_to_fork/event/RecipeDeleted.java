@@ -12,7 +12,7 @@ public record RecipeDeleted(
     UUID recipeId,
     @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
 
-) {
+) implements RemiEvent {
     public static final String EVENT_TYPE = "RecipeDeleted";
     public static final int SCHEMA_VERSION = 1;
     

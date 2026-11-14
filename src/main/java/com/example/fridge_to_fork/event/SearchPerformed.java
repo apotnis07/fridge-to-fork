@@ -12,7 +12,7 @@ public record SearchPerformed(
     List<String> ingredients,
     int matchCount,
     @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
-) {
+) implements RemiEvent {
    
     public static final String EVENT_TYPE = "SearchPerformed";
     public static final int SCHEMA_VERSION = 1;
