@@ -39,3 +39,33 @@ This only covers the producer’s own retries within one session. If the app sen
 
 By default, spring-kafka’s JsonSerializer adds a header to each message containing the full Java class name, e.g. com.example.fridge_to_fork.event.RecipeSaved. Consumers can use it to pick the class to deserialize into.
 But, if a class is renamed or moved the consumer can no longer deserealize using the header. Hence, we set spring.kafka.producer.properties.spring.json.add.type.headers=false and use the eventType in the json.
+
+
+## Todo 6: the event publisher
+What it does
+
+It’s one Spring service, e.g. EventPublisher, with a method like publish(event). Given any of your three events, it:
+
+- chooses the topic based on the event type,
+- uses the event’s userId as the Kafka key,
+- sends it with KafkaTemplate without blocking,
+- logs where it was written (topic, partition, offset), or the error if the send failed.
+
+Why it’s needed
+- Your events currently go nowhere. You have the broker, the topics, the event records and the producer config, but nothing connects them. This is the class that actually sends events.
+- It keeps Kafka out of your business code. Without it, RecipeService and SuggestController would each need KafkaTemplate, topic names, key choices and error handling. With it, they make one call and don’t need to know Kafka exists.
+- It’s the single place for everything to do with sending. The feature flag (todo 7), failure handling (todo 10) and the publish metrics (milestone 3) are all added here, once, instead of in every caller.
+
+### Why a separate class for Publisher:
+
+- RecipeService and SuggestController shouldn’t depend on Kafka. If you replaced Kafka with something else later, only this class would change.
+- One place for the key choice, the topic routing, error logging, and later the feature flag and metrics.
+- It’s easy to replace with a mock in tests.
+
+
+We are not doing kafka connect (taking rows from external db and writing into topics) because when we search for a recipe nothing is being written to the db so there wont be a row in the db that would indicate search
+
+Searches aren’t persisted, so CDC can’t capture them. For recipes, CDC would publish table rows rather than domain events and add Connect plus Debezium infrastructure. App-level publishing after commit is simpler, with the outbox + CDC as the stronger option if guaranteed delivery became necessary.
+
+
+That’s a special rule in SLF4J, the logging API Spring Boot uses: if the last argument is an exception and no {} placeholder is left for it, it’s logged as the exception, with its full stack trace printed below the message.

@@ -3,13 +3,15 @@ package com.example.fridge_to_fork.event;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public record SearchPerformed(
     String eventType,
     int schemaVersion,
     String userId,
     List<String> ingredients,
     int matchCount,
-    Instant timestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
 ) {
    
     public static final String EVENT_TYPE = "SearchPerformed";

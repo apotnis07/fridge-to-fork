@@ -3,12 +3,14 @@ package com.example.fridge_to_fork.event;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public record RecipeDeleted(
     String eventType,
     int schemaVersion,
     String userId,
     UUID recipeId,
-    Instant timestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
 
 ) {
     public static final String EVENT_TYPE = "RecipeDeleted";

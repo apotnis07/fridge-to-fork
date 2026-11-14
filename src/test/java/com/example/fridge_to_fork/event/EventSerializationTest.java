@@ -8,30 +8,31 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class EventSerializationTest {
     
+    private JsonSerializer<Object> serializer;
     private ObjectMapper mapper;
 
     @BeforeEach 
     void setUp() {
+        serializer = new JsonSerializer<>();
         mapper = new ObjectMapper()
-                    .registerModule(new JavaTimeModule())
-                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                    .registerModule(new JavaTimeModule());
     }
 
     @Test 
     void recipeSavedSerializesWithMetadata() throws Exception {
         RecipeSaved event = RecipeSaved.of("user-1", UUID.randomUUID(), List.of("potatoes", "milk", "butter", "garlic"));
 
-        String json = mapper.writeValueAsString(event);
+        byte[] bytes = serializer.serialize("test-topic", event);
 
-        JsonNode node = mapper.readTree(json);
+        JsonNode node = mapper.readTree(bytes);
         assertEquals("RecipeSaved", node.get("eventType").asText());
         assertEquals(1, node.get("schemaVersion").asInt());
         assertEquals("user-1", node.get("userId").asText());
@@ -44,8 +45,8 @@ public class EventSerializationTest {
     void recipeSavedRoundTrips() throws Exception {
         RecipeSaved original = RecipeSaved.of("user-1", UUID.randomUUID(), List.of("potatoes", "milk", "butter", "garlic"));
 
-        String json = mapper.writeValueAsString(original);
-        RecipeSaved back = mapper.readValue(json, RecipeSaved.class);
+        byte[] bytes = serializer.serialize("test-topic", original);
+        RecipeSaved back = mapper.readValue(bytes, RecipeSaved.class);
 
         assertEquals(original, back);
 
@@ -55,9 +56,8 @@ public class EventSerializationTest {
     void searchPerformedSerializedWithMetadata() throws Exception {
         SearchPerformed event = SearchPerformed.of("user-1", List.of("potatoes", "milk", "butter"), 0);
 
-        String json = mapper.writeValueAsString(event);
-
-        JsonNode node = mapper.readTree(json);
+        byte[] bytes = serializer.serialize("test-topic", event);
+        JsonNode node = mapper.readTree(bytes);
         assertEquals("SearchPerformed", node.get("eventType").asText());
         assertEquals(1, node.get("schemaVersion").asInt());
         assertEquals("user-1", node.get("userId").asText());
@@ -74,8 +74,8 @@ public class EventSerializationTest {
 
         SearchPerformed original = SearchPerformed.of("user-1", List.of("potatoes", "milk", "butter"), 0);
 
-        String json = mapper.writeValueAsString(original);
-        SearchPerformed back = mapper.readValue(json, SearchPerformed.class);
+        byte[] bytes = serializer.serialize("test-topic", original);
+        SearchPerformed back = mapper.readValue(bytes, SearchPerformed.class);
         assertEquals(original, back);
     }
 
@@ -84,9 +84,9 @@ public class EventSerializationTest {
     void recipeDeletedSerializedWithMetadata() throws Exception {
         RecipeDeleted event = RecipeDeleted.of("user-1", UUID.randomUUID());
 
-        String json = mapper.writeValueAsString(event);
+        byte[] bytes = serializer.serialize("test-topic", event);
 
-        JsonNode node = mapper.readTree(json);
+        JsonNode node = mapper.readTree(bytes);
         assertEquals("RecipeDeleted", node.get("eventType").asText());
         assertEquals(1, node.get("schemaVersion").asInt());
         assertEquals("user-1", node.get("userId").asText());
@@ -100,8 +100,9 @@ public class EventSerializationTest {
 
         RecipeDeleted original = RecipeDeleted.of("user-1", UUID.randomUUID());
 
-        String json = mapper.writeValueAsString(original);
-        RecipeDeleted back = mapper.readValue(json, RecipeDeleted.class);
+        byte[] bytes = serializer.serialize("test-topic", original);
+
+        RecipeDeleted back = mapper.readValue(bytes, RecipeDeleted.class);
         assertEquals(original, back);
     }
 }

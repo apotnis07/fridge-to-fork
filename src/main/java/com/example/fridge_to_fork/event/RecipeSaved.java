@@ -4,13 +4,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public record RecipeSaved(
     String eventType,
     int schemaVersion,
     String userId,
     UUID recipeId,
     List<String> ingredients,
-    Instant timestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING) Instant timestamp
 ) {
 
     public static final String EVENT_TYPE = "RecipeSaved";
