@@ -1,5 +1,6 @@
 package com.example.fridge_to_fork.messaging;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -49,10 +50,32 @@ public class EventPublisherTest {
         publisher.publish(event);
         verify(kafkaTemplate).send("recipe", "user-1", event);
 
-
         SearchPerformed search = SearchPerformed.of("user-1", List.of("ing1"), 0);
         publisher.publish(search);
         verify(kafkaTemplate).send("search", "user-1", search);
 
+    }
+
+    @Test
+    void publishSwallowsSynchronousSendFailure() {
+        when(kafkaTemplate.send(anyString(), anyString(), any()))
+                .thenThrow(new RuntimeException("broker unreachable"));
+
+        EventPublisher publisher = new EventPublisher(kafkaTemplate, "recipe", "search", true);
+
+        assertDoesNotThrow(
+                () -> publisher.publish(RecipeSaved.of("user-1", UUID.randomUUID(), List.of("ing1", "ing2"))));
+
+    }
+
+    @Test
+    void publishSwallowsAsynchronousSendFailure() {
+        when(kafkaTemplate.send(anyString(), anyString(), any()))
+                .thenReturn(CompletableFuture.failedFuture(new RuntimeException("delivery timed out")));
+
+        EventPublisher publisher = new EventPublisher(kafkaTemplate, "recipe", "search", true);
+
+        assertDoesNotThrow(
+            () -> publisher.publish(RecipeSaved.of("user-1", UUID.randomUUID(), List.of("ing1", "ing2"))));
     }
 }

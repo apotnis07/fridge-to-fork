@@ -88,3 +88,34 @@ The cost of adding the bedrock call inside the transaction is a held connection 
 After-commit publishing exists to solve the dual-write problem: don’t announce a DB change that might still roll back. A search makes no DB change, so there’s nothing to wait for and nothing to roll back. The event describes something that has already happened: the search ran.
 
 SearchPerformed is published right after retrieval, before the Claude suggestion: the event records that the search happened, which is true even if the suggestion later fails. Suggestion failures are tracked by metrics (milestone 3) and a v2 suggestionGenerated field, not by dropping the event
+
+## Todo 10: failure safety (flag on, broker down)
+
+Decision 1: max.block.ms=500
+
+It’s the most I’m willing to delay a user’s request for analytics.
+It’s well above what a healthy broker needs: the metadata fetch takes a few milliseconds locally.
+max.block.ms = how long the caller waits inside send(). delivery.timeout.ms (default 120 s) = how long the producer’s background thread keeps retrying a record that’s already buffered. The second one doesn’t block users, so I left it at the default.
+
+Decision 2: publish() never throws
+
+Some failures are thrown synchronously from send() (serialization, metadata timeout, producer closed), and others arrive asynchronously in whenComplete.
+publish() wraps the topic choice and send in try/catch, logs, and doesn’t rethrow.
+The broad catch (Exception) is deliberate: publish is a boundary whose contract is “never fail the caller”. An escaped exception in the search path would fail the user’s request, and through the JwtFilter bug, log them out.
+The logs tell the two failure paths apart: “Failed to send” (never left the process) vs “Failed to publish” (buffered, but delivery failed).
+
+Trade-off: events during an outage are lost
+
+They’re logged and dropped, never retried after the request. That’s acceptable because events are best-effort analytics, not part of the user’s action.
+If guaranteed delivery were needed: the outbox pattern (write the event to a DB table in the same transaction, and relay it to Kafka separately).
+
+Alternative not chosen: @Async publishing
+
+Running publish on a separate thread pool would mean the request never waits at all.
+Rejected for now: more machinery (pool sizing, queue limits), and events queued in memory are lost on shutdown. The short timeout plus try/catch is simpler and good enough.
+
+Verified:
+
+With the broker down, searches respond in normal time and the log shows the failure line.
+With the broker back up, events flow again without restarting Remi, because the producer reconnects automatically.
+EventPublisherTest covers both the synchronous (thenThrow) and asynchronous (failedFuture) failure paths.

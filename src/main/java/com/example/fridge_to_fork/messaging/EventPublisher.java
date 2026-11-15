@@ -37,19 +37,24 @@ public class EventPublisher {
         if (!enabled)
             return;
 
-        String topic = topicFor(event);
+        try {
+            String topic = topicFor(event);
 
-        kafkaTemplate.send(topic, event.userId(), event)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("Failed to publish {} for user {}", event.eventType(), event.userId(), ex);
-                    } else {
-                        var meta = result.getRecordMetadata();
-                        log.info("Published {} to {}-{}@{}", event.eventType(), meta.topic(), meta.partition(),
-                                meta.offset());
-                    }
+            kafkaTemplate.send(topic, event.userId(), event)
+                    .whenComplete((result, ex) -> {
+                        if (ex != null) {
+                            log.error("Failed to publish {} for user {}", event.eventType(), event.userId(), ex);
+                        } else {
+                            var meta = result.getRecordMetadata();
+                            log.info("Published {} to {}-{}@{}", event.eventType(), meta.topic(), meta.partition(),
+                                    meta.offset());
+                        }
 
-                });
+                    });
+        } catch (Exception e) {
+            log.error("Failed to send {} for user {}",
+                    event.eventType(), event.userId(), e);
+        }
 
     }
 
