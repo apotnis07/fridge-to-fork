@@ -7,8 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.fridge_to_fork.event.RecipeDeleted;
+import com.example.fridge_to_fork.event.RecipeSaved;
 import com.example.fridge_to_fork.model.Ingredient;
 import com.example.fridge_to_fork.model.Recipe;
 import com.example.fridge_to_fork.repository.RecipeRepository;
@@ -18,10 +22,12 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final EmbeddingService embeddingService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public RecipeService(RecipeRepository recipeRepository, EmbeddingService embeddingService) {
+    public RecipeService(RecipeRepository recipeRepository, EmbeddingService embeddingService, ApplicationEventPublisher applicationEventPublisher) {
         this.recipeRepository = recipeRepository;
         this.embeddingService = embeddingService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Cacheable(value = "userRecipes", key = "#userId")
@@ -29,6 +35,7 @@ public class RecipeService {
         return recipeRepository.findByUserId(userId);
     }
 
+    @Transactional 
     @Caching(evict = {
             @CacheEvict(value = "userRecipes", key = "#userId")
     })
@@ -51,12 +58,21 @@ public class RecipeService {
 
         recipeRepository.updateEmbedding(saved.getId().toString(), embeddingService.toVectorString(vector));
 
+        List<String> lowerCaseTrimmedIngredientList = ingredients.stream()
+                .map(ing -> ing.getName().toLowerCase().trim())
+                .collect(Collectors.toList());
+
+        applicationEventPublisher.publishEvent(RecipeSaved.of(userId, saved.getId(), lowerCaseTrimmedIngredientList));
         return saved;
 
     }
 
+    @Transactional 
     @CacheEvict(value="userRecipes", key="#userId")
     public void deleteRecipe(UUID id, String userId){
-        recipeRepository.deleteByIdAndUserId(id, userId);
+        int deleted = recipeRepository.deleteByIdAndUserId(id, userId);
+        if (deleted > 0) {
+            applicationEventPublisher.publishEvent(RecipeDeleted.of(userId, id));
+        }
     }
 }

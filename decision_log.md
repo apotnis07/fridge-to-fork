@@ -78,3 +78,11 @@ How to approach it
 
 When broker is not enabled, through docker. On startup the app looks to connect to the broker, localhost:9092 to create the NewTopic beans. But after 30 secs, logs the error and starts the app
 To avoid this warning, set the spring.kafka.admin.auto-create flag. Set is so that it takes the same value as remi.events.enabled so they dont drift apart accidentally.
+
+
+## TODO 8:
+
+The rule to remember: a transactional event listener only fires if the event is published inside an active transaction.
+The cost of adding the bedrock call inside the transaction is a held connection during a slow call; the benefit is no recipe without an embedding.
+
+After-commit publishing exists to solve the dual-write problem: don’t announce a DB change that might still roll back. A search makes no DB change, so there’s nothing to wait for and nothing to roll back. The event describes something that has already happened: the search ran.
