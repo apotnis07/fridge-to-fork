@@ -86,3 +86,5 @@ The rule to remember: a transactional event listener only fires if the event is 
 The cost of adding the bedrock call inside the transaction is a held connection during a slow call; the benefit is no recipe without an embedding.
 
 After-commit publishing exists to solve the dual-write problem: don’t announce a DB change that might still roll back. A search makes no DB change, so there’s nothing to wait for and nothing to roll back. The event describes something that has already happened: the search ran.
+
+SearchPerformed is published right after retrieval, before the Claude suggestion: the event records that the search happened, which is true even if the suggestion later fails. Suggestion failures are tracked by metrics (milestone 3) and a v2 suggestionGenerated field, not by dropping the event
