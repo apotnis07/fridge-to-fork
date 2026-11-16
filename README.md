@@ -6,8 +6,9 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
 
-A full-stack RAG application that leverages a microservices architecture to record user-created recipes and returns the best matched recipes based on the available ingredients in the users' pantry. It also generates AI suggested recipes that can be made from the available ingredients. Built with Spring Boot, AWS Bedrock, AWS Cognito, Postgres, HTML, CSS and JavaScript. Deployed on Render.
+A full-stack RAG application that leverages a microservices architecture to record user-created recipes and returns the best matched recipes based on the available ingredients in the users' pantry. It also generates AI suggested recipes that can be made from the available ingredients. Recipe and search activity is streamed as domain events to Apache Kafka. Built with Spring Boot, AWS Bedrock, AWS Cognito, Postgres, Apache Kafka, HTML, CSS and JavaScript. Deployed on Render.
 
 ## Video Demos
 
@@ -68,6 +69,11 @@ flowchart TB
         PGV["pgvector\nextension"]
     end
 
+    subgraph Kafka["Apache Kafka (KRaft)"]
+        RecipeTopic["remi.recipe-events"]
+        SearchTopic["remi.search-events"]
+    end
+
     Browser -- "sign in / sign up" --> Cognito
     Cognito -- "accessToken (JWT)" --> AuthJS
     AuthJS -- "Bearer token on all requests" --> Security
@@ -85,10 +91,14 @@ flowchart TB
     RecipeAPI -- "read / write recipes" --> PG
     SuggestAPI -- "cosine similarity search" --> PGV
     PG --- PGV
+
+    RecipeAPI -. "RecipeSaved / RecipeDeleted (after DB commit)" .-> RecipeTopic
+    SuggestAPI -. "SearchPerformed" .-> SearchTopic
 ```
 
 Remi is a full-stack application built across three layers. The frontend is served by Spring Boot with JavaScript handling client-side authentication state via AWS Amplify. The backend is a REST API built with Spring Boot, responsible for all business logic, external service orchestration, and data persistence. All data is stored in a PostgreSQL database extended with pgvector, which enables the application to store and query vector embeddings natively alongside relational data.
 Authentication is handled by AWS Cognito, which manages user identity, credential validation, and token lifecycle. AI capabilities are powered by AWS Bedrock, which provides access to two models: Claude for natural language understanding and recipe generation, and Amazon Titan for converting text into vector embeddings. 
+Recipe saves, deletes and searches are also published as domain events to Apache Kafka. Publishing is best-effort and never blocks or fails a user's request (see [Event Streaming](#event-streaming-apache-kafka)).
 
 ### AWS Cognito, Spring Security - Authentication 
 <details>
@@ -269,13 +279,43 @@ Remi goes beyond just searching your existing "Recipe Book." It uses **Retrieval
 * **Cold-Start Solution (Community Recipes)**: To ensure value for new users, the engine intelligently "borrows" highly-rated community recipes when a user's personal "Recipe Book" is still growing.
 ---
 
+## Event Streaming (Apache Kafka)
+
+Every recipe save, recipe delete and ingredient search is published as an immutable domain event to Kafka, creating a per-user activity stream for analytics, without coupling that work to the request path.
+
+| Event | Topic | Key | Published when |
+|---|---|---|---|
+| `RecipeSaved` | `remi.recipe-events` | `userId` | After the save transaction commits |
+| `RecipeDeleted` | `remi.recipe-events` | `userId` | After the delete commits, only if a row was actually deleted |
+| `SearchPerformed` | `remi.search-events` | `userId` | Right after retrieval, before the Claude suggestion |
+
+Example payload:
+
+```json
+{"eventType":"RecipeSaved","schemaVersion":1,"userId":"customer-1","recipeId":"88c11bc9-1905-406b-a3c8-1e6f33ba3658","ingredients":["potatoes","milk","butter","garlic"],"timestamp":"2026-11-05T06:11:12.689155Z"}
+```
+
+**Design decisions**
+* **Keyed by `userId`:** all of a user's events land in one partition, so their order is preserved (a save always precedes its delete) and per-user aggregations need no repartitioning. `userId` is also kept in the value, so the key can change later without losing it.
+* **Publish after commit:** recipe events go through a Spring `@TransactionalEventListener(phase = AFTER_COMMIT)`, so Kafka never announces a change that was rolled back (the dual-write problem). Searches don't write to the DB, so they publish directly.
+* **Durable, idempotent producer:** `acks=all` with `enable.idempotence=true`, so producer retries don't create duplicates. End to end the pipeline is at-least-once, so consumers should tolerate duplicates.
+* **Never blocks or fails the user:** `max.block.ms=500` caps how long a request can wait on Kafka, and `EventPublisher.publish()` catches and logs both synchronous and asynchronous send failures instead of throwing. If the broker is down, requests respond normally and events are logged and dropped. The outbox pattern is the upgrade path if guaranteed delivery is ever needed.
+* **Feature flag:** `remi.events.enabled` (default `false`) turns publishing on or off, and topic auto-creation follows the same flag, so an environment without a broker never tries to connect.
+* **Schema stability:** events are Java records with `eventType` and `schemaVersion` fields and ISO-8601 timestamps. Spring's Java type headers are turned off, so renaming a class doesn't break consumers.
+* **Single publishing boundary:** `EventPublisher` owns topic routing, keys, the flag and error handling, so `RecipeService` and `SuggestController` don't depend on Kafka.
+
+Covered by `EventSerializationTest` and `EventPublisherTest` (including the sync `thenThrow` and async `failedFuture` failure paths). The reasoning behind each choice is recorded in [decision_log.md](decision_log.md).
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Tailwind CSS, HTML, JavaScript |
-| API Gateway | Spring Boot 4.0 |
+| API Gateway | Spring Boot 3.3 |
 | AI Service | Claude Haiku 4.5, Titan Embeddings v2 |
+| Event Streaming | Apache Kafka 4.4 (KRaft), Spring Kafka |
 | Containerization | Docker, Docker Compose |
 | Security | AWS Cognito, JWT, Spring Security, Amplify Auth |
 | Cloud | Render |
@@ -290,51 +330,68 @@ Remi goes beyond just searching your existing "Recipe Book." It uses **Retrieval
 ├── Dockerfile
 ├── HELP.md
 ├── README.md
-├── docker-compose.yml
+├── decision_log.md                 # Kafka design decisions and trade-offs
+├── docker-compose.yml              # Postgres + pgvector, Kafka broker
 ├── .env
 ├── mvnw
 ├── mvnw.cmd
 ├── pom.xml
 └── src
-    └── main
-        ├── java
-        │   └── com
-        │       └── example
-        │           └── fridge_to_fork
-        │               ├── FridgeToForkApplication.java
-        │               ├── config
-        │               │   ├── BedrockConfig.java
-        │               │   ├── JwtFilter.java
-        │               │   └── WebSecurityConfig.java
-        │               ├── controller
-        │               │   ├── RecipeController.java
-        │               │   └── SuggestController.java
-        │               ├── model
-        │               │   ├── Ingredient.java
-        │               │   ├── Recipe.java
-        │               │   ├── SuggestionRequest.java
-        │               │   └── SuggestionResult.java
-        │               ├── repository
-        │               │   └── RecipeRepository.java
-        │               ├── service
-        │               │   ├── EmbeddingService.java
-        │               │   ├── NewRecipeSuggestionService.java
-        │               │   └── RecipeParsingService.java
-        │               └── util
-        │                   └── IngredientConverter.java
-        └── resources
-            ├── META-INF
-            │   └── additional-spring-configuration-metadata.json
-            ├── application-local.properties
-            ├── application-prod.properties
-            ├── application.properties
-            └── static
-                ├── assets
-                ├── auth.js
-                ├── find.html
-                ├── index.html
-                ├── journal.html
-                └── login.html
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── example
+    │   │           └── fridge_to_fork
+    │   │               ├── FridgeToForkApplication.java
+    │   │               ├── config
+    │   │               │   ├── BedrockConfig.java
+    │   │               │   ├── JwtFilter.java
+    │   │               │   ├── KafkaTopicConfig.java
+    │   │               │   └── WebSecurityConfig.java
+    │   │               ├── controller
+    │   │               │   ├── RecipeController.java
+    │   │               │   └── SuggestController.java
+    │   │               ├── event
+    │   │               │   ├── RemiEvent.java
+    │   │               │   ├── RecipeSaved.java
+    │   │               │   ├── RecipeDeleted.java
+    │   │               │   └── SearchPerformed.java
+    │   │               ├── messaging
+    │   │               │   ├── EventPublisher.java
+    │   │               │   └── RemiEventRelay.java
+    │   │               ├── model
+    │   │               │   ├── Ingredient.java
+    │   │               │   ├── Recipe.java
+    │   │               │   ├── SuggestionRequest.java
+    │   │               │   └── SuggestionResult.java
+    │   │               ├── repository
+    │   │               │   └── RecipeRepository.java
+    │   │               ├── service
+    │   │               │   ├── EmbeddingService.java
+    │   │               │   ├── NewRecipeSuggestionService.java
+    │   │               │   ├── RecipeParsingService.java
+    │   │               │   └── RecipeService.java
+    │   │               └── util
+    │   │                   └── IngredientConverter.java
+    │   └── resources
+    │       ├── META-INF
+    │       │   └── additional-spring-configuration-metadata.json
+    │       ├── application-local.properties
+    │       ├── application-prod.properties
+    │       ├── application.properties
+    │       └── static
+    │           ├── assets
+    │           ├── auth.js
+    │           ├── find.html
+    │           ├── index.html
+    │           ├── journal.html
+    │           └── login.html
+    └── test
+        └── java/com/example/fridge_to_fork
+            ├── event
+            │   └── EventSerializationTest.java
+            └── messaging
+                └── EventPublisherTest.java
 
 ```
 
@@ -376,7 +433,7 @@ aws configure list
 IMPORTANT: The AWS profile should be logged in the terminal where the following Docker and Maven commands will be executed. Otherwise, AWS Bedrock won't have user credentials.
 
 ```bash
-# The docker compose up command starts the frontend and backend services as per the configurations in docker-compose.yml file.
+# Starts Postgres (pgvector) and the Kafka broker defined in docker-compose.yml
 docker-compose up -d
 ./mvnw spring-boot:run
 ```
@@ -399,6 +456,22 @@ ALTER TABLE recipes ADD COLUMN IF NOT EXISTS embedding vector(1024);
 ```
 
 Now your Postgres DB is ready.
+
+### Kafka events (optional)
+
+Event publishing is off by default. To turn it on locally, add this to `application-local.properties`:
+
+```bash
+remi.events.enabled=true
+```
+
+On startup the app creates the `remi.recipe-events` and `remi.search-events` topics (3 partitions each) on the broker at `localhost:9092`. To watch events as you save, delete and search recipes:
+
+```bash
+docker exec -it recipe-broker /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic remi.recipe-events --from-beginning --property print.key=true
+```
+
+Swap in `remi.search-events` to see searches. If the broker is stopped, the app keeps working and logs the failed sends.
 
 ---
 
@@ -458,5 +531,8 @@ app.cors.allowed-origins=your_render_url
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 server.port=8080
+remi.events.enabled=false
 ```
 7. Commit and push.
+
+> **Kafka in production:** the Render free tier has no Kafka broker, so `application-prod.properties` sets `remi.events.enabled=false`. The app neither connects to a broker nor creates topics. To enable events in production, point `spring.kafka.bootstrap-servers` at a managed Kafka cluster and set the flag to `true`.
