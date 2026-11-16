@@ -11,5 +11,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data 
 
+  broker:
+    image: apache/kafka:4.4.0
+    container_name: recipe-broker
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/tmp/kraft-combined-logs
+
+
 volumes:
   postgres_data:
+  kafka_data:

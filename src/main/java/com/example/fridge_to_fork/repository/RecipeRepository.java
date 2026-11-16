@@ -11,10 +11,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.fridge_to_fork.model.Recipe;
 
-import jakarta.transaction.Transactional;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
@@ -27,7 +27,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
         @Modifying
         @Transactional
-        void deleteByIdAndUserId(UUID id, String userId);
+        int deleteByIdAndUserId(UUID id, String userId);
 
         @Modifying
         @Transactional
